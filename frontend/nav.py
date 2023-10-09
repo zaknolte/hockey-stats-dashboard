@@ -1,6 +1,28 @@
 import dash_bootstrap_components as dbc
 from dash import html
 
+from data_values import DIVISION_TEAMS
+
+
+def build_team_col(division, division_teams):
+    col = [
+        html.Div(division, className="text-center px-3"),
+        html.Hr(),
+    ]
+
+    for team in division_teams[division]:
+        ref = team.replace(" ", "-")
+        col.append(
+            dbc.DropdownMenuItem(team, href=ref, className="text-center px-3"),
+        )
+    
+    return col
+
+pacific_col = build_team_col("Pacific", DIVISION_TEAMS)
+central_col = build_team_col("Central", DIVISION_TEAMS)
+metro_col = build_team_col("Metropolitan", DIVISION_TEAMS)
+atlantic_col = build_team_col("Atlantic", DIVISION_TEAMS)
+
 
 nav = dbc.NavbarSimple(
     children=[
@@ -15,63 +37,25 @@ nav = dbc.NavbarSimple(
                     [
                         dbc.Row(
                             dbc.Col(
-                                [
-                                    html.Div("Pacific", className="text-center px-3"),
-                                    html.Hr(),
-                                    dbc.DropdownMenuItem(
-                                        "Page 2", href="#", className="text-center px-3"
-                                    ),
-                                    dbc.DropdownMenuItem(
-                                        "Page 3", href="#", className="text-center px-3"
-                                    ),
-                                ],
+                                pacific_col,
                                 class_name="",
                             ),
                         ),
                         dbc.Row(
                             dbc.Col(
-                                [
-                                    html.Div("Central", className="text-center px-3"),
-                                    html.Hr(),
-                                    dbc.DropdownMenuItem(
-                                        "Page 4", href="#", className="text-center px-3"
-                                    ),
-                                    dbc.DropdownMenuItem(
-                                        "Page 5", href="#", className="text-center px-3"
-                                    ),
-                                ],
+                                central_col,
                                 class_name="",
                             ),
                         ),
                         dbc.Row(
                             dbc.Col(
-                                [
-                                    html.Div(
-                                        "Metropolitan", className="text-center px-3"
-                                    ),
-                                    html.Hr(),
-                                    dbc.DropdownMenuItem(
-                                        "Page 6", href="#", className="text-center px-3"
-                                    ),
-                                    dbc.DropdownMenuItem(
-                                        "Page 7", href="#", className="text-center px-3"
-                                    ),
-                                ],
+                                metro_col,
                                 class_name="",
                             ),
                         ),
                         dbc.Row(
                             dbc.Col(
-                                [
-                                    html.Div("Atlantic", className="text-center px-3"),
-                                    html.Hr(),
-                                    dbc.DropdownMenuItem(
-                                        "Page 8", href="#", className="text-center px-3"
-                                    ),
-                                    dbc.DropdownMenuItem(
-                                        "Page 9", href="#", className="text-center px-3"
-                                    ),
-                                ],
+                                atlantic_col,
                                 class_name="",
                             ),
                         ),
@@ -83,6 +67,7 @@ nav = dbc.NavbarSimple(
             in_navbar=True,
             label="Teams",
         ),
+        dbc.NavItem(dbc.NavLink("League", href="/league")),
     ],
     brand="Home",
     brand_href="/",
