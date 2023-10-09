@@ -7,24 +7,14 @@ from nav import nav
 app = Dash(
     __name__,
     external_stylesheets=[
-        dbc.themes.BOOTSTRAP,
+        dbc.themes.LUX,
     ],
     use_pages=True,
 )
 
 app.layout = html.Div(
     [
-        nav(),
-        html.Div(
-            [
-                html.Div(
-                    dcc.Link(
-                        f"{page['name']} - {page['path']}", href=page["relative_path"]
-                    )
-                )
-                for page in dash.page_registry.values()
-            ]
-        ),
+        nav,
         dash.page_container,
     ]
 )
