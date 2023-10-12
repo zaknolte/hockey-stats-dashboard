@@ -66,6 +66,7 @@ nav = dbc.NavbarSimple(
             nav=True,
             in_navbar=True,
             label="Teams",
+            align_end=True,
         ),
         dbc.NavItem(dbc.NavLink("League", href="/league")),
     ],
