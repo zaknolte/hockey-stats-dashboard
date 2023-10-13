@@ -2,11 +2,36 @@ from django.db import models
 
 
 # Create your models here.
-class Player(models.Model):
+class PlayerInfo(models.Model):
+    player_position_choices = [
+        ("Center", "C"),
+        ("Right Wing", "RW"),
+        ("Left Wing", "LW"),
+        ("Right Defense", "RD"),
+        ("Left Defense", "LD"),
+        ("Goalie", "G"),
+    ]
+
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     team_name = models.CharField(max_length=50)
+    picture = models.ImageField(upload_to="images")
+    position = models.CharField(max_length=13, choices=player_position_choices)
+
+    def __str__(self):
+        return self.get_full_name()
+
+    def get_full_name(self):
+        return self.first_name.strip(". ") + " " + self.last_name.strip(". ")
+
+    def save(self, *args, **kwargs):
+        self.full_name = self.get_full_name()
+        return super().save(*args, **kwargs)
+
+
+class PlayerSeason(models.Model):
+    player = models.ForeignKey(to=PlayerInfo, on_delete=models.CASCADE)
+    season = models.IntegerField()
     goals = models.IntegerField()
     assists = models.IntegerField()
     points = models.IntegerField()
-    picture = models.ImageField(upload_to="images")
