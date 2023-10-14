@@ -1,9 +1,9 @@
 from ninja import ModelSchema, Router
 from typing import List
-from .models import PlayerInfo
+from .models import PlayerInfo, PlayerSeason
 
 
-router = Router()
+player_router = Router()
 
 
 class PlayerInfoSchema(ModelSchema):
@@ -16,9 +16,30 @@ class PlayerInfoSchema(ModelSchema):
             "team_name",
             "picture",
         ]
-        # arbitrary_types_allowed = True
 
 
-@router.get("/", response=List[PlayerInfoSchema])
-def list_events(request):
+@player_router.get("/", response=List[PlayerInfoSchema])
+def get_players(request):
     return PlayerInfo.objects.all()
+
+player_season_router = Router()
+
+
+class PlayerSeasonSchema(ModelSchema):
+    player: PlayerInfoSchema
+    class Config:
+        model = PlayerSeason
+        model_fields = [
+            "id",
+            "player",
+            "season",
+            "season_type",
+            "goals",
+            "assists",
+            "points"
+        ]
+
+
+@player_season_router.get("/", response=List[PlayerSeasonSchema])
+def get_player_season(request):
+    return PlayerSeason.objects.all().order_by('-season')

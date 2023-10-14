@@ -5,7 +5,7 @@ DIVISION_TEAMS = {
         "Edmonton Oilers",
         "Los Angeles Kings",
         "San Jose Sharks",
-        "Seattle Kraken ",
+        "Seattle Kraken",
         "Vancouver Canucks",
         "Vegas Golden Knights",
     ],

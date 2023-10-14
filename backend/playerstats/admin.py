@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.db.models.functions import Lower
-from .models import PlayerInfo, PlayerSeason
+from .models import PlayerInfo, PlayerSeason, PlayerPosition
 
 
 class PlayerInfoAdmin(admin.ModelAdmin):
@@ -23,3 +23,10 @@ class PlayerSeasonAdmin(admin.ModelAdmin):
 
 
 admin.site.register(PlayerSeason, PlayerSeasonAdmin)
+
+
+class PlayerPositionsAdmin(admin.ModelAdmin):
+    list_display = ("position", )
+
+
+admin.site.register(PlayerPosition, PlayerPositionsAdmin)
