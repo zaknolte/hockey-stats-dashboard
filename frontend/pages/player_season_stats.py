@@ -20,11 +20,7 @@ dash.register_page(__name__, path="/players")
 DJANGO_ROOT = Path(__file__).resolve().parent.parent.parent / "backend"
 img_path = "/".join([i for i in DJANGO_ROOT.parts])
 
-PLAYER_STATS = [
-    "Goals",
-    "Assists",
-    "Points"
-]
+PLAYER_STATS = ["Goals", "Assists", "Points"]
 
 
 async def query_player_stats(endpoint):
@@ -41,11 +37,20 @@ STRING_CURRENT_SEASON = stringify_season(CURRENT_SEASON)
 ALL_SEASONS = [stringify_season(season["season"])for season in asyncio.run(query_player_stats("all_seasons"))]
 ALL_SEASON_TYPES = [k for k in asyncio.run(query_player_stats("all_season_types"))]
 
+
 # can't host static images in dash normally outside assets folder
 # encode and decode from image url to render image
 def format_image(image_url):
     encoded = base64.b64encode(open(img_path + image_url, "rb").read())
     return encoded.decode()
+
+
+def build_query_url(season=CURRENT_SEASON, season_type="Regular Season", team="All Teams"):
+    return f"?season={season}&season_type={season_type}&team_name={team}"
+
+
+def query_to_formatted_df(query):
+    return pd.json_normalize(asyncio.run(query_player_stats(query))).set_index("id")
 
 
 def get_all_teams(df, add_all=True):
@@ -121,10 +126,7 @@ def get_leaders_layout(df, stat, dropdown_id):
             ),
             html.Div(
                 [
-                    dbc.Container(
-                        rows,
-                        id=f"rows-leader-stat-{dropdown_id}"
-                    ),
+                    dbc.Container(rows, id=f"rows-leader-stat-{dropdown_id}"),
                 ],
             ),
         ],
@@ -156,20 +158,27 @@ def get_leaders_layout_rows(df, stat):
 
 
 def layout():
-    # get database data
-    query = f"?season={CURRENT_SEASON}&season_type=Regular+Season&team_name=All+Teams"
-    players_df = pd.json_normalize(asyncio.run(query_player_stats(query))).set_index("id")
+    # get database data with defaults for current regular season for all teams
+    players_df = query_to_formatted_df(build_query_url())
     return html.Div(
         [
             get_filter_dropdowns_layout(players_df),
             html.Div(
                 [
-                    html.H3(
-                        ["League Leaders"],
+                    html.H2(
+                        ["Season Leaders"],
                         style={
                             "display": "flex",
                             "justifyContent": "center",
                             "paddingTop": 50,
+                        },
+                    ),
+                    html.H3(
+                        ["Forwards"],
+                        style={
+                            "display": "flex",
+                            "justifyContent": "center",
+                            "paddingTop": 25,
                         },
                     )
                 ]
@@ -180,13 +189,26 @@ def layout():
     )
 
 
-for i in range(1,4):
+# generate callbacks for each stat 'column' for league leaders
+for i in range(1, 4):
     @callback(
         Output(f"rows-leader-stat-{i}", "children"),
         Input(f"dropdown-leader-stat-{i}", "value"),
-        State("season-stats-df", "data"),
-        prevent_initial_call=True
+        Input("season-stats-df", "data"),
+        prevent_initial_call=True,
     )
     def update_leader_stat_1(stat, data):
         df = pd.read_json(StringIO(data))
         return get_leaders_layout_rows(df, stat.lower())
+
+
+@callback(
+    Output("season-stats-df", "data"),
+    Input("dropdown-season", "value"),
+    Input("dropdown-season-type", "value"),
+    Input("dropdown-team", "value"),
+    prevent_initial_call=True
+)
+def update_displayed_data(season, season_type, team):
+    formatted_season = int(season[:4])
+    return query_to_formatted_df(build_query_url(formatted_season, season_type, team)).to_json()
