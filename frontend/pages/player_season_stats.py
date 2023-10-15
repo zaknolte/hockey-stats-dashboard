@@ -18,55 +18,19 @@ dash.register_page(__name__, path="/players")
 img_path = "/".join([i for i in DJANGO_ROOT.parts])
 
 
-async def get_current_season():
+async def query_player_stats(endpoint):
     async with aiohttp.ClientSession() as session:
-        api_url = f"http://127.0.0.1:8000/api/players/current_season"
+        api_url = f"http://127.0.0.1:8000/api/players/{endpoint}"
         async with session.get(api_url) as resp:
             data = await resp.json()
 
     return data
 
 
-CURRENT_SEASON = asyncio.run(get_current_season())["season"]
+CURRENT_SEASON = asyncio.run(query_player_stats("current_season"))["season"]
 STRING_CURRENT_SEASON = stringify_season(CURRENT_SEASON)
-
-
-async def get_all_seasons():
-    async with aiohttp.ClientSession() as session:
-        api_url = f"http://127.0.0.1:8000/api/players/all_seasons"
-        async with session.get(api_url) as resp:
-            data = await resp.json()
-
-    return data
-
-
-ALL_SEASONS = [
-    stringify_season(season["season"]) for season in asyncio.run(get_all_seasons())
-]
-
-
-async def get_all_season_types():
-    async with aiohttp.ClientSession() as session:
-        api_url = f"http://127.0.0.1:8000/api/players/all_season_types"
-        async with session.get(api_url) as resp:
-            data = await resp.json()
-
-    return data
-
-
-ALL_SEASON_TYPES = [k for k in asyncio.run(get_all_season_types())]
-
-
-# query player season data for every season
-async def get_player_stats(
-    season=CURRENT_SEASON, season_type="Regular Season", team_name="All Teams"
-):
-    async with aiohttp.ClientSession() as session:
-        api_url = f"http://127.0.0.1:8000/api/players?season={season}&season_type={season_type}&team_name={team_name}"
-        async with session.get(api_url) as resp:
-            data = await resp.json()
-
-    return data
+ALL_SEASONS = [stringify_season(season["season"])for season in asyncio.run(query_player_stats("all_seasons"))]
+ALL_SEASON_TYPES = [k for k in asyncio.run(query_player_stats("all_season_types"))]
 
 
 # can't host static images in dash normally outside assets folder
@@ -174,7 +138,10 @@ def get_leaders_layout(df, stat):
 
 def layout():
     # get database data
-    players_df = pd.json_normalize(asyncio.run(get_player_stats())).set_index("id")
+    query = f"?season={CURRENT_SEASON}&season_type=Regular+Season&team_name=All+Teams"
+    players_df = pd.json_normalize(asyncio.run(query_player_stats(query))).set_index(
+        "id"
+    )
 
     return html.Div(
         [
