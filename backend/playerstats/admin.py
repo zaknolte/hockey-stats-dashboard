@@ -15,7 +15,7 @@ admin.site.register(PlayerInfo, PlayerInfoAdmin)
 
 
 class PlayerSeasonAdmin(admin.ModelAdmin):
-    list_display = ("season", "player")
+    list_display = ("season", "player", "season_type")
     search_fields = ["season"]
 
     def get_ordering(self, request):

@@ -1,6 +1,8 @@
 import dash_bootstrap_components as dbc
 from dash import html
 
+from django.utils.text import slugify
+
 from data_values import DIVISION_TEAMS
 
 
@@ -11,7 +13,7 @@ def build_team_col(division, division_teams):
     ]
 
     for team in division_teams[division]:
-        ref = team.replace(" ", "-")
+        ref = slugify(team)
         col.append(
             dbc.DropdownMenuItem(team, href=ref, className="text-center px-3"),
         )
