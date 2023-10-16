@@ -3,7 +3,7 @@ from django.db import models
 
 class PlayerPosition(models.Model):
     player_position_choices = [
-        ("Center", "Center"),
+        ("Center", "C"),
         ("Right Wing", "RW"),
         ("Left Wing", "LW"),
         ("Right Defense", "RD"),
