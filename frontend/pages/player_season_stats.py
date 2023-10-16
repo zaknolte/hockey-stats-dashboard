@@ -48,10 +48,30 @@ def format_image(image_url):
 def build_query_url(season=CURRENT_SEASON, season_type="Regular Season", team="All Teams"):
     return f"?season={season}&season_type={season_type}&team_name={team}"
 
+def filter_data_by_position(df, position):
+    filter_list = ["C", "RW", "LW"]
+    
+    if position == "Defense":
+        filter_list = ["RD", "LD"]
+    elif position == "Goalie":
+        filter_list = ["G"]
+    
+    return df[df["player.position"].apply(lambda x: bool(set(x) & set(filter_list)))]
+
 
 def query_to_formatted_df(query):
-    return pd.json_normalize(asyncio.run(query_player_stats(query))).set_index("id")
-
+    def split_player_position_col(x):
+        vals = []
+        for i in x:
+            vals.append(i["position_display"])
+        return vals
+    
+    df = pd.json_normalize(asyncio.run(query_player_stats(query))).set_index("id")
+    # player.positions queried as list of dicts
+    # reduce player.positions to just a list of dict values
+    df["player.position"] = df["player.position"].apply(split_player_position_col)
+    return df
+    
 
 def get_all_teams(df, add_all=True):
     teams_list = pd.unique(df["player.team_name"])
@@ -135,8 +155,10 @@ def get_leaders_layout(df, stat, dropdown_id):
 
 
 def get_leaders_layout_rows(df, stat):
-    leaders = df.sort_values(stat, ascending=False).head(10)
-
+    # filter for forwards only on initial load
+    leaders = filter_data_by_position(df)
+    leaders = leaders.sort_values(stat, ascending=False).head(10)
+    
     # loop through players stats and generate rows and columns of results
     return [
         dbc.Row(
@@ -180,6 +202,27 @@ def layout():
                             "justifyContent": "center",
                             "paddingTop": 25,
                         },
+                        id="player-position-label"
+                    ),
+                    html.Div(
+                        [
+                            dcc.Dropdown(
+                                options=["All Positions", "C", "RW", "LW"],
+                                value="All Positions",
+                                searchable=False,
+                                clearable=False,
+                                style={"minWidth": "15%"},
+                                id="player-position-dropdown"
+                            ),
+                        ],
+                        style={
+                            "display": "flex",
+                            "justifyContent": "center",
+                            "alignItems": "center",
+                            "paddingTop": 15,
+                            "paddingBottom": 15,
+                        },
+                        id="player-position-dropdown-container"
                     )
                 ]
             ),
@@ -207,8 +250,18 @@ for i in range(1, 4):
     Input("dropdown-season", "value"),
     Input("dropdown-season-type", "value"),
     Input("dropdown-team", "value"),
+    Input("player-position-dropdown", "value"),
     prevent_initial_call=True
 )
-def update_displayed_data(season, season_type, team):
+def update_displayed_data(season, season_type, team, position):
     formatted_season = int(season[:4])
-    return query_to_formatted_df(build_query_url(formatted_season, season_type, team)).to_json()
+    df = query_to_formatted_df(build_query_url(formatted_season, season_type, team))
+    
+    if position != "All Positions":
+        # players may be assigned more than one position
+        # create bool mask to determine if selected position matches any of the player positions
+        mask = df["player.position"].apply(lambda x: position in x)
+        
+        df = df[mask]
+    
+    return df.to_json()
