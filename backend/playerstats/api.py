@@ -1,13 +1,23 @@
-from ninja import ModelSchema, Router
+from ninja import ModelSchema, Router, Field, Schema
 from typing import List
 
-from .models import PlayerInfo, PlayerSeason
+from .models import PlayerInfo, PlayerSeason, PlayerPosition
 
 
 player_router = Router()
+        
+
+class PlayerPositionSchema(Schema):
+    position_display: str = Field(None, alias="get_position_display")
+
+@player_router.get("/positions", response=PlayerPositionSchema)
+def get_positions(request):
+    return PlayerPosition.objects.all()
 
 
 class PlayerInfoSchema(ModelSchema):
+    position: List[PlayerPositionSchema]
+    
     class Config:
         model = PlayerInfo
         model_fields = [
@@ -17,6 +27,7 @@ class PlayerInfoSchema(ModelSchema):
             "full_name",
             "team_name",
             "picture",
+            "position",
         ]
 
 
@@ -49,9 +60,7 @@ def get_player_season(request, season=2023, season_type="Regular Season", team_n
     if team_name == "All Teams":
         return PlayerSeason.objects.filter(season=season, season_type=season_type)
     else:
-        return PlayerSeason.objects.filter(
-            season=season, season_type=season_type, player__team_name=team_name
-        )
+        return PlayerSeason.objects.filter(season=season, season_type=season_type, player__team_name=team_name)
 
 
 class SeasonListSchema(ModelSchema):
@@ -60,7 +69,7 @@ class SeasonListSchema(ModelSchema):
         model_fields = [
             "season"
         ]
-        model_fields_optional = ['season']
+        # model_fields_optional = ['season']
         
         
 @player_season_router.get("/current_season", response=SeasonListSchema)
@@ -76,3 +85,4 @@ def get_all_seasons(request):
 @player_season_router.get("/all_season_types")
 def get_season_types(request):
     return dict(PlayerSeason.season_type_choices)
+
