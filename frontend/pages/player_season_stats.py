@@ -156,7 +156,7 @@ def get_leaders_layout(df, stat, dropdown_id):
 
 def get_leaders_layout_rows(df, stat):
     # filter for forwards only on initial load
-    leaders = filter_data_by_position(df)
+    leaders = filter_data_by_position(df, "Forward")
     leaders = leaders.sort_values(stat, ascending=False).head(10)
     
     # loop through players stats and generate rows and columns of results
