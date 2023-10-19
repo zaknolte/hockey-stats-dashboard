@@ -48,14 +48,24 @@ def format_image(image_url):
 def build_query_url(season=CURRENT_SEASON, season_type="Regular Season", team="All Teams"):
     return f"?season={season}&season_type={season_type}&team_name={team}"
 
+def get_player_options(position):  
+    player_options = None
+    
+    if position == "Forwards":
+        player_options = ["C", "RW", "LW"]
+    elif position == "Defense":
+        player_options = ["RD", "LD"]
+    elif position == "All Positions" or position == "All Skaters":
+        player_options = ["C", "RW", "LW", "RD" ,"LD"]
+    elif position == "Goalies":
+        player_options = ["G"]
+            
+    return player_options or [position]
+    
+
 def filter_data_by_position(df, position):
-    filter_list = ["C", "RW", "LW"]
-    
-    if position == "Defense":
-        filter_list = ["RD", "LD"]
-    elif position == "Goalie":
-        filter_list = ["G"]
-    
+    filter_list = get_player_options(position)
+    # find the set union where player position in contained in filter list
     return df[df["player.position"].apply(lambda x: bool(set(x) & set(filter_list)))]
 
 
@@ -120,12 +130,12 @@ def get_filter_dropdowns_layout(df):
     )
 
 
-def get_league_leaders_layout(df):
+def get_league_leaders_layout(df, stats_list):
     layouts = html.Div(
         [
-            get_leaders_layout(df, "goals", dropdown_id=1),
-            get_leaders_layout(df, "assists", dropdown_id=2),
-            get_leaders_layout(df, "points", dropdown_id=3),
+            get_leaders_layout(df, stats_list[0], dropdown_id=1),
+            get_leaders_layout(df, stats_list[1], dropdown_id=2),
+            get_leaders_layout(df, stats_list[2], dropdown_id=3),
         ],
         style={"display": "flex", "justifyContent": "space-around"},
     )
@@ -133,7 +143,8 @@ def get_league_leaders_layout(df):
 
 
 def get_leaders_layout(df, stat, dropdown_id):
-    rows = get_leaders_layout_rows(df, stat)
+    # filter for forwards only on initial load
+    rows = get_leaders_layout_rows(df, stat, "Forward")
 
     return html.Div(
         [
@@ -154,9 +165,8 @@ def get_leaders_layout(df, stat, dropdown_id):
     )
 
 
-def get_leaders_layout_rows(df, stat):
-    # filter for forwards only on initial load
-    leaders = filter_data_by_position(df, "Forward")
+def get_leaders_layout_rows(df, stat, position):
+    leaders = filter_data_by_position(df, position)
     leaders = leaders.sort_values(stat, ascending=False).head(10)
     
     # loop through players stats and generate rows and columns of results
@@ -195,54 +205,69 @@ def layout():
                             "paddingTop": 50,
                         },
                     ),
-                    html.H3(
-                        ["Forwards"],
+                    dbc.RadioItems(
+                        [
+                            {"label": "All Skaters", "value": "All Skaters"},
+                            {"label": "Forwards", "value": "Forwards"},
+                            {"label": "Defense", "value": "Defense"},
+                            {"label": "Goalies", "value": "Goalies"},
+                        ],
                         style={
                             "display": "flex",
                             "justifyContent": "center",
                             "paddingTop": 25,
                         },
-                        id="player-position-label"
+                        id="player-position-groups",
+                        input_class_name="btn-check",
+                        label_class_name="btn btn-outline-primary",
+                        value="All Skaters"
                     ),
-                    html.Div(
+                    dbc.RadioItems(
                         [
-                            dcc.Dropdown(
-                                options=["All Positions", "C", "RW", "LW"],
-                                value="All Positions",
-                                searchable=False,
-                                clearable=False,
-                                style={"minWidth": "15%"},
-                                id="player-position-dropdown"
-                            ),
+                            {"label": "All Positions", "value": "All Positions"},
+                            {"label": "C", "value": "C"},
+                            {"label": "RW", "value": "RW"},
+                            {"label": "LW", "value": "LW"},
                         ],
                         style={
                             "display": "flex",
                             "justifyContent": "center",
-                            "alignItems": "center",
                             "paddingTop": 15,
                             "paddingBottom": 15,
                         },
-                        id="player-position-dropdown-container"
-                    )
+                        id="player-position-options",
+                        input_class_name="btn-check",
+                        label_class_name="btn btn-outline-primary",
+                        value="All Positions"
+                    ),
                 ]
             ),
-            get_league_leaders_layout(players_df),
+            get_league_leaders_layout(players_df, ["goals", "assists", "points"]),
+            # add dash aggrid
             dcc.Store(data=players_df.to_json(), id="season-stats-df"),
         ]
     )
 
 
-# generate callbacks for each stat 'column' for league leaders
-for i in range(1, 4):
-    @callback(
-        Output(f"rows-leader-stat-{i}", "children"),
-        Input(f"dropdown-leader-stat-{i}", "value"),
-        Input("season-stats-df", "data"),
-        prevent_initial_call=True,
-    )
-    def update_leader_stat_1(stat, data):
-        df = pd.read_json(StringIO(data))
-        return get_leaders_layout_rows(df, stat.lower())
+@callback(
+    Output("rows-leader-stat-1", "children"),
+    Output("rows-leader-stat-2", "children"),
+    Output("rows-leader-stat-3", "children"),
+    Input("dropdown-leader-stat-1", "value"),
+    Input("dropdown-leader-stat-2", "value"),
+    Input("dropdown-leader-stat-3", "value"),
+    Input("player-position-options", "value"),
+    Input("season-stats-df", "data"),
+    # prevent_initial_call=True,
+)
+def update_leader_stats(stat_left, stat_center, stat_right, player_position, data):
+    df = pd.read_json(StringIO(data))
+
+    left = get_leaders_layout_rows(df, stat_left.lower(), player_position)
+    center = get_leaders_layout_rows(df, stat_center.lower(), player_position)
+    right = get_leaders_layout_rows(df, stat_right.lower(), player_position)
+    
+    return left, center, right
 
 
 @callback(
@@ -250,12 +275,15 @@ for i in range(1, 4):
     Input("dropdown-season", "value"),
     Input("dropdown-season-type", "value"),
     Input("dropdown-team", "value"),
-    Input("player-position-dropdown", "value"),
+    Input("player-position-groups", "value"),
+    Input("player-position-options", "value"),
     prevent_initial_call=True
 )
-def update_displayed_data(season, season_type, team, position):
+def update_displayed_data(season, season_type, team, position_group, position):
     formatted_season = int(season[:4])
     df = query_to_formatted_df(build_query_url(formatted_season, season_type, team))
+    
+    df = filter_data_by_position(df, position_group)
     
     if position != "All Positions":
         # players may be assigned more than one position
@@ -265,3 +293,13 @@ def update_displayed_data(season, season_type, team, position):
         df = df[mask]
     
     return df.to_json()
+
+@callback(
+    Output("player-position-options", "options"),
+    Output("player-position-options", "value"),
+    Input("player-position-groups", "value")
+)
+def update_player_position_options(player_group):
+    options =  ["All Positions"] + get_player_options(player_group)
+    value = options[0]
+    return options, value
