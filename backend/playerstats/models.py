@@ -21,7 +21,7 @@ class PlayerInfo(models.Model):
     last_name = models.CharField(max_length=50)
     full_name = models.CharField(max_length=100)
     team_name = models.CharField(max_length=50)
-    picture = models.ImageField(upload_to="images")
+    picture = models.ImageField(upload_to="images", null=True)
     position = models.ManyToManyField(PlayerPosition)
 
     def __str__(self):
@@ -33,17 +33,3 @@ class PlayerInfo(models.Model):
     def save(self, *args, **kwargs):
         self.full_name = self.get_full_name()
         return super().save(*args, **kwargs)
-
-
-class PlayerSeason(models.Model):
-    season_type_choices = [
-        ("Pre-Season", "Pre-Season"),
-        ("Regular Season", "Regular Season"),
-        ("Playoffs", "Playoffs"),
-    ]
-    player = models.ForeignKey(to=PlayerInfo, on_delete=models.CASCADE)
-    season = models.IntegerField()
-    season_type = models.CharField(max_length=20, choices=season_type_choices)
-    goals = models.IntegerField()
-    assists = models.IntegerField()
-    points = models.IntegerField()
