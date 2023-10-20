@@ -14,7 +14,7 @@ from pathlib import Path
 from io import StringIO
 
 # from app import DJANGO_ROOT
-from helpers import stringify_season, ag_grid_cols_rename, ag_grid_cols_reorder, update_ag_grid_display_cols
+from helpers import stringify_season, rename_data_df_cols, update_ag_grid_display_cols, get_ag_grid_columnDefs
 
 dash.register_page(__name__, path="/players")
 
@@ -22,8 +22,6 @@ dash.register_page(__name__, path="/players")
 # /backend/images/
 DJANGO_ROOT = Path(__file__).resolve().parent.parent.parent / "backend"
 img_path = "/".join([i for i in DJANGO_ROOT.parts])
-
-PLAYER_STATS = ["Goals", "Assists", "Points"]
 
 
 async def query_player_stats(endpoint):
@@ -35,6 +33,8 @@ async def query_player_stats(endpoint):
     return data
 
 
+# default values
+PLAYER_STATS = ["Goals", "Assists", "Points"]
 CURRENT_SEASON = asyncio.run(query_player_stats("current_season"))["season"]
 STRING_CURRENT_SEASON = stringify_season(CURRENT_SEASON)
 ALL_SEASONS = [stringify_season(season["season"])for season in asyncio.run(query_player_stats("all_seasons"))]
@@ -70,7 +70,7 @@ def get_player_options(position):
 def filter_data_by_position(df, position):
     filter_list = get_player_options(position)
     # find the set union where player position in contained in filter list
-    return df[df[ag_grid_cols_rename["player.position"]].apply(lambda x: bool(set(x) & set(filter_list)))]
+    return df[df[rename_data_df_cols["player.position"]].apply(lambda x: bool(set(x) & set(filter_list)))]
 
 
 def query_to_formatted_df(query):
@@ -81,15 +81,15 @@ def query_to_formatted_df(query):
         return vals
     
     df = pd.json_normalize(asyncio.run(query_player_stats(query))).set_index("id")
-    df = df.rename(columns=ag_grid_cols_rename)
+    df = df.rename(columns=rename_data_df_cols)
     # Positions queried as list of dicts
     # reduce Positions to just a list of dict values
-    df[ag_grid_cols_rename["player.position"]] = df[ag_grid_cols_rename["player.position"]].apply(split_player_position_col)
+    df[rename_data_df_cols["player.position"]] = df[rename_data_df_cols["player.position"]].apply(split_player_position_col)
     return df
     
 
 def get_all_teams(df, add_all=True):
-    teams_list = pd.unique(df[ag_grid_cols_rename["player.team_name"]])
+    teams_list = pd.unique(df[rename_data_df_cols["player.team_name"]])
     teams_list.sort()
     if add_all:
         teams_list = np.insert(teams_list, 0, "All Teams")
@@ -176,13 +176,14 @@ def get_player_position_options_layout():
     )
 
 
-def get_agGrid_layout(df):
-    columnDefs = [{"field": i} for i in update_ag_grid_display_cols(df).columns]
+def get_agGrid_layout(df, position):
     return dag.AgGrid(
         rowData=df.to_dict("records"),
-        columnDefs=columnDefs,
+        columnDefs=get_ag_grid_columnDefs(position),
         id="player-stats-grid",
-        style={"paddingLeft": 50, "paddingRight": 50}
+        className="ag-theme-alpine ag-theme-busybee",
+        columnSize="sizeToFit",
+        style={"paddingLeft": 50, "paddingRight": 50},
     )
 
 
@@ -231,8 +232,8 @@ def get_leaders_layout_rows(df, stat, position):
             [
                 dbc.Col(
                     dcc.Link(
-                        value[ag_grid_cols_rename["player.full_name"]],
-                        href=f'player/{slugify(value[ag_grid_cols_rename["player.full_name"]])}',
+                        value[rename_data_df_cols["player.full_name"]],
+                        href=f'player/{slugify(value[rename_data_df_cols["player.full_name"]])}',
                     ),
                     width=8,
                 ),
@@ -241,7 +242,7 @@ def get_leaders_layout_rows(df, stat, position):
                 ),
             ]
         )
-        for row, value in leaders[[ag_grid_cols_rename["player.full_name"], stat]].iterrows()
+        for row, value in leaders[[rename_data_df_cols["player.full_name"], stat]].iterrows()
     ]
 
 
@@ -266,8 +267,8 @@ def layout():
                     get_player_position_options_layout(),
                 ]
             ),
-            get_league_leaders_layout(players_df, ["goals", "assists", "points"]),
-            get_agGrid_layout(players_df),
+            get_league_leaders_layout(players_df, [rename_data_df_cols["goals"], rename_data_df_cols["assists"], rename_data_df_cols["points"]]),
+            get_agGrid_layout(players_df, "Forwards"),
             dcc.Store(data=players_df.to_json(), id="season-stats-df"),
         ]
     )
@@ -291,7 +292,7 @@ def update_displayed_data(season, season_type, team, position, position_group):
     if position != "All Positions":
         # players may be assigned more than one position
         # create bool mask to determine if selected position matches any of the player positions
-        mask = df[ag_grid_cols_rename["player.position"]].apply(lambda x: position in x)
+        mask = df[rename_data_df_cols["player.position"]].apply(lambda x: position in x)
         
         df = df[mask]
     
@@ -325,9 +326,9 @@ def update_player_position_options(player_group):
 def update_leader_stats(stat_left, stat_center, stat_right, player_position, data):
     df = pd.read_json(StringIO(data))
 
-    left = get_leaders_layout_rows(df, stat_left.lower(), player_position)
-    center = get_leaders_layout_rows(df, stat_center.lower(), player_position)
-    right = get_leaders_layout_rows(df, stat_right.lower(), player_position)
+    left = get_leaders_layout_rows(df, stat_left, player_position)
+    center = get_leaders_layout_rows(df, stat_center, player_position)
+    right = get_leaders_layout_rows(df, stat_right, player_position)
     
     df = update_ag_grid_display_cols(df)
     return left, center, right, df.to_dict("records")
