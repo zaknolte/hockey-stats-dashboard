@@ -181,19 +181,19 @@ def get_filter_dropdowns_layout(seasons, season_types, teams):
         season_value = seasons[0]
     else:
         season_value = seasons
-
+        
     return html.Div(
         [
             dcc.Dropdown(
                 options=seasons,
-                value=stringify_season(season_value),
+                value=season_value,
                 style={"width": 500},
                 clearable=False,
                 searchable=False,
                 id="dropdown-season",
             ),
             dcc.Dropdown(
-                options=ALL_SEASON_TYPES,
+                options=season_types,
                 value="Regular Season",
                 style={"width": 500},
                 clearable=False,
@@ -440,7 +440,7 @@ def layout():
     
     return html.Div(
         [
-            get_filter_dropdowns_layout(CURRENT_SEASON, ALL_SEASON_TYPES, get_all_teams(players_df)),
+            get_filter_dropdowns_layout(ALL_SEASONS, ALL_SEASON_TYPES, get_all_teams(players_df)),
             html.Div(
                 [
                     html.H2(
