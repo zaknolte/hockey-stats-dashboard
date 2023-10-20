@@ -65,7 +65,8 @@ def get_ag_grid_columnDefs(grid_type):
                 "pinned": "left",
                 "lockPinned": True,
                 "filter": "agTextColumnFilter",
-                "filterParams": {"buttons": ["reset", "apply"]}
+                "filterParams": {"buttons": ["reset", "apply"]},
+                "cellRenderer": "NameLink",
             },
             {"field": rename_data_df_cols["season"]},
             {"field": rename_data_df_cols["season_type"]},
