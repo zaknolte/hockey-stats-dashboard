@@ -1,0 +1,99 @@
+[
+  {
+    "model": "playerstats.playerposition",
+    "pk": 1,
+    "fields": {
+      "position": "C"
+    }
+  },
+  {
+    "model": "playerstats.playerposition",
+    "pk": 2,
+    "fields": {
+      "position": "RW"
+    }
+  },
+  {
+    "model": "playerstats.playerposition",
+    "pk": 3,
+    "fields": {
+      "position": "LW"
+    }
+  },
+  {
+    "model": "playerstats.playerposition",
+    "pk": 4,
+    "fields": {
+      "position": "RD"
+    }
+  },
+  {
+    "model": "playerstats.playerposition",
+    "pk": 5,
+    "fields": {
+      "position": "LD"
+    }
+  },
+  {
+    "model": "playerstats.playerposition",
+    "pk": 6,
+    "fields": {
+      "position": "G"
+    }
+  },
+  {
+    "model": "playerstats.playerinfo",
+    "pk": 1,
+    "fields": {
+      "first_name": "Sidney",
+      "last_name": "Crosby",
+      "full_name": "Sidney Crosby",
+      "team_name": "Penguins",
+      "position": [1]
+    }
+  },
+  {
+    "model": "playerstats.playerinfo",
+    "pk": 2,
+    "fields": {
+      "first_name": "Connor",
+      "last_name": "McDavid",
+      "full_name": "Connor McDavid",
+      "team_name": "Oilers",
+      "position": [1]
+    }
+  },
+  {
+    "model": "playerstats.playerinfo",
+    "pk": 3,
+    "fields": {
+      "first_name": "Alex",
+      "last_name": "Ovechkin",
+      "full_name": "Alex Ovechkin",
+      "team_name": "Capitals",
+      "position": [2, 3]
+    }
+  },
+  {
+    "model": "playerstats.playerinfo",
+    "pk": 4,
+    "fields": {
+      "first_name": "Cale",
+      "last_name": "Makar",
+      "full_name": "Cale Makar",
+      "team_name": "Avalanche",
+      "position": [4]
+    }
+  },
+  {
+    "model": "playerstats.playerinfo",
+    "pk": 5,
+    "fields": {
+      "first_name": "Mike",
+      "last_name": "Smith",
+      "full_name": "Mike Smith",
+      "team_name": "Flames",
+      "position": [6]
+    }
+  }
+]

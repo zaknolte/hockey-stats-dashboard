@@ -1,0 +1,98 @@
+[
+    {
+        "model": "seasonstats.playerseason",
+        "pk": 1,
+        "fields": {
+            "player": 1,
+            "season": 2023,
+            "season_type": "Regular Season",
+            "goals": 35,
+            "assists": 60,
+            "points": 95
+        }
+    },
+    {
+        "model": "seasonstats.playerseason",
+        "pk": 2,
+        "fields": {
+            "player": 1,
+            "season": 2022,
+            "season_type": "Regular Season",
+            "goals": 40,
+            "assists": 62,
+            "points": 102
+        }
+    },
+    {
+        "model": "seasonstats.playerseason",
+        "pk": 3,
+        "fields": {
+            "player": 2,
+            "season": 2023,
+            "season_type": "Regular Season",
+            "goals": 51,
+            "assists": 72,
+            "points": 123
+        }
+    },
+    {
+        "model": "seasonstats.playerseason",
+        "pk": 4,
+        "fields": {
+            "player": 2,
+            "season": 2022,
+            "season_type": "Regular Season",
+            "goals": 49,
+            "assists": 61,
+            "points": 110
+        }
+    },
+    {
+        "model": "seasonstats.playerseason",
+        "pk": 5,
+        "fields": {
+            "player": 3,
+            "season": 2023,
+            "season_type": "Regular Season",
+            "goals": 55,
+            "assists": 41,
+            "points": 96
+        }
+    },
+    {
+        "model": "seasonstats.playerseason",
+        "pk": 6,
+        "fields": {
+            "player": 3,
+            "season": 2023,
+            "season_type": "Playoffs",
+            "goals": 5,
+            "assists": 6,
+            "points": 11
+        }
+    },
+    {
+        "model": "seasonstats.playerseason",
+        "pk": 7,
+        "fields": {
+            "player": 4,
+            "season": 2023,
+            "season_type": "Regular Season",
+            "goals": 22,
+            "assists": 77,
+            "points": 99
+        }
+    },
+    {
+        "model": "seasonstats.playerseason",
+        "pk": 8,
+        "fields": {
+            "player": 5,
+            "season": 2023,
+            "season_type": "Regular Season",
+            "goals": 0,
+            "assists": 1,
+            "points": 1
+        }
+    }
+]
