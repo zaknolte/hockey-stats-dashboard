@@ -98,7 +98,7 @@ def get_player_options(position):
     elif position == "Defense":
         player_options = ["RD", "LD"]
     elif position == "All Positions" or position == "All Skaters":
-        player_options = ["C", "RW", "LW", "RD" ,"LD"]
+        player_options = ["C", "RW", "LW", "RD" ,"LD", "G"]
     elif position == "Goalies":
         player_options = ["G"]
             
@@ -443,16 +443,17 @@ def layout():
             get_filter_dropdowns_layout(ALL_SEASONS, ALL_SEASON_TYPES, get_all_teams(players_df)),
             html.Div(
                 [
+                    get_player_position_groups_layout(),
+                    get_player_position_options_layout(),
                     html.H2(
                         ["Season Leaders"],
                         style={
                             "display": "flex",
                             "justifyContent": "center",
-                            "paddingTop": 50,
+                            "paddingTop": 10,
+                            "paddingBottom": 10,
                         },
                     ),
-                    get_player_position_groups_layout(),
-                    get_player_position_options_layout(),
                 ]
             ),
             get_league_leaders_layout(players_df, [rename_data_df_cols["goals"], rename_data_df_cols["assists"], rename_data_df_cols["points"]]),
@@ -494,7 +495,11 @@ def update_displayed_data(season, season_type, team, position, position_group):
     prevent_initial_call=True
 )
 def update_player_position_options(player_group):
-    options =  ["All Positions"] + get_player_options(player_group)
+    options = get_player_options(player_group)
+    
+    if player_group != "Goalies":
+        options.insert(0, "All Positions")
+        
     value = options[0]
     return options, value
 
@@ -517,6 +522,6 @@ def update_leader_stats(stat_left, stat_center, stat_right, player_position, dat
     left = get_leaders_layout_rows(df, stat_left, player_position)
     center = get_leaders_layout_rows(df, stat_center, player_position)
     right = get_leaders_layout_rows(df, stat_right, player_position)
-    
     df = update_ag_grid_display_cols(df)
+
     return left, center, right, df.to_dict("records")
