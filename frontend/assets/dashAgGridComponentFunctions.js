@@ -3,7 +3,7 @@ var dagcomponentfuncs = (window.dashAgGridComponentFunctions = window.dashAgGrid
 dagcomponentfuncs.NameLink = function (props) {
     return React.createElement(
         'a',
-        { href: '/player/' + props.value.replace(/\s[&\/\\#,+()$~%.'":*?<>{}]/g, '-').toLowerCase() },
+        { href: '/player/' + props.value.replace(/\s/g, '-').toLowerCase() },
         props.value
     );
 };
