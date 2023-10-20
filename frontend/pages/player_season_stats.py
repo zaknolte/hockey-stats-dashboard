@@ -25,6 +25,15 @@ img_path = "/".join([i for i in DJANGO_ROOT.parts])
 
 
 async def query_player_stats(endpoint):
+    """
+    Performs an async query to the backed server and the supplied endpoint.
+ 
+    Args:
+        endpoint (str): url endpoint to query including and query params.
+ 
+    Returns:
+        json response of data.
+    """
     async with aiohttp.ClientSession() as session:
         api_url = f"http://127.0.0.1:8000/api/players/{endpoint}"
         async with session.get(api_url) as resp:
@@ -44,15 +53,44 @@ ALL_SEASON_TYPES = [k for k in asyncio.run(query_player_stats("all_season_types"
 # can't host static images in dash normally outside assets folder
 # encode and decode from image url to render image
 def format_image(image_url):
+    """
+    Encodes then returns the base64 decoded image supplied from image_url
+ 
+    Args:
+        image_url (str): Path to image file.
+ 
+    Returns:
+        base64 decoded image.
+    """
     encoded = base64.b64encode(open(img_path + image_url, "rb").read())
     return encoded.decode()
 
 
 def build_query_url(season=CURRENT_SEASON, season_type="Regular Season", team="All Teams"):
+    """
+    Builds and returns a query url to query the backend database.
+ 
+    Args:
+        season (int): The year of the season start e.g. 2023 for the 2023-2024 season.
+        season_type (str): The season type to query. One of 'Pre-Season', 'Regular Season', or 'Playoffs'.
+        team (str): A specific team to query or 'All Teams'.
+ 
+    Returns:
+        str: The compiled endpoint url string.
+    """
     return f"?season={season}&season_type={season_type}&team_name={team}"
 
 
-def get_player_options(position):  
+def get_player_options(position):
+    """
+    Builds and returns a list of player positions depending on the given position group.
+ 
+    Args:
+        position (str): The position area. One of 'Forwards', 'Defense', 'Goalies', or 'All Positions'/'All Skaters'.
+ 
+    Returns:
+        list: The list of all positions that belong to the given position group.
+    """
     player_options = None
     
     if position == "Forwards":
@@ -68,12 +106,32 @@ def get_player_options(position):
     
 
 def filter_data_by_position(df, position):
+    """
+    Filter and return a dataframe of only the given positions.
+ 
+    Args:
+        df (obj): Pandas dataFrame to filter.
+        position (str / list[str]): The position or list of positions to filter. Can be any of 'Forwards', 'Defense', 'Goalies', 'All Positions' / 'All Skaters'.
+            Or can be one of any abreviated specific position e.g. 'C', 'RD', 'G'.
+ 
+    Returns:
+        obj: The filtered dataFrame.
+    """
     filter_list = get_player_options(position)
     # find the set union where player position in contained in filter list
     return df[df[rename_data_df_cols["player.position"]].apply(lambda x: bool(set(x) & set(filter_list)))]
 
 
 def query_to_formatted_df(query):
+    """
+    Queries backend database for data then formats the returned data into a dataFrame.
+ 
+    Args:
+        query (str): The url endpoint to query including query params.
+ 
+    Returns:
+        obj: Formatted dataFrame of database data.
+    """
     def split_player_position_col(x):
         vals = []
         for i in x:
@@ -89,6 +147,16 @@ def query_to_formatted_df(query):
     
 
 def get_all_teams(df, add_all=True):
+    """
+    Returns a list of all teams within a given dataFrame.
+ 
+    Args:
+        df (obj): The dataFrame to collect available team names.
+        add_all (bool): If true, will insert an 'All Teams' option and the beginning of the list.
+ 
+    Returns:
+        list[str]: List of all present team names.
+    """
     teams_list = pd.unique(df[rename_data_df_cols["player.team_name"]])
     teams_list.sort()
     if add_all:
@@ -97,14 +165,28 @@ def get_all_teams(df, add_all=True):
     return teams_list
 
 
-def get_filter_dropdowns_layout(df):
-    all_teams = get_all_teams(df)
+def get_filter_dropdowns_layout(seasons, season_types, teams):
+    """
+    Return list of 3 dcc.Dropdown components. Creates dropdowns for seasons, season types, and team names used for filtering data.
+ 
+    Args:
+        seasons (list[int]): List of all available seasons to add as options for dropdown.
+        season_types (list[str]): The season type to add as options for dropdown. Should be list of ['Pre-Season', 'Regular Season', 'Playoffs'].
+        teams (list[str]): List of all teams to add as options for dropdown.
+ 
+    Returns:
+        obj: html.Div containing dcc.Dropdowns.
+    """
+    if type(seasons) == list:
+        season_value = seasons[0]
+    else:
+        season_value = seasons
 
     return html.Div(
         [
             dcc.Dropdown(
-                options=ALL_SEASONS,
-                value=STRING_CURRENT_SEASON,
+                options=seasons,
+                value=stringify_season(season_value),
                 style={"width": 500},
                 clearable=False,
                 searchable=False,
@@ -119,7 +201,7 @@ def get_filter_dropdowns_layout(df):
                 id="dropdown-season-type",
             ),
             dcc.Dropdown(
-                options=all_teams,
+                options=teams,
                 value="All Teams",
                 style={"width": 500},
                 clearable=False,
@@ -132,10 +214,20 @@ def get_filter_dropdowns_layout(df):
             "justifyContent": "space-around",
             "paddingTop": 50,
         },
+        id="player-filter-dropdowns"
     )
     
 
 def get_player_position_groups_layout():
+    """
+    Return stylized dbc.RadioItems for all player position groups: 'All Skaters', 'Forwards', 'Defense', 'Goalies'.
+ 
+    Args:
+        None.
+ 
+    Returns:
+        obj: dbc.RadioItems.
+    """
     return dbc.RadioItems(
         [
             {"label": "All Skaters", "value": "All Skaters"},
@@ -156,6 +248,15 @@ def get_player_position_groups_layout():
     
 
 def get_player_position_options_layout():
+    """
+    Return stylized dbc.RadioItems for all specific player positions e.g. 'C', 'RD', 'G', etc..
+ 
+    Args:
+        None.
+ 
+    Returns:
+        obj: dbc.RadioItems.
+    """
     return dbc.RadioItems(
         [
             {"label": "All Positions", "value": "All Positions"},
@@ -177,6 +278,16 @@ def get_player_position_options_layout():
 
 
 def get_agGrid_layout(df, position):
+    """
+    Return stylized ag Grid of filtered data.
+ 
+    Args:
+        df (obj): dataFrame of filtered data.
+        position (str): Position used to select displayed columns.
+ 
+    Returns:
+        obj: ag Grid.
+    """
     return dag.AgGrid(
         rowData=df.to_dict("records"),
         columnDefs=get_ag_grid_columnDefs(position),
@@ -188,6 +299,31 @@ def get_agGrid_layout(df, position):
 
 
 def get_league_leaders_layout(df, stats_list):
+    """
+    Return nested Div of dropdown and row data of top 10 players for chosen filtered df.
+    DOM tree of: 
+    
+    ->html.Div(
+            html.Div(
+                [
+                    dbc.Dropdown()
+                    
+                    html.Div(
+                        dbc.Container(
+                            dbc.Row()
+                        )
+                    )
+                ]
+            )
+    )
+ 
+    Args:
+        df (obj): dataFrame of filtered data to collect top 10 of selected stat.
+        stats_list (list[str]): The list of 3 stats to display for league leaders.
+ 
+    Returns:
+        obj: html.Div containing stat dcc.Dropdown with dbc.Rows of player data.
+    """
     layouts = html.Div(
         [
             get_leaders_layout(df, stats_list[0], dropdown_id=1),
@@ -200,6 +336,32 @@ def get_league_leaders_layout(df, stats_list):
 
 
 def get_leaders_layout(df, stat, dropdown_id):
+    """
+    Return nested Div of dropdown and row data of top 10 players for chosen filtered df.
+    DOM tree of: 
+    
+    html.Div(
+            ->html.Div(
+                [
+                    dbc.Dropdown()
+                    
+                    html.Div(
+                        dbc.Container(
+                            dbc.Row()
+                        )
+                    )
+                ]
+            )
+    )
+ 
+    Args:
+        df (obj): dataFrame of filtered data to collect top 10 of selected stat.
+        stat (str): dataFrame stat to display leaders for.
+        dropdown_id (int): Used to set the id property of the dcc.Dropdown used for callbacks.
+ 
+    Returns:
+        obj: html.Div containing stat dcc.Dropdown with dbc.Rows of player data.
+    """
     # filter for forwards only on initial load
     rows = get_leaders_layout_rows(df, stat, "Forward")
 
@@ -223,6 +385,32 @@ def get_leaders_layout(df, stat, dropdown_id):
 
 
 def get_leaders_layout_rows(df, stat, position):
+    """
+    Return nested Div of dropdown and row data of top 10 players for chosen filtered df.
+    DOM tree of: 
+    
+    html.Div(
+            html.Div(
+                [
+                    dbc.Dropdown()
+                    
+                    html.Div(
+                        dbc.Container(
+                            ->dbc.Row()
+                        )
+                    )
+                ]
+            )
+    )
+ 
+    Args:
+        df (obj): dataFrame of filtered data to collect top 10 of selected stat.
+        stat (str): dataFrame stat to display leaders for.
+        position (str): Player position used to filter df and get top 10 list.
+ 
+    Returns:
+        obj: lsit of dbc.Rows of player data.
+    """
     leaders = filter_data_by_position(df, position)
     leaders = leaders.sort_values(stat, ascending=False).head(10)
     
@@ -252,7 +440,7 @@ def layout():
     
     return html.Div(
         [
-            get_filter_dropdowns_layout(players_df),
+            get_filter_dropdowns_layout(CURRENT_SEASON, ALL_SEASON_TYPES, get_all_teams(players_df)),
             html.Div(
                 [
                     html.H2(
