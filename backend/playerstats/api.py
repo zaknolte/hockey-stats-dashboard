@@ -52,7 +52,7 @@ def get_player_season(request, season, season_type="Regular Season", team_name="
     if season != "All Seasons":
         kwargs["season"] = season
     if team_name != "All Teams":
-        kwargs["team_name"] = team_name
+        kwargs["player__team_name"] = team_name
         
     return PlayerSeason.objects.filter(**kwargs)
 

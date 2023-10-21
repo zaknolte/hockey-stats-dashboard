@@ -287,7 +287,7 @@ def get_agGrid_layout(df, position):
         rowData=df.to_dict("records"),
         columnDefs=get_ag_grid_columnDefs(position),
         id="player-stats-grid",
-        className="ag-theme-alpine ag-theme-busybee",
+        className="ag-theme-alpine",
         columnSize="sizeToFit",
         style={"paddingLeft": 50, "paddingRight": 50},
     )
