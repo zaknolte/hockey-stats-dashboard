@@ -68,7 +68,7 @@ def get_ag_grid_columnDefs(grid_type):
                 "filterParams": {"buttons": ["reset", "apply"]},
                 "cellRenderer": "NameLink",
             },
-            {"field": rename_data_df_cols["season"]},
+            add_default_number_columnDef(rename_data_df_cols["season"]),
             {"field": rename_data_df_cols["season_type"]},
             {"field": rename_data_df_cols["player.team_name"]},
             {"field": rename_data_df_cols["player.position"]},

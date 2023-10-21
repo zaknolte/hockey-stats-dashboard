@@ -46,7 +46,7 @@ async def query_player_stats(endpoint):
 PLAYER_STATS = ["Goals", "Assists", "Points"]
 CURRENT_SEASON = asyncio.run(query_player_stats("current_season"))["season"]
 STRING_CURRENT_SEASON = stringify_season(CURRENT_SEASON)
-ALL_SEASONS = [stringify_season(season["season"])for season in asyncio.run(query_player_stats("all_seasons"))]
+ALL_SEASONS = ["All Seasons"] + [stringify_season(season["season"])for season in asyncio.run(query_player_stats("all_seasons"))]
 ALL_SEASON_TYPES = [k for k in asyncio.run(query_player_stats("all_season_types"))]
 
 
@@ -66,7 +66,7 @@ def format_image(image_url):
     return encoded.decode()
 
 
-def build_query_url(season=CURRENT_SEASON, season_type="Regular Season", team="All Teams"):
+def build_query_url(season="All Seasons", season_type="Regular Season", team="All Teams"):
     """
     Builds and returns a query url to query the backend database.
  
@@ -177,16 +177,11 @@ def get_filter_dropdowns_layout(seasons, season_types, teams):
     Returns:
         obj: html.Div containing dcc.Dropdowns.
     """
-    if type(seasons) == list:
-        season_value = seasons[0]
-    else:
-        season_value = seasons
-        
     return html.Div(
         [
             dcc.Dropdown(
                 options=seasons,
-                value=season_value,
+                value=STRING_CURRENT_SEASON,
                 style={"width": 500},
                 clearable=False,
                 searchable=False,
@@ -470,12 +465,12 @@ def layout():
     Input("dropdown-team", "value"),
     Input("player-position-options", "value"),
     State("player-position-groups", "value"),
-    prevent_initial_call=True
+    # prevent_initial_call=True
 )
 def update_displayed_data(season, season_type, team, position, position_group):
-    formatted_season = int(season[:4])
-    df = query_to_formatted_df(build_query_url(formatted_season, season_type, team))
+    formatted_season = int(season[:4]) if season != "All Seasons" else season
     
+    df = query_to_formatted_df(build_query_url(formatted_season, season_type, team))
     df = filter_data_by_position(df, position_group)
     
     if position != "All Positions":

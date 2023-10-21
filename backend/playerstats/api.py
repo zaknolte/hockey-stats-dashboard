@@ -30,7 +30,7 @@ class PlayerInfoSchema(ModelSchema):
 
 class PlayerSeasonSchema(ModelSchema):
     player: PlayerInfoSchema
-
+    season: int | str
     class Config:
         model = PlayerSeason
         model_fields = [
@@ -42,14 +42,19 @@ class PlayerSeasonSchema(ModelSchema):
             "assists",
             "points",
         ]
+        model_fields_optional = ['season']
 
 
 @player_router.get("/", response=List[PlayerSeasonSchema])
-def get_player_season(request, season=2023, season_type="Regular Season", team_name="All Teams"):
-    if team_name == "All Teams":
-        return PlayerSeason.objects.filter(season=season, season_type=season_type)
-    else:
-        return PlayerSeason.objects.filter(season=season, season_type=season_type, player__team_name=team_name)
+def get_player_season(request, season, season_type="Regular Season", team_name="All Teams"):
+    kwargs = {"season_type": season_type}
+    
+    if season != "All Seasons":
+        kwargs["season"] = season
+    if team_name != "All Teams":
+        kwargs["team_name"] = team_name
+        
+    return PlayerSeason.objects.filter(**kwargs)
 
 
 class SeasonListSchema(ModelSchema):
