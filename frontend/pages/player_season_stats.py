@@ -35,7 +35,7 @@ async def query_player_stats(endpoint):
         json response of data.
     """
     async with aiohttp.ClientSession() as session:
-        api_url = f"http://127.0.0.1:8000/api/players/{endpoint}"
+        api_url = f"http://127.0.0.1:8000/api/season/{endpoint}"
         async with session.get(api_url) as resp:
             data = await resp.json()
 
@@ -78,7 +78,7 @@ def build_query_url(season="All Seasons", season_type="Regular Season", team="Al
     Returns:
         str: The compiled endpoint url string.
     """
-    return f"?season={season}&season_type={season_type}&team_name={team}"
+    return f"players?season={season}&season_type={season_type}&team_name={team}"
 
 
 def get_player_options(position):
@@ -431,7 +431,7 @@ def get_leaders_layout_rows(df, stat, position):
 
 def layout():
     # get database data with defaults for current regular season for all teams
-    players_df = query_to_formatted_df(build_query_url())
+    players_df = query_to_formatted_df(build_query_url(season=CURRENT_SEASON))
     
     return html.Div(
         [
@@ -465,7 +465,7 @@ def layout():
     Input("dropdown-team", "value"),
     Input("player-position-options", "value"),
     State("player-position-groups", "value"),
-    # prevent_initial_call=True
+    prevent_initial_call=True
 )
 def update_displayed_data(season, season_type, team, position, position_group):
     formatted_season = int(season[:4]) if season != "All Seasons" else season
