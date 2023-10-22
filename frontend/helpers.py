@@ -6,8 +6,8 @@ rename_data_df_cols = {
     "player.full_name": "Name",
     "player.team_name": "Team",
     "player.position": "Position",
-    "season": "Season",
-    "season_type": "Season Type",
+    "season.year": "Season",
+    "season.season_type": "Season Type",
     "goals": "Goals",
     "assists": "Assists",
     "points": "Points",
@@ -40,21 +40,25 @@ def update_ag_grid_display_cols(df):
     return updated_df[column_list]
 
 
-def add_default_text_columnDef(field):
-    return {
+def add_default_text_columnDef(field, **kwargs):
+    columnDef = {
             "field": field,
             "filter": "agTextColumnFilter",
             "filterParams": {"buttons": ["reset", "apply"]}
-            },
+            }
+    columnDef.update(kwargs)
+    return columnDef
     
 
-def add_default_number_columnDef(field):
-    return {
+def add_default_number_columnDef(field, **kwargs):
+    columnDef = {
             "field": field,
             "sortable": True,
             "filter": "agNumberColumnFilter",
             "filterParams": {"buttons": ["reset", "apply"]}
             }
+    columnDef.update(kwargs)
+    return columnDef
     
 
 def get_ag_grid_columnDefs(grid_type):
@@ -68,8 +72,8 @@ def get_ag_grid_columnDefs(grid_type):
                 "filterParams": {"buttons": ["reset", "apply"]},
                 "cellRenderer": "NameLink",
             },
-            add_default_number_columnDef(rename_data_df_cols["season"]),
-            {"field": rename_data_df_cols["season_type"]},
+            add_default_number_columnDef(rename_data_df_cols["season.year"]),
+            {"field": rename_data_df_cols["season.season_type"]},
             {"field": rename_data_df_cols["player.team_name"]},
             {"field": rename_data_df_cols["player.position"]},
             add_default_number_columnDef(rename_data_df_cols["goals"]),
