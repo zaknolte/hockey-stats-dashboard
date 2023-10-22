@@ -8,7 +8,7 @@ player_router = Router()
         
 
 class PlayerPositionSchema(Schema):
-    position_display: str = Field(None, alias="get_position_display")
+    position: str = Field(..., alias="get_position_display")
 
 
 class PlayerInfoSchema(ModelSchema):
