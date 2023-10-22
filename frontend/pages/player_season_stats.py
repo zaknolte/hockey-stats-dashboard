@@ -47,7 +47,7 @@ PLAYER_STATS = ["Goals", "Assists", "Points"]
 CURRENT_SEASON = asyncio.run(query_player_stats("current_season"))["season"]
 STRING_CURRENT_SEASON = stringify_season(CURRENT_SEASON)
 ALL_SEASONS = ["All Seasons"] + [stringify_season(season["season"])for season in asyncio.run(query_player_stats("all_seasons"))]
-ALL_SEASON_TYPES = [k for k in asyncio.run(query_player_stats("all_season_types"))]
+ALL_SEASON_TYPES = [k["season_type"] for k in asyncio.run(query_player_stats("all_season_types"))]
 
 
 # can't host static images in dash normally outside assets folder
@@ -135,7 +135,7 @@ def query_to_formatted_df(query):
     def split_player_position_col(x):
         vals = []
         for i in x:
-            vals.append(i["position_display"])
+            vals.append(i["position"])
         return vals
     
     df = pd.json_normalize(asyncio.run(query_player_stats(query))).set_index("id")
@@ -432,6 +432,7 @@ def get_leaders_layout_rows(df, stat, position):
 def layout():
     # get database data with defaults for current regular season for all teams
     players_df = query_to_formatted_df(build_query_url(season=CURRENT_SEASON))
+    print(players_df)
     
     return html.Div(
         [
