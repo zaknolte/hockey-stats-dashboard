@@ -48,8 +48,19 @@
       "first_name": "Sidney",
       "last_name": "Crosby",
       "full_name": "Sidney Crosby",
-      "team_name": "Penguins",
-      "position": [1]
+      "team": 1,
+      "position": [1],
+      "jersey_number": 87,
+      "birthday": "08/07/1987",
+      "birth_city": "Cole Harbour",
+      "birth_state": "Nova Scotia",
+      "birth_country": "CAN",
+      "height_feet": 5,
+      "height_inches": 11,
+      "weight": 190,
+      "is_active": true,
+      "is_rookie": false,
+      "handed": "left"
     }
   },
   {
