@@ -4,8 +4,7 @@
         "pk": 1,
         "fields": {
             "player": 1,
-            "season": 2023,
-            "season_type": "Regular Season",
+            "season": 1,
             "goals": 35,
             "assists": 60,
             "points": 95
@@ -16,8 +15,7 @@
         "pk": 2,
         "fields": {
             "player": 1,
-            "season": 2022,
-            "season_type": "Regular Season",
+            "season": 2,
             "goals": 40,
             "assists": 62,
             "points": 102
@@ -28,8 +26,7 @@
         "pk": 3,
         "fields": {
             "player": 2,
-            "season": 2023,
-            "season_type": "Regular Season",
+            "season": 1,
             "goals": 51,
             "assists": 72,
             "points": 123
@@ -40,8 +37,7 @@
         "pk": 4,
         "fields": {
             "player": 2,
-            "season": 2022,
-            "season_type": "Regular Season",
+            "season": 2,
             "goals": 49,
             "assists": 61,
             "points": 110
@@ -52,8 +48,7 @@
         "pk": 5,
         "fields": {
             "player": 3,
-            "season": 2023,
-            "season_type": "Regular Season",
+            "season": 1,
             "goals": 55,
             "assists": 41,
             "points": 96
@@ -64,8 +59,7 @@
         "pk": 6,
         "fields": {
             "player": 3,
-            "season": 2023,
-            "season_type": "Playoffs",
+            "season": 3,
             "goals": 5,
             "assists": 6,
             "points": 11
@@ -76,8 +70,7 @@
         "pk": 7,
         "fields": {
             "player": 4,
-            "season": 2023,
-            "season_type": "Regular Season",
+            "season": 1,
             "goals": 22,
             "assists": 77,
             "points": 99
@@ -88,8 +81,7 @@
         "pk": 8,
         "fields": {
             "player": 5,
-            "season": 2023,
-            "season_type": "Regular Season",
+            "season": 1,
             "goals": 0,
             "assists": 1,
             "points": 1

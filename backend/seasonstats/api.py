@@ -1,7 +1,7 @@
 from ninja import ModelSchema, Router, Field, Schema
-from typing import List, Dict
+from typing import List
 
-from .models import PlayerSeason, BaseSeason
+from .models import PlayerSeason, Season
 from playerstats.api import PlayerInfoSchema
 
 season_router = Router()
@@ -11,10 +11,10 @@ class ChampionSchema(Schema):
     name: str
     
     
-class BaseSeasonSchema(ModelSchema):
+class SeasonSchema(ModelSchema):
     champion: ChampionSchema
     class Config:
-        model = BaseSeason
+        model = Season
         model_fields = [
             "year",
             "start_date",
@@ -26,8 +26,7 @@ class BaseSeasonSchema(ModelSchema):
 
 class PlayerSeasonSchema(ModelSchema):
     player: PlayerInfoSchema
-    # season: int | str
-    season: BaseSeasonSchema
+    season: SeasonSchema
     class Config:
         model = PlayerSeason
         model_fields = [
@@ -38,7 +37,6 @@ class PlayerSeasonSchema(ModelSchema):
             "assists",
             "points",
         ]
-        # model_fields_optional = ['season']
 
 
 @season_router.get("/players", response=List[PlayerSeasonSchema])
@@ -52,14 +50,6 @@ def get_player_season(request, season, season_type="Regular Season", team_name="
         
     return PlayerSeason.objects.filter(**kwargs)
 
-
-# class SeasonListSchema(ModelSchema):
-#     season: BaseSeasonSchema
-#     class Config:
-#         model = PlayerSeason
-#         model_fields = [
-#             "season",
-#         ]
         
 class CurrentSeasonSchema(Schema):
     season: int = Field(..., alias="season.year")

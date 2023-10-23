@@ -1,0 +1,106 @@
+[
+    {
+        "model": "teamstats.team",
+        "pk": 1,
+        "fields": {
+            "name": "Anaheim Ducks",
+            "conference": "Western Conference",
+            "division": "Pacific",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "Anaheim",
+            "venue": "Anaheim arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 2,
+        "fields": {
+            "name": "Calgary Flames",
+            "conference": "Western Conference",
+            "division": "Pacific",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "Calgary",
+            "venue": "Calgary arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 3,
+        "fields": {
+            "name": "Arizona Coyotes",
+            "conference": "Western Conference",
+            "division": "Central",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "Arizona",
+            "venue": "Arizona arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 4,
+        "fields": {
+            "name": "Chicago Blackhawks",
+            "conference": "Western Conference",
+            "division": "Central",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "Chicago",
+            "venue": "Chicago arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 5,
+        "fields": {
+            "name": "Carolina Hurricanes",
+            "conference": "Eastern Conference",
+            "division": "Metropolitan",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "Carolina",
+            "venue": "Carolina arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 6,
+        "fields": {
+            "name": "Columbus Blue Jackets",
+            "conference": "Eastern Conference",
+            "division": "Metropolitan",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "Columbus",
+            "venue": "Columbus arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 7,
+        "fields": {
+            "name": "Boston Bruins",
+            "conference": "Eastern Conference",
+            "division": "Atlantic",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "Boston",
+            "venue": "Boston arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 8,
+        "fields": {
+            "name": "Buffalo Sabres",
+            "conference": "Eastern Conference",
+            "division": "Atlantic",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "Buffalo",
+            "venue": "Buffalo arena"
+        }
+    }
+]

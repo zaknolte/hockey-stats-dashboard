@@ -1,4 +1,5 @@
 from django.db import models
+from teamstats.models import Team
 
 
 class PlayerPosition(models.Model):
@@ -16,13 +17,29 @@ class PlayerPosition(models.Model):
         return self.position
 
 
-class PlayerInfo(models.Model):
+class Player(models.Model):
+    player_handed_choice = [
+        ("Right", "R"),
+        ("Left", "L")
+    ]
+    
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     full_name = models.CharField(max_length=100)
-    team_name = models.CharField(max_length=50)
+    team = models.ForeignKey(to=Team, on_delete=models.CASCADE)
+    # team_name = models.CharField(max_length=50)
     picture = models.ImageField(upload_to="images", null=True)
     position = models.ManyToManyField(PlayerPosition)
+    jersey_number = models.IntegerField()
+    birthday = models.DateField()
+    birth_city = models.CharField(max_length=50)
+    birth_state = models.CharField(max_length=50)
+    birth_country = models.CharField(max_length=3)
+    height_inches = models.IntegerField()
+    weight = models.IntegerField()
+    is_active = models.BooleanField()
+    is_rookie = models.BooleanField()
+    handed = models.CharField(max_length=10, choices=player_handed_choice)
 
     def __str__(self):
         return self.get_full_name()
