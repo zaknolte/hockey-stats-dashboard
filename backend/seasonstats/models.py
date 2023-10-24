@@ -71,6 +71,7 @@ class GoalieSeason(models.Model):
     
 class TeamSeason(models.Model):
     team = models.ForeignKey(to=Team, on_delete=models.CASCADE)
+    season = models.ForeignKey(to=Season, on_delete=models.CASCADE)
     games_played = models.IntegerField()
     wins = models.IntegerField()
     losses = models.IntegerField()
