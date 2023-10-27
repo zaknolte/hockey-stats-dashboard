@@ -16,8 +16,8 @@ class Event(models.Model):
 
 class Game(models.Model):
     players = models.ManyToManyField(to=Player)
-    home_team = models.ForeignKey(to=Team, on_delete=models.CASCADE)
-    away_team = models.ForeignKey(to=Team, on_delete=models.CASCADE)
+    home_team = models.ForeignKey(to=Team, on_delete=models.CASCADE, related_name="home_team")
+    away_team = models.ForeignKey(to=Team, on_delete=models.CASCADE, related_name="away_team")
     game_date = models.DateField()
     game_start_time = models.DateTimeField()
     events = models.ManyToManyField(to=Event)
