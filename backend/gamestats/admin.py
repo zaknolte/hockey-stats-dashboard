@@ -3,7 +3,7 @@ from django.db.models.functions import Lower
 from .models import Game, PlayerGame, TeamGame, GoalieGame, Event
 
 class GameAdmin(admin.ModelAdmin):
-    list_display = ("game_date", "home_team", "away_team", "events")
+    list_display = ("game_date", "home_team", "away_team")
     search_fields = ["home_team", "away_team"]
 
     def get_ordering(self, request):
