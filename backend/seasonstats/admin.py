@@ -70,7 +70,7 @@ class TeamSeasonAdmin(admin.ModelAdmin):
 
     @admin.display(ordering='team__name', description='Team')
     def get_team_name(self, obj):
-        return obj.player.full_name
+        return obj.team.name
     
     @admin.display(ordering='season__season_type', description='Season Type')
     def get_season_type(self, obj):

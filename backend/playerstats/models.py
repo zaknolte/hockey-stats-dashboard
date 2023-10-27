@@ -42,7 +42,7 @@ class Player(models.Model):
     handed = models.CharField(max_length=10, choices=player_handed_choice)
 
     def __str__(self):
-        return self.get_full_name()
+        return self.full_name
 
     def get_full_name(self):
         return self.first_name.strip(". ") + " " + self.last_name.strip(". ")
