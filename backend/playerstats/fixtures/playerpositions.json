@@ -1,0 +1,44 @@
+[
+    {
+        "model": "playerstats.playerposition",
+        "pk": 1,
+        "fields": {
+            "position": "C"
+        }
+    },
+    {
+        "model": "playerstats.playerposition",
+        "pk": 2,
+        "fields": {
+            "position": "RW"
+        }
+    },
+    {
+        "model": "playerstats.playerposition",
+        "pk": 3,
+        "fields": {
+            "position": "LW"
+        }
+    },
+    {
+        "model": "playerstats.playerposition",
+        "pk": 4,
+        "fields": {
+            "position": "RD"
+        }
+    },
+    {
+        "model": "playerstats.playerposition",
+        "pk": 5,
+        "fields": {
+            "position": "LD"
+        }
+    },
+    {
+        "model": "playerstats.playerposition",
+        "pk": 6,
+        "fields": {
+            "position": "G"
+        }
+    }
+]

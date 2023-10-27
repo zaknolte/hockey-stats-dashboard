@@ -1,6 +1,6 @@
 [
     {
-        "model": "seasonstats.baseseason",
+        "model": "seasonstats.season",
         "pk": 1,
         "fields": {
             "year": 2023,
@@ -11,7 +11,7 @@
         }
     },
     {
-        "model": "seasonstats.baseseason",
+        "model": "seasonstats.season",
         "pk": 2,
         "fields": {
             "year": 2023,
@@ -22,13 +22,24 @@
         }
     },
     {
-        "model": "seasonstats.baseseason",
+        "model": "seasonstats.season",
         "pk": 3,
         "fields": {
             "year": 2022,
             "start_date": "2010-09-01",
             "end_date": "2011-05-01",
             "season_type": "Regular Season",
+            "champion": 2
+        }
+    },
+    {
+        "model": "seasonstats.season",
+        "pk": 4,
+        "fields": {
+            "year": 2022,
+            "start_date": "2011-03-01",
+            "end_date": "2011-05-01",
+            "season_type": "Playoffs",
             "champion": 2
         }
     }

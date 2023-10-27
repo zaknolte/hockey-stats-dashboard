@@ -66,7 +66,7 @@ def format_image(image_url):
     return encoded.decode()
 
 
-def build_query_url(season="All Seasons", season_type="Regular Season", team="All Teams"):
+def build_player_query_url(player_type="all", season="All Seasons", season_type="Regular Season", team="All Teams"):
     """
     Builds and returns a query url to query the backend database.
  
@@ -78,7 +78,7 @@ def build_query_url(season="All Seasons", season_type="Regular Season", team="Al
     Returns:
         str: The compiled endpoint url string.
     """
-    return f"players?season={season}&season_type={season_type}&team_name={team}"
+    return f"players/{player_type}?season={season}&season_type={season_type}&team_name={team}"
 
 
 def get_player_options(position):
@@ -157,7 +157,7 @@ def get_all_teams(df, add_all=True):
     Returns:
         list[str]: List of all present team names.
     """
-    teams_list = pd.unique(df[rename_data_df_cols["player.team_name"]])
+    teams_list = pd.unique(df[rename_data_df_cols["player.team.name"]])
     teams_list.sort()
     if add_all:
         teams_list = np.insert(teams_list, 0, "All Teams")
@@ -431,8 +431,8 @@ def get_leaders_layout_rows(df, stat, position):
 
 def layout():
     # get database data with defaults for current regular season for all teams
-    players_df = query_to_formatted_df(build_query_url(season=CURRENT_SEASON))
-    print(players_df)
+    players_df = query_to_formatted_df(build_player_query_url(season=CURRENT_SEASON))
+    print(players_df.columns)
     
     return html.Div(
         [
@@ -471,7 +471,7 @@ def layout():
 def update_displayed_data(season, season_type, team, position, position_group):
     formatted_season = int(season[:4]) if season != "All Seasons" else season
     
-    df = query_to_formatted_df(build_query_url(formatted_season, season_type, team))
+    df = query_to_formatted_df(build_player_query_url(season=formatted_season, season_type=season_type, team=team))
     df = filter_data_by_position(df, position_group)
     
     if position != "All Positions":

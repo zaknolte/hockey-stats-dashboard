@@ -1,110 +1,118 @@
 [
   {
-    "model": "playerstats.playerposition",
-    "pk": 1,
-    "fields": {
-      "position": "C"
-    }
-  },
-  {
-    "model": "playerstats.playerposition",
-    "pk": 2,
-    "fields": {
-      "position": "RW"
-    }
-  },
-  {
-    "model": "playerstats.playerposition",
-    "pk": 3,
-    "fields": {
-      "position": "LW"
-    }
-  },
-  {
-    "model": "playerstats.playerposition",
-    "pk": 4,
-    "fields": {
-      "position": "RD"
-    }
-  },
-  {
-    "model": "playerstats.playerposition",
-    "pk": 5,
-    "fields": {
-      "position": "LD"
-    }
-  },
-  {
-    "model": "playerstats.playerposition",
-    "pk": 6,
-    "fields": {
-      "position": "G"
-    }
-  },
-  {
-    "model": "playerstats.playerinfo",
+    "model": "playerstats.player",
     "pk": 1,
     "fields": {
       "first_name": "Sidney",
       "last_name": "Crosby",
       "full_name": "Sidney Crosby",
       "team": 1,
-      "position": [1],
+      "position": [
+        1
+      ],
       "jersey_number": 87,
-      "birthday": "08/07/1987",
+      "birthday": "1987-08-07",
       "birth_city": "Cole Harbour",
       "birth_state": "Nova Scotia",
       "birth_country": "CAN",
-      "height_feet": 5,
-      "height_inches": 11,
+      "height_inches": 71,
       "weight": 190,
       "is_active": true,
       "is_rookie": false,
-      "handed": "left"
+      "handed": "L"
     }
   },
   {
-    "model": "playerstats.playerinfo",
+    "model": "playerstats.player",
     "pk": 2,
     "fields": {
       "first_name": "Connor",
       "last_name": "McDavid",
       "full_name": "Connor McDavid",
-      "team_name": "Oilers",
-      "position": [1]
+      "team": 5,
+      "position": [
+        1
+      ],
+      "jersey_number": 97,
+      "birthday": "1997-03-08",
+      "birth_city": "Toronto",
+      "birth_state": "Ontario",
+      "birth_country": "CAN",
+      "height_inches": 73,
+      "weight": 195,
+      "is_active": true,
+      "is_rookie": false,
+      "handed": "L"
     }
   },
   {
-    "model": "playerstats.playerinfo",
+    "model": "playerstats.player",
     "pk": 3,
     "fields": {
       "first_name": "Alex",
       "last_name": "Ovechkin",
       "full_name": "Alex Ovechkin",
-      "team_name": "Capitals",
-      "position": [2, 3]
+      "team": 16,
+      "position": [
+        2,
+        3
+      ],
+      "jersey_number": 8,
+      "birthday": "1986-04-09",
+      "birth_city": "Moscow",
+      "birth_state": "Russia",
+      "birth_country": "RUS",
+      "height_inches": 73,
+      "weight": 210,
+      "is_active": true,
+      "is_rookie": false,
+      "handed": "R"
     }
   },
   {
-    "model": "playerstats.playerinfo",
+    "model": "playerstats.player",
     "pk": 4,
     "fields": {
       "first_name": "Cale",
       "last_name": "Makar",
       "full_name": "Cale Makar",
-      "team_name": "Avalanche",
-      "position": [4]
+      "team": 9,
+      "position": [
+        4
+      ],
+      "jersey_number": 97,
+      "birthday": "1999-07-21",
+      "birth_city": "Boston",
+      "birth_state": "Massachusets",
+      "birth_country": "USA",
+      "height_inches": 70,
+      "weight": 180,
+      "is_active": true,
+      "is_rookie": false,
+      "handed": "L"
     }
   },
   {
-    "model": "playerstats.playerinfo",
+    "model": "playerstats.player",
     "pk": 5,
     "fields": {
       "first_name": "Mike",
       "last_name": "Smith",
       "full_name": "Mike Smith",
-      "team_name": "Flames",
-      "position": [6]
+      "team": 21,
+      "position": [
+        6
+      ],
+      "jersey_number": 97,
+      "birthday": "1985-11-26",
+      "birth_city": "Vancouver",
+      "birth_state": "British Columbia",
+      "birth_country": "CAN",
+      "height_inches": 75,
+      "weight": 198,
+      "is_active": true,
+      "is_rookie": false,
+      "handed": "L"
     }
   }
 ]

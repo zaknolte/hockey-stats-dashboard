@@ -21,13 +21,91 @@
             "division": "Pacific",
             "start_season": 1990,
             "final_season": 9999,
+            "city": "Los Angeles",
+            "venue": "Los Angeles arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 3,
+        "fields": {
+            "name": "Edmonton Oilers",
+            "conference": "Western Conference",
+            "division": "Pacific",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "Edmonton",
+            "venue": "Edmonton arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 4,
+        "fields": {
+            "name": "Los Angeles Kings",
+            "conference": "Western Conference",
+            "division": "Pacific",
+            "start_season": 1990,
+            "final_season": 9999,
             "city": "Calgary",
             "venue": "Calgary arena"
         }
     },
     {
         "model": "teamstats.team",
-        "pk": 3,
+        "pk": 5,
+        "fields": {
+            "name": "San Jose Sharks",
+            "conference": "Western Conference",
+            "division": "Pacific",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "San Jose",
+            "venue": "San Jose arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 6,
+        "fields": {
+            "name": "Seattle Kraken",
+            "conference": "Western Conference",
+            "division": "Pacific",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "Seattle",
+            "venue": "Seattle arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 7,
+        "fields": {
+            "name": "Vancouver Canucks",
+            "conference": "Western Conference",
+            "division": "Pacific",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "Vancouver",
+            "venue": "Vancouver arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 8,
+        "fields": {
+            "name": "Vegas Golden Knights",
+            "conference": "Western Conference",
+            "division": "Pacific",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "Vegas",
+            "venue": "Vegas arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 9,
         "fields": {
             "name": "Arizona Coyotes",
             "conference": "Western Conference",
@@ -40,7 +118,7 @@
     },
     {
         "model": "teamstats.team",
-        "pk": 4,
+        "pk": 10,
         "fields": {
             "name": "Chicago Blackhawks",
             "conference": "Western Conference",
@@ -53,7 +131,85 @@
     },
     {
         "model": "teamstats.team",
-        "pk": 5,
+        "pk": 11,
+        "fields": {
+            "name": "Colorado Avalanche",
+            "conference": "Western Conference",
+            "division": "Pacific",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "Colorado",
+            "venue": "Colorado arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 12,
+        "fields": {
+            "name": "Dallas Stars",
+            "conference": "Western Conference",
+            "division": "Pacific",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "Dallas",
+            "venue": "Dallas arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 13,
+        "fields": {
+            "name": "Minnesota Wild",
+            "conference": "Western Conference",
+            "division": "Pacific",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "Minnesota",
+            "venue": "Minnesota arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 14,
+        "fields": {
+            "name": "Nashville Predators",
+            "conference": "Western Conference",
+            "division": "Pacific",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "Nashville",
+            "venue": "Nashville arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 15,
+        "fields": {
+            "name": "St. Louis Blues",
+            "conference": "Western Conference",
+            "division": "Pacific",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "St. Louis",
+            "venue": "St. Louis arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 16,
+        "fields": {
+            "name": "Winnipeg Jets",
+            "conference": "Western Conference",
+            "division": "Pacific",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "Winnipeg",
+            "venue": "Winnipeg arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 17,
         "fields": {
             "name": "Carolina Hurricanes",
             "conference": "Eastern Conference",
@@ -66,7 +222,7 @@
     },
     {
         "model": "teamstats.team",
-        "pk": 6,
+        "pk": 18,
         "fields": {
             "name": "Columbus Blue Jackets",
             "conference": "Eastern Conference",
@@ -79,7 +235,85 @@
     },
     {
         "model": "teamstats.team",
-        "pk": 7,
+        "pk": 19,
+        "fields": {
+            "name": "New Jersey Devils",
+            "conference": "Western Conference",
+            "division": "Pacific",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "New Jersey",
+            "venue": "New Jersey arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 20,
+        "fields": {
+            "name": "New York Islanders",
+            "conference": "Western Conference",
+            "division": "Pacific",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "Islander",
+            "venue": "Islander arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 21,
+        "fields": {
+            "name": "New York Rangers",
+            "conference": "Western Conference",
+            "division": "Pacific",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "New York",
+            "venue": "New York arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 22,
+        "fields": {
+            "name": "Philadelphia Flyers",
+            "conference": "Western Conference",
+            "division": "Pacific",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "Philadelphia",
+            "venue": "Philadelphia arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 23,
+        "fields": {
+            "name": "Pittsburgh Penguins",
+            "conference": "Western Conference",
+            "division": "Pacific",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "Pittsburgh",
+            "venue": "Pittsburgh arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 24,
+        "fields": {
+            "name": "Washington Capitals",
+            "conference": "Western Conference",
+            "division": "Pacific",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "Washington",
+            "venue": "Washington arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 25,
         "fields": {
             "name": "Boston Bruins",
             "conference": "Eastern Conference",
@@ -92,7 +326,7 @@
     },
     {
         "model": "teamstats.team",
-        "pk": 8,
+        "pk": 26,
         "fields": {
             "name": "Buffalo Sabres",
             "conference": "Eastern Conference",
@@ -101,6 +335,84 @@
             "final_season": 9999,
             "city": "Buffalo",
             "venue": "Buffalo arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 27,
+        "fields": {
+            "name": "Detroit Red Wings",
+            "conference": "Western Conference",
+            "division": "Pacific",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "Detroit",
+            "venue": "Detroit arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 28,
+        "fields": {
+            "name": "Florida Panthers",
+            "conference": "Western Conference",
+            "division": "Pacific",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "Florida",
+            "venue": "Florida arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 29,
+        "fields": {
+            "name": "Montréal Canadiens",
+            "conference": "Western Conference",
+            "division": "Pacific",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "Montréal",
+            "venue": "Montréal arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 30,
+        "fields": {
+            "name": "Ottawa Senators",
+            "conference": "Western Conference",
+            "division": "Pacific",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "Ottawa",
+            "venue": "Ottawa arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 31,
+        "fields": {
+            "name": "Tampa Bay Lightning",
+            "conference": "Western Conference",
+            "division": "Pacific",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "Tampa Bay",
+            "venue": "Tampa Bay arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "pk": 32,
+        "fields": {
+            "name": "Toronto Maple Leafs",
+            "conference": "Western Conference",
+            "division": "Pacific",
+            "start_season": 1990,
+            "final_season": 9999,
+            "city": "Toronto",
+            "venue": "Toronto arena"
         }
     }
 ]
