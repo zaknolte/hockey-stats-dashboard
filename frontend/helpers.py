@@ -4,13 +4,41 @@ def stringify_season(season):
 
 rename_data_df_cols = {
     "player.full_name": "Name",
-    "player.team_name": "Team",
+    "player.team.name": "Team",
     "player.position": "Position",
     "season.year": "Season",
     "season.season_type": "Season Type",
     "goals": "Goals",
     "assists": "Assists",
     "points": "Points",
+    "time_on_ice_seconds": "TOI",
+    "time_on_ice_seconds_pp": "PP TOI",
+    "time_on_ice_seconds_sh": "SH TOI",
+    "games_played": "Games Played",
+    "goals_pp": "PP Goals",
+    "goals_sh": "SH Goals",
+    "assists_pp": "PP Assists",
+    "assists_sh": "SH Assists",
+    "shots": "Shots",
+    "hits": "Hits",
+    "penalty_minutes": "PIM",
+    "penalties_taken": "Penalties Taken",
+    "penalty_seconds_served": "Penalty Time Served",
+    "faceoffs_taken": "Faceoffs Taken",
+    "faceoffs_won": "Faceoffs Won",
+    "faceoffs_lost": "Faceoffs Lost",
+    "faceoff_percent": "Faceoff %",
+    "giveaways": "Giveaways",
+    "takeaways": "Takeaways",
+    "blocked_shots": "Blocked Shots",
+    "plus_minus": "Plus-Minus",
+    "shots_against": "Shots Against",
+    "shots_against_pp": "PP Shots Against",
+    "shots_against_sh": "SH Shots Against",
+    "saves": "Saves",
+    "saves_pp": "PP Saves",
+    "saves_sh": "SH Saves",
+    "wins": "Wins"    
 }
 
 base_order_data_df_cols = [
@@ -33,6 +61,7 @@ excluded_data_df_cols = [
     "player.last_name",
     "player.picture"
 ]
+
 
 def update_ag_grid_display_cols(df):
     updated_df = df.rename(columns=rename_data_df_cols)
@@ -74,11 +103,21 @@ def get_ag_grid_columnDefs(grid_type):
             },
             add_default_number_columnDef(rename_data_df_cols["season.year"]),
             {"field": rename_data_df_cols["season.season_type"]},
-            {"field": rename_data_df_cols["player.team_name"]},
+            {"field": rename_data_df_cols["player.team.name"]},
             {"field": rename_data_df_cols["player.position"]},
-            add_default_number_columnDef(rename_data_df_cols["goals"]),
-            add_default_number_columnDef(rename_data_df_cols["assists"]),
-            add_default_number_columnDef(rename_data_df_cols["points"]),
+            add_default_number_columnDef(rename_data_df_cols["games_played"], cellStyle={'textAlign': 'center'}),
+            add_default_number_columnDef(rename_data_df_cols["goals"], cellStyle={'textAlign': 'center'}),
+            add_default_number_columnDef(rename_data_df_cols["assists"], cellStyle={'textAlign': 'center'}),
+            add_default_number_columnDef(rename_data_df_cols["points"], cellStyle={'textAlign': 'center'}),
+            add_default_number_columnDef(rename_data_df_cols["plus_minus"], cellStyle={'textAlign': 'center'}),
+            add_default_number_columnDef(rename_data_df_cols["goals_pp"], cellStyle={'textAlign': 'center'}),
+            add_default_number_columnDef(rename_data_df_cols["assists_pp"], cellStyle={'textAlign': 'center'}),
+            add_default_number_columnDef(rename_data_df_cols["goals_sh"], cellStyle={'textAlign': 'center'}),
+            add_default_number_columnDef(rename_data_df_cols["assists_sh"], cellStyle={'textAlign': 'center'}),
+            add_default_number_columnDef(rename_data_df_cols["faceoff_percent"], cellStyle={'textAlign': 'center'}),
+            add_default_number_columnDef(rename_data_df_cols["giveaways"], cellStyle={'textAlign': 'center'}),
+            add_default_number_columnDef(rename_data_df_cols["takeaways"], cellStyle={'textAlign': 'center'}),
+            add_default_number_columnDef(rename_data_df_cols["blocked_shots"], cellStyle={'textAlign': 'center'}),
         ]
     else:
         columnDefs = []
