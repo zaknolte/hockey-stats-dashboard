@@ -165,6 +165,21 @@ def get_all_teams(df, add_all=True):
     return teams_list
 
 
+def get_leaders_dropdown_options(position="All Skaters"):
+    options = []
+    ignore = [
+        rename_data_df_cols["player.full_name"],
+        rename_data_df_cols["season.year"],
+        rename_data_df_cols["season.season_type"],
+        rename_data_df_cols["player.team.name"],
+        rename_data_df_cols["player.position"]
+    ]
+    for col in get_ag_grid_columnDefs(position):
+        if col["field"] not in ignore:
+            options.append(col["field"])
+            
+    return options
+
 def get_filter_dropdowns_layout(seasons, season_types, teams):
     """
     Return list of 3 dcc.Dropdown components. Creates dropdowns for seasons, season types, and team names used for filtering data.
@@ -288,7 +303,8 @@ def get_agGrid_layout(df, position):
         columnDefs=get_ag_grid_columnDefs(position),
         id="player-stats-grid",
         className="ag-theme-alpine",
-        columnSize="sizeToFit",
+        columnSize="autoSize",
+        defaultColDef = {"headerClass": 'center-aligned-header'},
         style={"paddingLeft": 50, "paddingRight": 50},
     )
 
@@ -359,11 +375,12 @@ def get_leaders_layout(df, stat, dropdown_id):
     """
     # filter for forwards only on initial load
     rows = get_leaders_layout_rows(df, stat, "Forward")
+    player_options = get_leaders_dropdown_options("All Skaters")
 
     return html.Div(
         [
             dcc.Dropdown(
-                options=PLAYER_STATS,
+                options=player_options,
                 value=stat.title(),
                 clearable=False,
                 searchable=False,
