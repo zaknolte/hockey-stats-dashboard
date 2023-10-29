@@ -4,11 +4,13 @@
         "pk": 1,
         "fields": {
             "name": "Anaheim Ducks",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/anaheim_ducks.png",
             "conference": "Western Conference",
             "division": "Pacific",
             "start_season": 1990,
             "final_season": 9999,
             "city": "Anaheim",
+            "state": "California",
             "venue": "Anaheim arena"
         }
     },
@@ -17,11 +19,13 @@
         "pk": 2,
         "fields": {
             "name": "Calgary Flames",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/calgary_flames.png",
             "conference": "Western Conference",
             "division": "Pacific",
             "start_season": 1990,
             "final_season": 9999,
-            "city": "Los Angeles",
+            "city": "Calgary",
+            "state": "Alberta",
             "venue": "Los Angeles arena"
         }
     },
@@ -30,11 +34,13 @@
         "pk": 3,
         "fields": {
             "name": "Edmonton Oilers",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/edmonton_oilers.png",
             "conference": "Western Conference",
             "division": "Pacific",
             "start_season": 1990,
             "final_season": 9999,
             "city": "Edmonton",
+            "state": "Alberta",
             "venue": "Edmonton arena"
         }
     },
@@ -43,11 +49,13 @@
         "pk": 4,
         "fields": {
             "name": "Los Angeles Kings",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/los_angeles_kings.png",
             "conference": "Western Conference",
             "division": "Pacific",
             "start_season": 1990,
             "final_season": 9999,
-            "city": "Calgary",
+            "city": "Los Angeles",
+            "state": "California",
             "venue": "Calgary arena"
         }
     },
@@ -56,11 +64,13 @@
         "pk": 5,
         "fields": {
             "name": "San Jose Sharks",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/san_jose_sharks.png",
             "conference": "Western Conference",
             "division": "Pacific",
             "start_season": 1990,
             "final_season": 9999,
             "city": "San Jose",
+            "state": "California",
             "venue": "San Jose arena"
         }
     },
@@ -69,11 +79,13 @@
         "pk": 6,
         "fields": {
             "name": "Seattle Kraken",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/seattle_kraken.png",
             "conference": "Western Conference",
             "division": "Pacific",
             "start_season": 1990,
             "final_season": 9999,
             "city": "Seattle",
+            "state": "Washington",
             "venue": "Seattle arena"
         }
     },
@@ -82,11 +94,13 @@
         "pk": 7,
         "fields": {
             "name": "Vancouver Canucks",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/vancouver_canucks.png",
             "conference": "Western Conference",
             "division": "Pacific",
             "start_season": 1990,
             "final_season": 9999,
             "city": "Vancouver",
+            "state": "British Columbia",
             "venue": "Vancouver arena"
         }
     },
@@ -95,11 +109,13 @@
         "pk": 8,
         "fields": {
             "name": "Vegas Golden Knights",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/vegas_golden_knights.png",
             "conference": "Western Conference",
             "division": "Pacific",
             "start_season": 1990,
             "final_season": 9999,
-            "city": "Vegas",
+            "city": "Paradise",
+            "state": "Nevada",
             "venue": "Vegas arena"
         }
     },
@@ -108,11 +124,13 @@
         "pk": 9,
         "fields": {
             "name": "Arizona Coyotes",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/arizona_coyotes.png",
             "conference": "Western Conference",
             "division": "Central",
             "start_season": 1990,
             "final_season": 9999,
-            "city": "Arizona",
+            "city": "Tempe",
+            "state": "Arizona",
             "venue": "Arizona arena"
         }
     },
@@ -121,11 +139,13 @@
         "pk": 10,
         "fields": {
             "name": "Chicago Blackhawks",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/chicago_blackhawks.png",
             "conference": "Western Conference",
             "division": "Central",
             "start_season": 1990,
             "final_season": 9999,
             "city": "Chicago",
+            "state": "Illinois",
             "venue": "Chicago arena"
         }
     },
@@ -134,11 +154,13 @@
         "pk": 11,
         "fields": {
             "name": "Colorado Avalanche",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/colorado_avalanche.png",
             "conference": "Western Conference",
             "division": "Pacific",
             "start_season": 1990,
             "final_season": 9999,
-            "city": "Colorado",
+            "city": "Denver",
+            "state": "Colorado",
             "venue": "Colorado arena"
         }
     },
@@ -147,11 +169,13 @@
         "pk": 12,
         "fields": {
             "name": "Dallas Stars",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/dallas_stars.png",
             "conference": "Western Conference",
             "division": "Pacific",
             "start_season": 1990,
             "final_season": 9999,
             "city": "Dallas",
+            "state": "Texas",
             "venue": "Dallas arena"
         }
     },
@@ -160,11 +184,13 @@
         "pk": 13,
         "fields": {
             "name": "Minnesota Wild",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/minnesota_wild.png",
             "conference": "Western Conference",
             "division": "Pacific",
             "start_season": 1990,
             "final_season": 9999,
-            "city": "Minnesota",
+            "city": "St. Paul",
+            "state": "Minnesota",
             "venue": "Minnesota arena"
         }
     },
@@ -173,11 +199,13 @@
         "pk": 14,
         "fields": {
             "name": "Nashville Predators",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/nashville_predators.png",
             "conference": "Western Conference",
             "division": "Pacific",
             "start_season": 1990,
             "final_season": 9999,
             "city": "Nashville",
+            "state": "Tennesee",
             "venue": "Nashville arena"
         }
     },
@@ -185,12 +213,14 @@
         "model": "teamstats.team",
         "pk": 15,
         "fields": {
-            "name": "St. Louis Blues",
+            "name": "St Louis Blues",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/st_louis_blues.png",
             "conference": "Western Conference",
             "division": "Pacific",
             "start_season": 1990,
             "final_season": 9999,
             "city": "St. Louis",
+            "state": "Missouri",
             "venue": "St. Louis arena"
         }
     },
@@ -199,11 +229,13 @@
         "pk": 16,
         "fields": {
             "name": "Winnipeg Jets",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/winnipeg_jets.png",
             "conference": "Western Conference",
             "division": "Pacific",
             "start_season": 1990,
             "final_season": 9999,
             "city": "Winnipeg",
+            "state": "Manitoba",
             "venue": "Winnipeg arena"
         }
     },
@@ -212,11 +244,13 @@
         "pk": 17,
         "fields": {
             "name": "Carolina Hurricanes",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/carolina_hurricanes.png",
             "conference": "Eastern Conference",
             "division": "Metropolitan",
             "start_season": 1990,
             "final_season": 9999,
-            "city": "Carolina",
+            "city": "Raliegh",
+            "state": "North Carolina",
             "venue": "Carolina arena"
         }
     },
@@ -225,11 +259,13 @@
         "pk": 18,
         "fields": {
             "name": "Columbus Blue Jackets",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/columbus_blue_jackets.png",
             "conference": "Eastern Conference",
             "division": "Metropolitan",
             "start_season": 1990,
             "final_season": 9999,
             "city": "Columbus",
+            "state": "Ohio",
             "venue": "Columbus arena"
         }
     },
@@ -238,11 +274,13 @@
         "pk": 19,
         "fields": {
             "name": "New Jersey Devils",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/new_jersey_devils.png",
             "conference": "Western Conference",
             "division": "Pacific",
             "start_season": 1990,
             "final_season": 9999,
-            "city": "New Jersey",
+            "city": "Newark",
+            "state": "New Jersey",
             "venue": "New Jersey arena"
         }
     },
@@ -251,11 +289,13 @@
         "pk": 20,
         "fields": {
             "name": "New York Islanders",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/new_york_islanders.png",
             "conference": "Western Conference",
             "division": "Pacific",
             "start_season": 1990,
             "final_season": 9999,
-            "city": "Islander",
+            "city": "Elmont",
+            "state": "New York",
             "venue": "Islander arena"
         }
     },
@@ -264,11 +304,13 @@
         "pk": 21,
         "fields": {
             "name": "New York Rangers",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/new_york_rangers.png",
             "conference": "Western Conference",
             "division": "Pacific",
             "start_season": 1990,
             "final_season": 9999,
-            "city": "New York",
+            "city": "New York City",
+            "state": "New York",
             "venue": "New York arena"
         }
     },
@@ -277,11 +319,13 @@
         "pk": 22,
         "fields": {
             "name": "Philadelphia Flyers",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/philadelphia_flyers.png",
             "conference": "Western Conference",
             "division": "Pacific",
             "start_season": 1990,
             "final_season": 9999,
             "city": "Philadelphia",
+            "state": "Pennsylvania",
             "venue": "Philadelphia arena"
         }
     },
@@ -290,11 +334,13 @@
         "pk": 23,
         "fields": {
             "name": "Pittsburgh Penguins",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/pittsburgh_penguins.png",
             "conference": "Western Conference",
             "division": "Pacific",
             "start_season": 1990,
             "final_season": 9999,
             "city": "Pittsburgh",
+            "state": "Pennsylvania",
             "venue": "Pittsburgh arena"
         }
     },
@@ -303,11 +349,13 @@
         "pk": 24,
         "fields": {
             "name": "Washington Capitals",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/washington_capitals.png",
             "conference": "Western Conference",
             "division": "Pacific",
             "start_season": 1990,
             "final_season": 9999,
             "city": "Washington",
+            "state": "D.C.",
             "venue": "Washington arena"
         }
     },
@@ -316,11 +364,13 @@
         "pk": 25,
         "fields": {
             "name": "Boston Bruins",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/boston_bruins.png",
             "conference": "Eastern Conference",
             "division": "Atlantic",
             "start_season": 1990,
             "final_season": 9999,
             "city": "Boston",
+            "state": "Massachusets",
             "venue": "Boston arena"
         }
     },
@@ -329,11 +379,13 @@
         "pk": 26,
         "fields": {
             "name": "Buffalo Sabres",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/buffalo_sabres.png",
             "conference": "Eastern Conference",
             "division": "Atlantic",
             "start_season": 1990,
             "final_season": 9999,
             "city": "Buffalo",
+            "state": "New York",
             "venue": "Buffalo arena"
         }
     },
@@ -342,11 +394,13 @@
         "pk": 27,
         "fields": {
             "name": "Detroit Red Wings",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/detroit_red_wings.png",
             "conference": "Western Conference",
             "division": "Pacific",
             "start_season": 1990,
             "final_season": 9999,
             "city": "Detroit",
+            "state": "Michigan",
             "venue": "Detroit arena"
         }
     },
@@ -355,11 +409,13 @@
         "pk": 28,
         "fields": {
             "name": "Florida Panthers",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/florida_panthers.png",
             "conference": "Western Conference",
             "division": "Pacific",
             "start_season": 1990,
             "final_season": 9999,
-            "city": "Florida",
+            "city": "Sunrise",
+            "state": "Florida",
             "venue": "Florida arena"
         }
     },
@@ -367,12 +423,14 @@
         "model": "teamstats.team",
         "pk": 29,
         "fields": {
-            "name": "Montréal Canadiens",
+            "name": "Montreal Canadiens",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/montreal_canadiens.png",
             "conference": "Western Conference",
             "division": "Pacific",
             "start_season": 1990,
             "final_season": 9999,
             "city": "Montréal",
+            "state": "Quebec",
             "venue": "Montréal arena"
         }
     },
@@ -381,11 +439,13 @@
         "pk": 30,
         "fields": {
             "name": "Ottawa Senators",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/ottawa_senators.png",
             "conference": "Western Conference",
             "division": "Pacific",
             "start_season": 1990,
             "final_season": 9999,
             "city": "Ottawa",
+            "state": "Ontario",
             "venue": "Ottawa arena"
         }
     },
@@ -394,11 +454,13 @@
         "pk": 31,
         "fields": {
             "name": "Tampa Bay Lightning",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/tampa_bay_lightning.png",
             "conference": "Western Conference",
             "division": "Pacific",
             "start_season": 1990,
             "final_season": 9999,
-            "city": "Tampa Bay",
+            "city": "Tampa",
+            "state": "Florida",
             "venue": "Tampa Bay arena"
         }
     },
@@ -407,11 +469,13 @@
         "pk": 32,
         "fields": {
             "name": "Toronto Maple Leafs",
+            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/toronto_maple_leafs.png",
             "conference": "Western Conference",
             "division": "Pacific",
             "start_season": 1990,
             "final_season": 9999,
             "city": "Toronto",
+            "state": "Ontario",
             "venue": "Toronto arena"
         }
     }

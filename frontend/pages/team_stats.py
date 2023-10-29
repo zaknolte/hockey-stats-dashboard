@@ -122,7 +122,7 @@ def get_team_card(team_data):
                                 ),
                                 html.Div(
                                     [
-                                    html.P(team_data["team"]["city"])
+                                    html.P(f"{team_data['team']['city']}, {team_data['team']['state']}")
                                     ],
                                     className="card-text",
                                 ),

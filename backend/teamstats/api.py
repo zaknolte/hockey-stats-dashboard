@@ -19,6 +19,7 @@ class TeamSchema(ModelSchema):
             "start_season",
             "final_season",
             "city",
+            "state",
             "venue",
         ]
 
