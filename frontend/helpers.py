@@ -2,6 +2,10 @@ def stringify_season(season):
     return f"{season}-{season + 1}"
 
 
+def reverse_slugify(slug):
+    return slug.replace("-", " ").title()
+
+
 rename_data_df_cols = {
     "player.full_name": "Name",
     "player.team.name": "Team",

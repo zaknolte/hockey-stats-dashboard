@@ -3,9 +3,6 @@ from dash import Dash, html, dcc
 import dash_bootstrap_components as dbc
 from nav import nav
 
-from pathlib import Path
-
-# DJANGO_ROOT = Path(__file__).resolve().parent.parent / "backend"
 
 app = Dash(
     __name__,
@@ -13,6 +10,7 @@ app = Dash(
         dbc.themes.LUX,
     ],
     use_pages=True,
+    title="Hockey Stats",
 )
 
 app.layout = html.Div(

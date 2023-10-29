@@ -18,11 +18,6 @@ from helpers import stringify_season, rename_data_df_cols, update_ag_grid_displa
 
 dash.register_page(__name__, path="/players")
 
-# path that stores player images
-# /backend/images/
-DJANGO_ROOT = Path(__file__).resolve().parent.parent.parent / "backend"
-img_path = "/".join([i for i in DJANGO_ROOT.parts])
-
 
 async def query_player_stats(endpoint):
     """
@@ -62,6 +57,11 @@ def format_image(image_url):
     Returns:
         base64 decoded image.
     """
+    # path that stores player images
+    # /backend/images/
+    DJANGO_ROOT = Path(__file__).resolve().parent.parent.parent / "backend"
+    img_path = "/".join([i for i in DJANGO_ROOT.parts]) + "/images/player-pictures/"
+    
     encoded = base64.b64encode(open(img_path + image_url, "rb").read())
     return encoded.decode()
 
@@ -197,26 +197,26 @@ def get_filter_dropdowns_layout(seasons, season_types, teams):
             dcc.Dropdown(
                 options=seasons,
                 value=STRING_CURRENT_SEASON,
-                style={"width": 500},
                 clearable=False,
                 searchable=False,
                 id="dropdown-season",
+                style={"width": 500},
             ),
             dcc.Dropdown(
                 options=season_types,
                 value="Regular Season",
-                style={"width": 500},
                 clearable=False,
                 searchable=False,
                 id="dropdown-season-type",
+                style={"width": 500},
             ),
             dcc.Dropdown(
                 options=teams,
                 value="All Teams",
-                style={"width": 500},
                 clearable=False,
                 searchable=False,
                 id="dropdown-team",
+                style={"width": 500},
             ),
         ],
         style={
@@ -273,6 +273,9 @@ def get_player_position_options_layout():
             {"label": "C", "value": "C"},
             {"label": "RW", "value": "RW"},
             {"label": "LW", "value": "LW"},
+            {"label": "RD", "value": "RD"},
+            {"label": "LD", "value": "LD"},
+            {"label": "G", "value": "G"},
         ],
         style={
             "display": "flex",
@@ -449,10 +452,10 @@ def get_leaders_layout_rows(df, stat, position):
 def layout():
     # get database data with defaults for current regular season for all teams
     players_df = query_to_formatted_df(build_player_query_url(season=CURRENT_SEASON))
-    print(players_df.columns)
     
     return html.Div(
         [
+            dcc.Store(data=players_df.to_json(), id="season-stats-df"),
             get_filter_dropdowns_layout(ALL_SEASONS, ALL_SEASON_TYPES, get_all_teams(players_df)),
             html.Div(
                 [
@@ -471,8 +474,7 @@ def layout():
             ),
             get_league_leaders_layout(players_df, [rename_data_df_cols["goals"], rename_data_df_cols["assists"], rename_data_df_cols["points"]]),
             get_agGrid_layout(players_df, "Forwards"),
-            dcc.Store(data=players_df.to_json(), id="season-stats-df"),
-        ]
+        ],
     )
 
 

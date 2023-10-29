@@ -13,6 +13,7 @@ class TeamSchema(ModelSchema):
         model_fields = [
             "id",
             "name",
+            "logo",
             "conference",
             "division",
             "start_season",

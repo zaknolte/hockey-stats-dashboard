@@ -14,6 +14,7 @@ class Team(models.Model):
     ]
     
     name = models.CharField(max_length=50)
+    logo = models.ImageField(upload_to="images/team-logo", null=True)
     conference = models.CharField(max_length=50, choices=conference_choices)
     division = models.CharField(max_length=50, choices=division_choices)
     start_season = models.IntegerField()

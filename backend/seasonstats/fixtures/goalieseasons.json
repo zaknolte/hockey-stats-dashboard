@@ -1,7 +1,7 @@
 [
     {
         "model": "seasonstats.goalieseason",
-        "pk": 8,
+        "pk": 9,
         "fields": {
             "player": 5,
             "season": 1,
@@ -21,7 +21,7 @@
     },
     {
         "model": "seasonstats.goalieseason",
-        "pk": 9,
+        "pk": 10,
         "fields": {
             "player": 5,
             "season": 3,
