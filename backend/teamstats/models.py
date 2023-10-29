@@ -20,6 +20,7 @@ class Team(models.Model):
     start_season = models.IntegerField()
     final_season = models.IntegerField(default=9999)
     city = models.CharField(max_length=50)
+    state = models.CharField(max_length=50)
     venue = models.CharField(max_length=50)
     
 
