@@ -42,6 +42,9 @@ async def query_team_stats(endpoint):
     return data
 
 
+CURRENT_SEASON = asyncio.run(query_team_stats("current_season"))["season"]
+
+
 def build_team_query_url(team, season, season_type="Regular Season"):
     """
     Builds and returns a query url to query the backend database.
@@ -81,80 +84,122 @@ def format_image(image_url):
 
 def get_team_card(team_data):
     logo = team_data["team"]["logo"][1:].replace("%3A", ":").replace("%20", " ")
-    return dbc.Card(
+    return html.Div(
+        dbc.Card(
+            [
+                dbc.Row(
+                    [
+                        dbc.Col(
+                            dbc.CardImg(
+                                src="data:image/png;base64,{}".format(format_image(logo)),
+                                className="img-fluid rounded-start",
+                            ),
+                            className="col-md-4",
+                        ),
+                        dbc.Col(
+                            dbc.CardBody(
+                                [
+                                    html.H4(team_data["team"]["name"], className="card-title"),
+                                    html.Div(
+                                        [
+                                        html.B("Conference:", style={"fontWeight": "bold", "paddingRight": 5}),
+                                        html.P(team_data["team"]["conference"])
+                                        ],
+                                        className="card-text",
+                                        style={"display": "flex"}
+                                    ),
+                                    html.Div(
+                                        [
+                                        html.B("Division:", style={"fontWeight": "bold", "paddingRight": 5}),
+                                        html.P(team_data["team"]["division"])
+                                        ],
+                                        className="card-text",
+                                        style={"display": "flex"}
+                                    ),
+                                    html.Div(
+                                        [
+                                        html.B("Inagural Season:", style={"fontWeight": "bold", "paddingRight": 5}),
+                                        html.P(team_data["team"]["start_season"])
+                                        ],
+                                        className="card-text",
+                                        style={"display": "flex"}
+                                    ),
+                                    html.Div(
+                                        [
+                                        html.P(f"{team_data['team']['city']}, {team_data['team']['state']}")
+                                        ],
+                                        className="card-text",
+                                    ),
+                                ]
+                            ),
+                            className="col-md-8",
+                            style={"paddingLeft": 10, "color": TEAM_TEXT_COLOR[team_data["team"]["name"]][0]}
+                        ),
+                    ],
+                    className="g-0 d-flex align-items-center",
+                )
+            ],
+            className="mb-3 border-0 bg-transparent",
+            style={"maxWidth": "540px", "paddingTop": 10},
+        ),
+        style={"display": "flex", "justifyContent": "center"}
+    )
+    
+def get_season_summary(team_data):
+    # text_shadow = "1px 1px 0 #000, -1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000"
+    col_style = {"border": 1, "borderRightStyle": "solid", "display": "flex", "justifyContent": "center"} #textShadow: text_shadow}
+    return html.Div(
         [
             dbc.Row(
                 [
-                    dbc.Col(
-                        dbc.CardImg(
-                            src="data:image/png;base64,{}".format(format_image(logo)),
-                            className="img-fluid rounded-start",
-                        ),
-                        className="col-md-4",
-                    ),
-                    dbc.Col(
-                        dbc.CardBody(
-                            [
-                                html.H4(team_data["team"]["name"], className="card-title"),
-                                html.Div(
-                                    [
-                                    html.B("Conference:", style={"fontWeight": "bold", "paddingRight": 5}),
-                                    html.P(team_data["team"]["conference"])
-                                    ],
-                                    className="card-text",
-                                    style={"display": "flex"}
-                                ),
-                                html.Div(
-                                    [
-                                    html.B("Division:", style={"fontWeight": "bold", "paddingRight": 5}),
-                                    html.P(team_data["team"]["division"])
-                                    ],
-                                    className="card-text",
-                                    style={"display": "flex"}
-                                ),
-                                html.Div(
-                                    [
-                                    html.B("Inagural Season:", style={"fontWeight": "bold", "paddingRight": 5}),
-                                    html.P(team_data["team"]["start_season"])
-                                    ],
-                                    className="card-text",
-                                    style={"display": "flex"}
-                                ),
-                                html.Div(
-                                    [
-                                    html.P(f"{team_data['team']['city']}, {team_data['team']['state']}")
-                                    ],
-                                    className="card-text",
-                                ),
-                            ]
-                        ),
-                        className="col-md-8",
-                        style={"paddingLeft": 10, "color": TEAM_TEXT_COLOR[team_data["team"]["name"]][0]}
-                    ),
+                    dbc.Col("Season", width={"size": 1, "offset": 2}, style=col_style),
+                    dbc.Col("GP", width=1, style=col_style, id="games-played-tooltip"),
+                    dbc.Col("W", width=1, style=col_style, id="wins-tooltip"),
+                    dbc.Col("L", width=1, style=col_style, id="losses-tooltip"),
+                    dbc.Col("ROW", width=1, style=col_style, id="row-tooltip"),
+                    dbc.Col("OTL", width=1, style=col_style, id="otl-tooltip"),
+                    dbc.Col("P", width=1, style=col_style, id="points-tooltip"),
+                    dbc.Col("Rank", width=1, style=col_style),
                 ],
-                className="g-0 d-flex align-items-center",
-            )
-        ],
-        className="mb-3 border-0 bg-transparent",
-        style={"maxWidth": "540px", "paddingTop": 10},
+                style={"color": "white"}
+            ),
+            dbc.Row(
+                [
+                    dbc.Col(team_data["season"]["year"], width={"size": 1, "offset": 2}, style=col_style),
+                    dbc.Col(team_data["games_played"], width=1, style=col_style),
+                    dbc.Col(team_data["wins"], width=1, style=col_style),
+                    dbc.Col(team_data["losses"], width=1, style=col_style),
+                    ###### TODO add ROW data to model
+                    dbc.Col("??", width=1, style=col_style),
+                    dbc.Col(team_data["overtime_loss"], width=1, style=col_style),
+                    dbc.Col(team_data["points"], width=1, style=col_style),
+                    dbc.Col(team_data["rank"], width=1, style=col_style),
+                ],
+                style={"color": "white"}
+            ),
+            dbc.Tooltip("Games Played", target="games-played-tooltip", placement="top"),
+            dbc.Tooltip("Wins", target="wins-tooltip", placement="top"),
+            dbc.Tooltip("Losses", target="losses-tooltip", placement="top"),
+            dbc.Tooltip("Regulation and Overtime Wins", target="row-tooltip", placement="top"),
+            dbc.Tooltip("Overtime Losses", target="otl-tooltip", placement="top"),
+            dbc.Tooltip("Points", target="points-tooltip", placement="top"),
+        ]
     )
 
 def layout(team=None):
     if team is None:
         return html.Div()
     
-    team_data = asyncio.run(query_team_stats(build_team_query_url(team=reverse_slugify(team), season=2023, season_type="Regular Season")))[0]
+    team_data = asyncio.run(query_team_stats(build_team_query_url(team=reverse_slugify(team), season=CURRENT_SEASON, season_type="Regular Season")))[0]
     primary_color = TEAM_COLORS[team_data["team"]["name"]][0]
     secondary_color = TEAM_COLORS[team_data["team"]["name"]][1]
+    print(team_data)
     
     return html.Div(
         [
-            html.Div(
-                [
-                    get_team_card(team_data)
-                ],
-                style={"display": "flex", "justifyContent": "center"}
-            ),
+            get_team_card(team_data),
+            get_season_summary(team_data),
+            html.Div(style={"minHeight": 700})
         ],
         # style={"backgroundColor": f"rgba{secondary_color}"}
         style={"backgroundImage": f"linear-gradient(to bottom right, rgba{primary_color}, rgba{secondary_color})"}
