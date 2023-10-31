@@ -5,7 +5,6 @@ from django.utils.text import slugify
 
 from data_values import DIVISION_TEAMS
 
-
 def build_team_col(division, division_teams):
     col = [
         html.Div(division, className="text-center px-3"),
@@ -15,15 +14,10 @@ def build_team_col(division, division_teams):
     for team in division_teams[division]:
         ref = slugify(team)
         col.append(
-            dbc.DropdownMenuItem(team, href=ref, className="text-center px-3"),
+            dbc.DropdownMenuItem(team, href=f"http://127.0.0.1:8050/teams/{ref}", className="text-center px-3"),
         )
     
     return col
-
-pacific_col = build_team_col("Pacific", DIVISION_TEAMS)
-central_col = build_team_col("Central", DIVISION_TEAMS)
-metro_col = build_team_col("Metropolitan", DIVISION_TEAMS)
-atlantic_col = build_team_col("Atlantic", DIVISION_TEAMS)
 
 
 nav = dbc.NavbarSimple(
@@ -31,35 +25,19 @@ nav = dbc.NavbarSimple(
         dbc.NavItem(dbc.NavLink("Players", href="/players")),
         dbc.DropdownMenu(
             children=[
-                dbc.DropdownMenuItem(
-                    "All Teams", href="/teams", class_name="text-center"
-                ),
-                html.Hr(),
                 dbc.Container(
                     [
                         dbc.Row(
-                            dbc.Col(
-                                pacific_col,
-                                class_name="",
-                            ),
+                            dbc.Col(build_team_col("Pacific", DIVISION_TEAMS)),
                         ),
                         dbc.Row(
-                            dbc.Col(
-                                central_col,
-                                class_name="",
-                            ),
+                            dbc.Col(build_team_col("Central", DIVISION_TEAMS)),
                         ),
                         dbc.Row(
-                            dbc.Col(
-                                metro_col,
-                                class_name="",
-                            ),
+                            dbc.Col(build_team_col("Metropolitan", DIVISION_TEAMS)),
                         ),
                         dbc.Row(
-                            dbc.Col(
-                                atlantic_col,
-                                class_name="",
-                            ),
+                            dbc.Col(build_team_col("Atlantic", DIVISION_TEAMS)),
                         ),
                     ],
                     class_name="d-flex justify-content-between",
