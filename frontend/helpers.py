@@ -1,8 +1,28 @@
-def stringify_season(season):
+def stringify_season(season:int):
+    """
+    Return a string representation of the full league season. If given an int of 2023, will return '2023-2024'
+ 
+    Args:
+        season (str): Year that the season begins.
+ 
+    Returns:
+        str: String of season range.
+    """
     return f"{season}-{season + 1}"
 
 
-def reverse_slugify(slug):
+def reverse_slugify(slug:str):
+    """
+    Return an un-slugged string. Will replace all '-' characters with a space and then capitalize each word.
+    
+    Example: 'arizona-coyotes' -> 'Arizona Coyotes'
+ 
+    Args:
+        slug (str): Slug string to be converted.
+ 
+    Returns:
+        str: String of season range.
+    """
     return slug.replace("-", " ").title()
 
 # helper dict to rename data from database to a more readable column header
@@ -70,7 +90,7 @@ abbreviated_data_df_cols = {
 }
 
 
-def add_default_text_columnDef(field, **kwargs):
+def add_default_text_columnDef(field:str, **kwargs):
     """
     Add a filterable columnDef field for text data to an existing AG Grid columnDef list.
  
@@ -90,7 +110,7 @@ def add_default_text_columnDef(field, **kwargs):
     return columnDef
     
 
-def add_default_number_columnDef(field, center=True, **kwargs):
+def add_default_number_columnDef(field:str, center=True, **kwargs):
     """
     Add a filterable columnDef field for numeric data to an existing AG Grid columnDef list.
  
@@ -117,7 +137,7 @@ def add_default_number_columnDef(field, center=True, **kwargs):
     return columnDef
     
 
-def get_ag_grid_columnDefs(grid_type):
+def get_ag_grid_columnDefs(grid_type:str):
     """
     Return a list of all columnDef fields to add to existing dag.AgGrid.
  
