@@ -14,7 +14,7 @@ from pathlib import Path
 from io import StringIO
 
 # from app import DJANGO_ROOT
-from helpers import stringify_season, rename_data_df_cols, update_ag_grid_display_cols, get_ag_grid_columnDefs
+from helpers import stringify_season, rename_data_df_cols, get_ag_grid_columnDefs
 
 dash.register_page(__name__, path="/players")
 
@@ -308,7 +308,7 @@ def get_agGrid_layout(df, position):
         className="ag-theme-alpine",
         columnSize="autoSize",
         defaultColDef = {"headerClass": 'center-aligned-header'},
-        style={"paddingLeft": 50, "paddingRight": 50},
+        style={"paddingLeft": 50, "paddingRight": 50, "paddingBottom": 50},
     )
 
 
@@ -524,6 +524,7 @@ def update_player_position_options(player_group):
     Output("rows-leader-stat-2", "children"),
     Output("rows-leader-stat-3", "children"),
     Output("player-stats-grid", "rowData"),
+    Output("player-stats-grid", "columnDefs"),
     Input("dropdown-leader-stat-1", "value"),
     Input("dropdown-leader-stat-2", "value"),
     Input("dropdown-leader-stat-3", "value"),
@@ -533,10 +534,10 @@ def update_player_position_options(player_group):
 )
 def update_leader_stats(stat_left, stat_center, stat_right, player_position, data):
     df = pd.read_json(StringIO(data))
-
+    
     left = get_leaders_layout_rows(df, stat_left, player_position)
     center = get_leaders_layout_rows(df, stat_center, player_position)
     right = get_leaders_layout_rows(df, stat_right, player_position)
-    df = update_ag_grid_display_cols(df)
+    df = df.rename(columns=rename_data_df_cols)
 
-    return left, center, right, df.to_dict("records")
+    return left, center, right, df.to_dict("records"), get_ag_grid_columnDefs(player_position)
