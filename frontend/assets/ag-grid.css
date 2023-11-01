@@ -1,3 +1,15 @@
 .center-aligned-header .ag-header-cell-label {
     justify-content: center;
 }
+
+.ag-header-cell-filtered {
+    background-color: #8fc2d1 !important;
+    color: #fff !important;
+}
+
+.ag-theme-alpine {
+    --ag-header-column-separator-display: block;
+    --ag-header-column-separator-width: 1px;
+    --ag-header-column-separator-color: black;
+    --ag-header-cell-hover-background-color: #b7d0d8;
+}
