@@ -111,6 +111,7 @@ def get_team_card(team_data):
                             dbc.CardImg(
                                 src="data:image/png;base64,{}".format(format_image(logo)),
                                 className="img-fluid rounded-start",
+                                style={"maxWidth": 200}
                             ),
                             className="col-md-4",
                         ),
@@ -151,7 +152,8 @@ def get_team_card(team_data):
                                 ]
                             ),
                             className="col-md-8",
-                            style={"paddingLeft": 10, "color": TEAM_TEXT_COLOR[team_data["team"]["name"]][0]}
+                            style={"paddingLeft": 10, "color": "white"}
+                            # style={"paddingLeft": 10, "color": TEAM_TEXT_COLOR[team_data["team"]["name"]][0]}
                         ),
                     ],
                     className="g-0 d-flex align-items-center",
