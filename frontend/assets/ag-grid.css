@@ -7,9 +7,9 @@
     color: #fff !important;
 }
 
-.ag-theme-alpine {
+.ag-theme-alpine.playerstats-grid {
     --ag-header-column-separator-display: block;
     --ag-header-column-separator-width: 1px;
-    --ag-header-column-separator-color: black;
+    --ag-header-column-separator-color: rgb(160, 160, 160);
     --ag-header-cell-hover-background-color: #b7d0d8;
 }
