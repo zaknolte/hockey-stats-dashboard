@@ -314,7 +314,7 @@ def get_agGrid_layout(df:object, position:str):
         rowData=df.to_dict("records"),
         columnDefs=get_ag_grid_columnDefs(position),
         id="player-stats-grid",
-        className="ag-theme-alpine",
+        className="ag-theme-alpine playerstats-grid",
         columnSize="autoSize",
         defaultColDef = {"headerClass": 'center-aligned-header'},
         style={"paddingLeft": 50, "paddingRight": 50, "paddingBottom": 50},
