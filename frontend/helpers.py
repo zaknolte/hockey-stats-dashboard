@@ -29,6 +29,7 @@ def reverse_slugify(slug:str):
 rename_data_df_cols = {
     "player.full_name": "Name",
     "player.team.name": "Team",
+    "team.name": "Team",
     "player.position": "Position",
     "season.year": "Season",
     "season.season_type": "Season Type",
@@ -148,7 +149,7 @@ def get_ag_grid_columnDefs(grid_type:str):
         List of dicts of all columnDef field parameters.
     """
     columnDefs = [
-        add_default_text_columnDef(rename_data_df_cols["player.full_name"], pinned="left", cellRenderer="NameLink"),
+        add_default_text_columnDef(rename_data_df_cols["player.full_name"], pinned="left", lockPinned=True, cellRenderer="NameLink"),
         add_default_number_columnDef(rename_data_df_cols["season.year"], center=False, width=None),
         {"field": rename_data_df_cols["season.season_type"]},
         {"field": rename_data_df_cols["player.team.name"]},

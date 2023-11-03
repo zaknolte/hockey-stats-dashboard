@@ -1,0 +1,34 @@
+/* changes the text color of input box */
+.team-stats .Select-value-label {
+    color: var(--team-text-color-secondary) !important;
+}
+
+/* border of the input box */
+.team-stats .Select--single>.Select-control .Select-value,
+.team-stats .Select-placeholder {
+    border: 2px solid var(--team-color-secondary);
+    border-radius: 10px;
+}
+
+
+/* dropdown menu options */
+.team-stats .VirtualizedSelectOption {
+    background-color: var(--team-color-secondary);
+    color: var(--team-text-color-secondary);
+}
+
+
+/* dropdown menu hover effect */
+.team-stats .VirtualizedSelectFocusedOption {
+    background-color: var(--team-color-primary);
+    color: var(--team-text-color-primary);
+}
+
+
+/* border on focus - default is blue
+ * shadow box around input box.  default is blue
+ */
+.team-stats.is-focused:not(.is-open)>.Select-control {
+    border-color: var(--team-color-primary);
+    box-shadow: var(--team-color-primary);
+}
