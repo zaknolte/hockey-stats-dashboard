@@ -14,7 +14,7 @@ from pathlib import Path
 from io import StringIO
 
 from data_values import TEAM_COLORS, TEAM_TEXT_COLOR
-from helpers import reverse_slugify, rename_data_df_cols
+from helpers import reverse_slugify, rename_data_df_cols, get_colors
 
 
 def title(team):
@@ -56,10 +56,10 @@ def query_to_formatted_df(query: str):
         obj: Formatted dataFrame of database data.
     """
 
-    df = pd.json_normalize(asyncio.run(
-        query_team_stats(query))).set_index("id")
+    df = pd.json_normalize(asyncio.run(query_team_stats(query))).set_index("id")
     df = df.rename(columns=rename_data_df_cols)
-
+    df = df.sort_values(rename_data_df_cols["team.name"], ascending=False)
+    
     return df
 
 
@@ -101,7 +101,7 @@ def format_image(image_url):
 
 
 def get_team_card(team_data):
-    logo = team_data["team"]["logo"][1:].replace("%3A", ":").replace("%20", " ")
+    logo = team_data[rename_data_df_cols["team.logo"]][1:].replace("%3A", ":").replace("%20", " ")
     return html.Div(
         dbc.Card(
             [
@@ -118,11 +118,11 @@ def get_team_card(team_data):
                         dbc.Col(
                             dbc.CardBody(
                                 [
-                                    html.H4(team_data["team"]["name"], className="card-title"),
+                                    html.H4(team_data[rename_data_df_cols["team.name"]], className="card-title"),
                                     html.Div(
                                         [
                                             html.B("Conference:", style={"fontWeight": "bold", "paddingRight": 5}),
-                                            html.P(team_data["team"]["conference"])
+                                            html.P(team_data[rename_data_df_cols["team.conference"]])
                                         ],
                                         className="card-text",
                                         style={"display": "flex"}
@@ -130,7 +130,7 @@ def get_team_card(team_data):
                                     html.Div(
                                         [
                                             html.B("Division:", style={"fontWeight": "bold", "paddingRight": 5}),
-                                            html.P(team_data["team"]["division"])
+                                            html.P(team_data[rename_data_df_cols["team.division"]])
                                         ],
                                         className="card-text",
                                         style={"display": "flex"}
@@ -138,14 +138,14 @@ def get_team_card(team_data):
                                     html.Div(
                                         [
                                             html.B("Inagural Season:", style={"fontWeight": "bold", "paddingRight": 5}),
-                                            html.P(team_data["team"]["start_season"])
+                                            html.P(team_data[rename_data_df_cols["team.start_season"]])
                                         ],
                                         className="card-text",
                                         style={"display": "flex"}
                                     ),
                                     html.Div(
                                         [
-                                            html.P(f"{team_data['team']['city']}, {team_data['team']['state']}")
+                                            html.P(f"{team_data[rename_data_df_cols['team.city']]}, {team_data[rename_data_df_cols['team.state']]}")
                                         ],
                                         className="card-text",
                                     ),
@@ -185,15 +185,15 @@ def get_season_summary(team_data):
             ),
             dbc.Row(
                 [
-                    dbc.Col(team_data["season"]["year"], width={"size": 1, "offset": 2}, style=col_style),
-                    dbc.Col(team_data["games_played"], width=1, style=col_style),
-                    dbc.Col(team_data["wins"], width=1, style=col_style),
-                    dbc.Col(team_data["losses"], width=1, style=col_style),
+                    dbc.Col(team_data[rename_data_df_cols["season.year"]], width={"size": 1, "offset": 2}, style=col_style),
+                    dbc.Col(team_data[rename_data_df_cols["games_played"]], width=1, style=col_style),
+                    dbc.Col(team_data[rename_data_df_cols["wins"]], width=1, style=col_style),
+                    dbc.Col(team_data[rename_data_df_cols["losses"]], width=1, style=col_style),
                     # TODO add ROW data to model
                     dbc.Col("??", width=1, style=col_style),
-                    dbc.Col(team_data["overtime_loss"], width=1, style=col_style),
-                    dbc.Col(team_data["points"], width=1, style=col_style),
-                    dbc.Col(team_data["rank"], width=1, style=col_style),
+                    dbc.Col(team_data[rename_data_df_cols["overtime_loss"]], width=1, style=col_style),
+                    dbc.Col(team_data[rename_data_df_cols["points"]], width=1, style=col_style),
+                    dbc.Col(team_data[rename_data_df_cols["rank"]], width=1, style=col_style),
                 ],
                 style={"color": "white"}
             ),
@@ -208,29 +208,23 @@ def get_season_summary(team_data):
 
 
 def get_single_season_dropdown(df):
-    # css rbga(#,#,#,#) values to pass to css stylesheet variables
-    primary_color = f"rgba{TEAM_COLORS[df[rename_data_df_cols['team.name']].values[0]][0]}"
-    secondary_color = f"rgba{TEAM_COLORS[df[rename_data_df_cols['team.name']].values[0]][1]}"
-    # css color name to pass to css stylesheet variable
-    primary_text_color = TEAM_TEXT_COLOR[df[rename_data_df_cols['team.name']].values[0]][0]
-    secondary_text_color = TEAM_TEXT_COLOR[df[rename_data_df_cols['team.name']].values[0]][1]
+    team_name = df[rename_data_df_cols['team.name']].values[0]
 
     return html.Div(
         dcc.Dropdown(
-            # option,
-            options=pd.unique(df[rename_data_df_cols["season.year"]].sort_values(ascending=False)),
-            value=CURRENT_SEASON,
+            options=pd.unique(df[rename_data_df_cols["season.year"]]),
+            value=df[rename_data_df_cols["season.year"]].values[0],
             clearable=False,
             searchable=False,
             id="dropdown-season",
             className="team-stats",
             style={
                 "width": "100px",
-                "backgroundColor": secondary_color,
-                "--team-text-color-primary": primary_text_color,
-                "--team-text-color-secondary": secondary_text_color,
-                "--team-color-primary": primary_color,
-                "--team-color-secondary": secondary_color
+                "backgroundColor": get_colors(team_name, "secondary"),
+                "--team-text-color-primary": get_colors(team_name, "primary_text"),
+                "--team-text-color-secondary": get_colors(team_name, "secondary_text"),
+                "--team-color-primary": get_colors(team_name, "primary"),
+                "--team-color-secondary": get_colors(team_name, "secondary")
             },
         ),
         style={"display": "flex", "justifyContent": "center"}
@@ -241,21 +235,19 @@ def layout(team=None):
     if team is None:
         return html.Div()
 
-    team_data = asyncio.run(query_team_stats(build_team_query_url(team=reverse_slugify(team), season="All Seasons", season_type="Regular Season")))
-    df = pd.json_normalize(team_data).set_index("id")
-    df = df.rename(columns=rename_data_df_cols)
+    df = query_to_formatted_df(build_team_query_url(team=reverse_slugify(team), season="All Seasons", season_type="Regular Season"))
 
-    primary_color = TEAM_COLORS[reverse_slugify(team)][0]
-    secondary_color = TEAM_COLORS[reverse_slugify(team)][1]
+    primary_color = get_colors(df[rename_data_df_cols["team.name"]].values[0], "primary")
+    secondary_color = get_colors(df[rename_data_df_cols["team.name"]].values[0], "secondary")
 
     return html.Div(
         [
-            get_team_card(team_data[0]),
-            get_season_summary(team_data[0]),
+            get_team_card(df.iloc[0]),
+            get_season_summary(df.iloc[0]),
             html.Div(style={"borderBottom": 1, "borderBottomStyle": "solid", "width": 500, "color": "white", "margin": "auto", "paddingTop": 25}),
             html.H3("Single Season Stats", style={"color": "white", "display": "flex", "justifyContent": "center", "paddingTop": 25}),
             get_single_season_dropdown(df),
             # html.Div(style={"minHeight": 700})
         ],
-        style={"backgroundImage": f"linear-gradient(to bottom right, rgba{primary_color}, rgba{secondary_color})"}
+        style={"backgroundImage": f"linear-gradient(to bottom right, {primary_color}, {secondary_color})"}
     )

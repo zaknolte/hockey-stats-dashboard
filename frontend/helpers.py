@@ -1,3 +1,15 @@
+from data_values import TEAM_COLORS, TEAM_TEXT_COLOR
+
+def get_colors(team_name, color="primary"):
+    colors = {
+        "primary": f"rgba{TEAM_COLORS[team_name][0]}",
+        "primary_text": f"rgba{TEAM_TEXT_COLOR[team_name][0]}",
+        "secondary": f"rgba{TEAM_COLORS[team_name][1]}",
+        "secondary_text": f"rgba{TEAM_TEXT_COLOR[team_name][1]}",
+    }
+    
+    return colors.get(color, "primary")
+
 def stringify_season(season:int):
     """
     Return a string representation of the full league season. If given an int of 2023, will return '2023-2024'
@@ -29,7 +41,6 @@ def reverse_slugify(slug:str):
 rename_data_df_cols = {
     "player.full_name": "Name",
     "player.team.name": "Team",
-    "team.name": "Team",
     "player.position": "Position",
     "season.year": "Season",
     "season.season_type": "Season Type",
@@ -63,7 +74,17 @@ rename_data_df_cols = {
     "saves": "Saves",
     "saves_pp": "PP Saves",
     "saves_sh": "SH Saves",
-    "wins": "Wins"    
+    "wins": "Wins",
+    "losses": "Losses",
+    "overtime_loss": "OTL",
+    "rank": "League Rank",
+    "team.name": "Team",
+    "team.logo": "Logo",
+    "team.conference": "Conference",
+    "team.division": "Division",
+    "team.start_season": "Inagural Season",
+    "team.city": "City",
+    "team.state": "State",
 }
 
 # used to abbreviate data from database for more compact readability in tables
