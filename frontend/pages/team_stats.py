@@ -58,7 +58,7 @@ def query_to_formatted_df(query: str):
 
     df = pd.json_normalize(asyncio.run(query_team_stats(query))).set_index("id")
     df = df.rename(columns=rename_data_df_cols)
-    df = df.sort_values(rename_data_df_cols["team.name"], ascending=False)
+    df = df.sort_values(rename_data_df_cols["season.year"], ascending=False)
     
     return df
 
@@ -166,26 +166,25 @@ def get_team_card(team_data):
     )
 
 
-def get_season_summary(team_data):
+def get_season_summary(team_data, offset, layout_id):
     col_style = {"border": 1, "borderRightStyle": "solid", "display": "flex", "justifyContent": "center"}
-    return html.Div(
-        [
+    return [
             dbc.Row(
                 [
-                    dbc.Col("Season", width={"size": 1, "offset": 2}, style=col_style),
-                    dbc.Col("GP", width=1, style=col_style, id="games-played-tooltip"),
-                    dbc.Col("W", width=1, style=col_style, id="wins-tooltip"),
-                    dbc.Col("L", width=1, style=col_style, id="losses-tooltip"),
-                    dbc.Col("ROW", width=1, style=col_style, id="row-tooltip"),
-                    dbc.Col("OTL", width=1, style=col_style, id="otl-tooltip"),
-                    dbc.Col("P", width=1, style=col_style, id="points-tooltip"),
+                    dbc.Col("Season", width={"size": 1, "offset": offset}, style=col_style),
+                    dbc.Col("GP", width=1, style=col_style, id=f"games-played-tooltip-{layout_id}"),
+                    dbc.Col("W", width=1, style=col_style, id=f"wins-tooltip-{layout_id}"),
+                    dbc.Col("L", width=1, style=col_style, id=f"losses-tooltip-{layout_id}"),
+                    dbc.Col("ROW", width=1, style=col_style, id=f"row-tooltip-{layout_id}"),
+                    dbc.Col("OTL", width=1, style=col_style, id=f"otl-tooltip-{layout_id}"),
+                    dbc.Col("P", width=1, style=col_style, id=f"points-tooltip-{layout_id}"),
                     dbc.Col("Rank", width=1, style=col_style),
                 ],
                 style={"color": "white"}
             ),
             dbc.Row(
                 [
-                    dbc.Col(team_data[rename_data_df_cols["season.year"]], width={"size": 1, "offset": 2}, style=col_style),
+                    dbc.Col(team_data[rename_data_df_cols["season.year"]], width={"size": 1, "offset": offset}, style=col_style),
                     dbc.Col(team_data[rename_data_df_cols["games_played"]], width=1, style=col_style),
                     dbc.Col(team_data[rename_data_df_cols["wins"]], width=1, style=col_style),
                     dbc.Col(team_data[rename_data_df_cols["losses"]], width=1, style=col_style),
@@ -197,14 +196,13 @@ def get_season_summary(team_data):
                 ],
                 style={"color": "white"}
             ),
-            dbc.Tooltip("Games Played", target="games-played-tooltip", placement="top"),
-            dbc.Tooltip("Wins", target="wins-tooltip", placement="top"),
-            dbc.Tooltip("Losses", target="losses-tooltip", placement="top"),
-            dbc.Tooltip("Regulation and Overtime Wins", target="row-tooltip", placement="top"),
-            dbc.Tooltip("Overtime Losses", target="otl-tooltip", placement="top"),
-            dbc.Tooltip("Points", target="points-tooltip", placement="top"),
+            dbc.Tooltip("Games Played", target=f"games-played-tooltip-{layout_id}", placement="top"),
+            dbc.Tooltip("Wins", target=f"wins-tooltip-{layout_id}", placement="top"),
+            dbc.Tooltip("Losses", target=f"losses-tooltip-{layout_id}", placement="top"),
+            dbc.Tooltip("Regulation and Overtime Wins", target=f"row-tooltip-{layout_id}", placement="top"),
+            dbc.Tooltip("Overtime Losses", target=f"otl-tooltip-{layout_id}", placement="top"),
+            dbc.Tooltip("Points", target=f"points-tooltip-{layout_id}", placement="top"),
         ]
-    )
 
 
 def get_single_season_dropdown(df):
@@ -216,7 +214,7 @@ def get_single_season_dropdown(df):
             value=df[rename_data_df_cols["season.year"]].values[0],
             clearable=False,
             searchable=False,
-            id="dropdown-season",
+            id="dropdown-team-season",
             className="team-stats",
             style={
                 "width": "100px",
@@ -227,7 +225,6 @@ def get_single_season_dropdown(df):
                 "--team-color-secondary": get_colors(team_name, "secondary")
             },
         ),
-        style={"display": "flex", "justifyContent": "center"}
     )
 
 
@@ -235,19 +232,47 @@ def layout(team=None):
     if team is None:
         return html.Div()
 
-    df = query_to_formatted_df(build_team_query_url(team=reverse_slugify(team), season="All Seasons", season_type="Regular Season"))
+    df = query_to_formatted_df(build_team_query_url(team="All Teams", season="All Seasons", season_type="Regular Season"))
+    team_df = df[df[rename_data_df_cols["team.name"]] == reverse_slugify(team)]
+    # df = query_to_formatted_df(build_team_query_url(team=reverse_slugify(team), season="All Seasons", season_type="Regular Season"))
 
-    primary_color = get_colors(df[rename_data_df_cols["team.name"]].values[0], "primary")
-    secondary_color = get_colors(df[rename_data_df_cols["team.name"]].values[0], "secondary")
+    primary_color = get_colors(team_df[rename_data_df_cols["team.name"]].values[0], "primary")
+    secondary_color = get_colors(team_df[rename_data_df_cols["team.name"]].values[0], "secondary")
 
     return html.Div(
         [
-            get_team_card(df.iloc[0]),
-            get_season_summary(df.iloc[0]),
+            dcc.Store(data=df.to_json(), id="team-stats-df"),
+            dcc.Store(data=team, id="team-name"),
+            
+            get_team_card(team_df.iloc[0]),
+            html.Div(get_season_summary(team_df.iloc[0], offset=2, layout_id=1), id="current-season-summary"),
             html.Div(style={"borderBottom": 1, "borderBottomStyle": "solid", "width": 500, "color": "white", "margin": "auto", "paddingTop": 25}),
-            html.H3("Single Season Stats", style={"color": "white", "display": "flex", "justifyContent": "center", "paddingTop": 25}),
-            get_single_season_dropdown(df),
+            html.H3("Single Season Stats", style={"color": "white", "display": "flex", "justifyContent": "center", "paddingTop": 25, "paddingBottom": 25}),
+            html.Div(
+                [
+                    html.Div("Season:", style={"color": "white", "paddingRight": "2%"}),
+                    get_single_season_dropdown(team_df),
+                    html.Div(
+                        get_season_summary(team_df.iloc[0], offset=1, layout_id=2),
+                        id="selected-season-summary",
+                        style={"width": "100%"}),
+                ],
+                style={"display": "flex", "paddingLeft": "5%", "alignItems": "center"}
+            ),
             # html.Div(style={"minHeight": 700})
         ],
         style={"backgroundImage": f"linear-gradient(to bottom right, {primary_color}, {secondary_color})"}
     )
+
+
+@callback(
+    Output("selected-season-summary", "children"),
+    Input("dropdown-team-season", "value"),
+    State("team-stats-df", "data"),
+    State("team-name", "data"),
+    # prevent_initial_call=True
+)
+def update_selected_season_summary(season, data, team_name):
+    df = pd.read_json(StringIO(data))
+    team_df = df[(df[rename_data_df_cols["team.name"]] == reverse_slugify(team_name)) & (df[rename_data_df_cols["season.year"]] == season)]
+    return get_season_summary(team_df.iloc[0], offset=1, layout_id=2)
