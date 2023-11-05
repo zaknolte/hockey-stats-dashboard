@@ -5,6 +5,7 @@
         "fields": {
             "team": 1,
             "game": 1,
+            "game_number": 1,
             "goals": 3,
             "goals_pp": 0,
             "goals_sh": 0,
@@ -32,6 +33,7 @@
         "fields": {
             "team": 1,
             "game": 2,
+            "game_number": 2,
             "goals": 0,
             "goals_pp": 0,
             "goals_sh": 0,
@@ -57,8 +59,37 @@
         "model": "gamestats.teamgame",
         "pk": 3,
         "fields": {
+            "team": 3,
+            "game": 2,
+            "game_number": 2,
+            "goals": 5,
+            "goals_pp": 0,
+            "goals_sh": 0,
+            "goals_against": 0,
+            "goals_against_pp": 0,
+            "goals_against_sh": 0,
+            "shots": 39,
+            "shots_against": 24,
+            "hits": 7,
+            "penalty_minutes": 16,
+            "penalties_taken": 8,
+            "penalty_seconds_served": 810,
+            "faceoffs_taken": 21,
+            "faceoffs_won": 9,
+            "faceoffs_lost": 12,
+            "faceoff_percent": 45.5,
+            "giveaways": 9,
+            "takeaways": 2,
+            "blocked_shots": 7
+        }
+    },
+    {
+        "model": "gamestats.teamgame",
+        "pk": 4,
+        "fields": {
             "team": 1,
             "game": 3,
+            "game_number": 1,
             "goals": 3,
             "goals_pp": 2,
             "goals_sh": 0,
@@ -82,10 +113,11 @@
     },
     {
         "model": "gamestats.teamgame",
-        "pk": 4,
+        "pk": 5,
         "fields": {
             "team": 1,
             "game": 4,
+            "game_number": 2,
             "goals": 3,
             "goals_pp": 0,
             "goals_sh": 0,

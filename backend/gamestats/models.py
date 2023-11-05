@@ -28,6 +28,7 @@ class Game(models.Model):
 class PlayerGame(models.Model):
     player = models.ForeignKey(to=Player, on_delete=models.CASCADE)  
     game = models.ForeignKey(to=Game, on_delete=models.CASCADE)
+    game_number = models.IntegerField()
     goals = models.IntegerField()
     goals_pp = models.IntegerField()
     goals_sh = models.IntegerField()
@@ -54,11 +55,14 @@ class PlayerGame(models.Model):
     blocked_shots = models.IntegerField()
     plus_minus = models.IntegerField()
     
+    def __str__(self):
+        return f'{self.player__full_name} {self.game__game_date}'
 
 class GoalieGame(models.Model):
     player = models.ForeignKey(to=Player, on_delete=models.CASCADE)
     game = models.ForeignKey(to=Game, on_delete=models.CASCADE)
     goals = models.IntegerField()
+    game_number = models.IntegerField()
     assists = models.IntegerField()
     time_on_ice_minutes = models.IntegerField()
     time_on_ice_seconds = models.IntegerField()
@@ -69,11 +73,14 @@ class GoalieGame(models.Model):
     saves_pp = models.IntegerField()
     saves_sh = models.IntegerField()
     did_win = models.BooleanField()
-    
+
+    def __str__(self):
+        return f'{self.player__full_name} {self.game__game_date}'
     
 class TeamGame(models.Model):
     team = models.ForeignKey(to=Team, on_delete=models.CASCADE)
     game = models.ForeignKey(to=Game, on_delete=models.CASCADE)
+    game_number = models.IntegerField()
     goals = models.IntegerField()
     goals_pp = models.IntegerField()
     goals_sh = models.IntegerField()
@@ -93,3 +100,6 @@ class TeamGame(models.Model):
     giveaways = models.IntegerField()
     takeaways = models.IntegerField()
     blocked_shots = models.IntegerField()
+    
+    def __str__(self):
+        return f'{self.team__name} {self.game__game_date}'
