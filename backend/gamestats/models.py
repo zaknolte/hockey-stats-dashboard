@@ -2,6 +2,7 @@ from django.db import models
 
 from playerstats.models import Player
 from teamstats.models import Team
+from seasonstats.models import Season
 
 
 class Event(models.Model):
@@ -18,6 +19,7 @@ class Game(models.Model):
     players = models.ManyToManyField(to=Player)
     home_team = models.ForeignKey(to=Team, on_delete=models.CASCADE, related_name="home_team")
     away_team = models.ForeignKey(to=Team, on_delete=models.CASCADE, related_name="away_team")
+    season = models.ForeignKey(to=Season, on_delete=models.CASCADE)
     game_date = models.DateField()
     game_start_time = models.DateTimeField()
     events = models.ManyToManyField(to=Event)
@@ -75,15 +77,19 @@ class TeamGame(models.Model):
     goals = models.IntegerField()
     goals_pp = models.IntegerField()
     goals_sh = models.IntegerField()
+    goals_against = models.IntegerField()
+    goals_against_pp = models.IntegerField()
+    goals_against_sh = models.IntegerField()
     shots = models.IntegerField()
+    shots_against = models.IntegerField()
     hits = models.IntegerField()
     penalty_minutes = models.IntegerField()
     penalties_taken = models.IntegerField()
-    penalty_minutes_served = models.IntegerField()
+    penalty_seconds_served = models.FloatField()
     faceoffs_taken = models.IntegerField()
     faceoffs_won = models.IntegerField()
     faceoffs_lost = models.IntegerField()
-    faceoff_percent = models.IntegerField()
+    faceoff_percent = models.FloatField()
     giveaways = models.IntegerField()
     takeaways = models.IntegerField()
     blocked_shots = models.IntegerField()

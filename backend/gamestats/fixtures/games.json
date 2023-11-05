@@ -1,0 +1,50 @@
+[
+    {
+        "model": "gamestats.game",
+        "pk": 1,
+        "fields": {
+            "players": [1,2,3,4,5],
+            "home_team": 1,
+            "away_team": 2,
+            "season": 1,
+            "game_date": "2023-11-07",
+            "game_start_time": "2023-11-07 19:00:00.000000+00:00"
+        }
+    },
+    {
+        "model": "gamestats.game",
+        "pk": 2,
+        "fields": {
+            "players": [1,2,3,4,5],
+            "home_team": 1,
+            "away_team": 3,
+            "season": 1,
+            "game_date": "2023-11-08",
+            "game_start_time": "2023-11-08 19:00:00.000000+00:00"
+        }
+    },
+    {
+        "model": "gamestats.game",
+        "pk": 3,
+        "fields": {
+            "players": [1,2,3,4,5],
+            "home_team": 7,
+            "away_team": 1,
+            "season": 3,
+            "game_date": "2023-11-10",
+            "game_start_time": "2023-11-10 17:30:00.000000+00:00"
+        }
+    },
+    {
+        "model": "gamestats.game",
+        "pk": 4,
+        "fields": {
+            "players": [1,2,3,4,5],
+            "home_team": 14,
+            "away_team": 1,
+            "season": 3,
+            "game_date": "2023-11-12",
+            "game_start_time": "2023-11-12 17:00:00.000000+00:00"
+        }
+    }
+]
