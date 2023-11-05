@@ -10,8 +10,29 @@ from seasonstats.api import SeasonSchema
 game_router = Router()
         
 
+class PlayerGameSchema(Schema):
+    id: int
+    full_name: str
+    team_name: str = Field(..., alias="team.name")
+    position: list[str] = Field(..., alias="position")
+    
+    # Player.position is list of dicts
+    # Schema will return - position: [position: {...}, position: {...}]
+    # Flatten response to just a list of values with resolver - position: [...]
+    @staticmethod
+    def resolve_position(obj):
+         return [i.position for i in obj.position.all()]
+     
+     
+class TeamGameSchema(Schema):
+    id: int
+    name: str
+    conference: str
+    division: str
+
+
 class EventSchema(ModelSchema):
-    player: PlayerSchema
+    player: PlayerGameSchema
 
     class Config:
         model = Event
@@ -29,9 +50,9 @@ class EventSchema(ModelSchema):
 
 
 class GameSchema(ModelSchema):
-    players: List[PlayerSchema]
-    home_team: TeamSchema
-    away_team: TeamSchema
+    players: List[PlayerGameSchema]
+    home_team: TeamGameSchema
+    away_team: TeamGameSchema
     season: SeasonSchema
     events: List[EventSchema]
     class Config:
@@ -49,24 +70,22 @@ class GameSchema(ModelSchema):
 
 
 @game_router.get("/all", response=List[GameSchema])
-def get_all_games(request, season):
-    kwargs = {}
+def get_all_games(request):
+    return Game.objects.all()
+
+
+@game_router.get("/", response=List[GameSchema])
+def get_games(request, season="All Seasons", season_type="Regular Season", team_name="All Teams"):
+    kwargs = {"season__season_type": season_type}
+    
     if season != "All Seasons":
         kwargs["season__year"] = season
-        
-    return Game.objects.filter(**kwargs)
-
-
-@game_router.get("/game", response=List[GameSchema])
-def get_games(request, season, season_type="Regular Season", team_name="All Teams"):
-    kwargs = {"season__season_type": season_type, "season__year": season}
-
     if team_name != "All Teams":
         kwargs["home_team__name"] = team_name
         kwargs["away_team__name"] = team_name
         
     return Game.objects.filter(**kwargs)
 
-@game_router.get("/game/id", response=GameSchema)
-def get_game_by_id(request, pk):
-    return Game.objects.get(pk=pk)
+@game_router.get("/game", response=GameSchema)
+def get_game(request, id):
+    return Game.objects.get(pk=id)

@@ -35,8 +35,17 @@ class PlayerSchema(ModelSchema):
         ]
 
     # Player.position is list of dicts
-    # Schema will return  - position: [position: {...}, position: {...}]
+    # Schema will return - position: [position: {...}, position: {...}]
     # Flatten response to just a list of values with resolver - position: [...]
     @staticmethod
     def resolve_position(obj):
          return [i.position for i in obj.position.all()]
+     
+     
+@player_router.get("/", response=PlayerSchema)
+def get_player(request, id):
+    return Player.objects.get(pk=id)
+
+@player_router.get("/all", response=List[PlayerSchema])
+def get_all_players(request, pk):
+    return Player.objects.all()
