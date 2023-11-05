@@ -41,7 +41,7 @@ async def query_player_stats(endpoint:str):
 PLAYER_STATS = ["Goals", "Assists", "Points"]
 CURRENT_SEASON = asyncio.run(query_player_stats("current_season"))["season"]
 STRING_CURRENT_SEASON = stringify_season(CURRENT_SEASON)
-ALL_SEASONS = ["All Seasons"] + [stringify_season(season["season"])for season in asyncio.run(query_player_stats("all_seasons"))]
+ALL_SEASONS = ["All Seasons"] + [stringify_season(season) for season in asyncio.run(query_player_stats("all_seasons"))["season"]]
 ALL_SEASON_TYPES = [k["season_type"] for k in asyncio.run(query_player_stats("all_season_types"))]
 
 
@@ -132,17 +132,9 @@ def query_to_formatted_df(query:str):
     Returns:
         obj: Formatted dataFrame of database data.
     """
-    def split_player_position_col(x):
-        vals = []
-        for i in x:
-            vals.append(i["position"])
-        return vals
-    
     df = pd.json_normalize(asyncio.run(query_player_stats(query))).set_index("id")
     df = df.rename(columns=rename_data_df_cols)
-    # Positions queried as list of dicts
-    # reduce Positions to just a list of dict values
-    df[rename_data_df_cols["player.position"]] = df[rename_data_df_cols["player.position"]].apply(split_player_position_col)
+
     return df
     
 

@@ -164,7 +164,7 @@ class TeamSeasonSchema(ModelSchema):
         
 
 @season_router.get("/players/all", response=List[AllPlayerSchema])
-def get__all_player_season(request, season, season_type="Regular Season", team_name="All Teams"):
+def get_all_player_season(request, season, season_type="Regular Season", team_name="All Teams"):
     kwargs = {"season__season_type": season_type}
     
     if season != "All Seasons":
@@ -212,28 +212,33 @@ def get_team_season(request, season, season_type="Regular Season", team_name="Al
 
         
 class CurrentSeasonSchema(Schema):
-    season: int = Field(..., alias="season.year")
+    season: int = Field(..., alias="year")
         
 
 class SeasonTypeSchema(Schema):
-    season_type: str = Field(..., alias="season__season_type")
+    season_type: str = Field(..., alias="season_type")
     
 
 class AllSeasonsSchema(Schema):
-    season: int = Field(..., alias="season__year")
+    season: list[int]
+    
+    #resolver to flatten response to a single list
+    @staticmethod
+    def resolve_season(obj):
+         return [i["year"] for i in obj]
         
         
 @season_router.get("/current_season", response=CurrentSeasonSchema)
 def get_current_season(request):
-    return PlayerSeason.objects.order_by("-season__year")[0]
+    return Season.objects.order_by("-year")[0]
 
 
-@season_router.get("/all_seasons", response=List[AllSeasonsSchema])
+@season_router.get("/all_seasons", response=AllSeasonsSchema)
 def get_all_seasons(request):
-    return PlayerSeason.objects.values("season__year").distinct()
+    return Season.objects.values("year").distinct()
         
         
 @season_router.get("/all_season_types", response=List[SeasonTypeSchema])
 def get_season_types(request):
-    return PlayerSeason.objects.values("season__season_type").distinct()
+    return Season.objects.values("season_type").distinct()
 

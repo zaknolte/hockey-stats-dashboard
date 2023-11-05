@@ -6,14 +6,11 @@ from teamstats.api import TeamSchema
 
 
 player_router = Router()
-        
-
-class PlayerPositionSchema(Schema):
-    position: str = Field(..., alias="get_position_display")
 
 
 class PlayerSchema(ModelSchema):
-    position: List[PlayerPositionSchema]
+    # position: List[PlayerPositionSchema]
+    position: list[str] = Field(..., alias="position")
     team: TeamSchema
     class Config:
         model = Player
@@ -36,3 +33,10 @@ class PlayerSchema(ModelSchema):
             "is_rookie",
             "handed"
         ]
+
+    # Player.position is list of dicts
+    # Schema will return  - position: [position: {...}, position: {...}]
+    # Flatten response to just a list of values with resolver - position: [...]
+    @staticmethod
+    def resolve_position(obj):
+         return [i.position for i in obj.position.all()]
