@@ -100,10 +100,6 @@ class GameSchema(ModelSchema):
             "events"
         ]
 
-@game_router.get("/all", response=List[GameSchema])
-def get_all_games(request):
-    return Game.objects.all()
-
 
 @game_router.get("/", response=List[GameSchema])
 def get_games(request, season="All Seasons", season_type="Regular Season", team_name="All Teams"):
@@ -117,6 +113,12 @@ def get_games(request, season="All Seasons", season_type="Regular Season", team_
         
     return Game.objects.filter(**kwargs)
 
+
+@game_router.get("/all", response=List[GameSchema])
+def get_all_games(request):
+    return Game.objects.all()
+
+
 @game_router.get("/game", response=GameSchema)
 def get_game(request, id):
     return Game.objects.get(pk=id)
@@ -125,6 +127,17 @@ def get_game(request, id):
 @game_router.get("/results", response=List[TeamGameSchema])
 def get_game_results(request, id):
     return TeamGame.objects.filter(game__id=id)
+
+
+@game_router.get("/results/all", response=List[TeamGameSchema])
+def get_all_game_results(request):
+    return TeamGame.objects.all()
+
+
+@game_router.get("/results/season", response=List[TeamGameSchema])
+def get_game_results_by_season(request, season):
+    return TeamGame.objects.filter(game__season__year=season)
+
 
 @game_router.get("results/team", response=List[TeamGameSchema])
 def get_game_results_by_team(request, team_name, season="All Seasons", season_type="Regular Season"):
