@@ -2,6 +2,7 @@ import dash
 from dash import html, dcc, callback, Input, Output, State
 import dash_bootstrap_components as dbc
 import dash_ag_grid as dag
+import plotly.graph_objs as go
 
 import aiohttp
 import asyncio
@@ -35,17 +36,17 @@ async def query_team_stats(endpoint):
         json response of data.
     """
     async with aiohttp.ClientSession() as session:
-        api_url = f"http://127.0.0.1:8000/api/season/{endpoint}"
+        api_url = f"http://127.0.0.1:8000/api/{endpoint}"
         async with session.get(api_url) as resp:
             data = await resp.json()
 
     return data
 
 
-CURRENT_SEASON = asyncio.run(query_team_stats("current_season"))["season"]
+CURRENT_SEASON = asyncio.run(query_team_stats("season/current_season"))["season"]
 
 
-def query_to_formatted_df(query: str):
+def query_to_formatted_df(query: str, index=None, sort_by=None, ascending=False):
     """
     Queries backend database for data then formats the returned data into a dataFrame.
 
@@ -55,15 +56,20 @@ def query_to_formatted_df(query: str):
     Returns:
         obj: Formatted dataFrame of database data.
     """
-
-    df = pd.json_normalize(asyncio.run(query_team_stats(query))).set_index("id")
+    df = pd.json_normalize(asyncio.run(query_team_stats(query)))
+    
+    if index is not None:
+        df= df.set_index(index)
+        
     df = df.rename(columns=rename_data_df_cols)
-    df = df.sort_values(rename_data_df_cols["season.year"], ascending=False)
+    print(df.columns)
+    if sort_by is not None:
+        df = df.sort_values(sort_by, ascending=ascending)
     
     return df
 
 
-def build_team_query_url(team, season="All Seasons", season_type="Regular Season"):
+def build_team_query_url(endpoint, **kwargs):
     """
     Builds and returns a query url to query the backend database.
 
@@ -75,7 +81,9 @@ def build_team_query_url(team, season="All Seasons", season_type="Regular Season
     Returns:
         str: The compiled endpoint url string.
     """
-    return f"teams?season={season}&season_type={season_type}&team_name={team}"
+    query_params = "&".join([f"{i}={kwargs[i]}" for i in kwargs])
+    
+    return f"{endpoint}?{query_params}"
 
 
 # can't host static images in dash normally outside assets folder
@@ -226,23 +234,60 @@ def get_single_season_dropdown(df):
             },
         ),
     )
+    
+
+def get_single_season_rankings_plot(df, team_name, season, stat):
+    team_data = df[(df[rename_data_df_cols["team.name"]] == reverse_slugify(team_name)) & (df[rename_data_df_cols["season.year"]] == season)][stat]
+    lowest_data = df[stat].min()
+    avg_data = df[stat].mean()
+    highest_data = df[stat].max()
+    x = [i for i in range(1, 11)]
+    
+    primary_color = get_colors(reverse_slugify(team_name), "primary")
+    secondary_color = get_colors(reverse_slugify(team_name), "secondary")
+    secondary_text_color = get_colors(reverse_slugify(team_name), "secondary_text")
+    
+    figure = go.Figure(
+        [
+            go.Scatter(x=x, y=[lowest_data]*len(x), name="Min", marker={"color": "#16FF32", "line": {"color": "#16FF32"}}),
+            go.Scatter(x=x, y=[avg_data]*len(x), name="Average", marker={"color": "#0DF9FF", "line": {"color": "#0DF9FF"}}),
+            go.Scatter(x=x, y=[highest_data]*len(x), name="Max", marker={"color": "#A777F1", "line": {"color": "#A777F1"}}),
+            go.Scatter(x=x, y=[team_data.iloc[0]]*len(x), name=reverse_slugify(team_name), marker={"color": primary_color, "line_color": primary_color}),
+        ],
+        layout={
+            "paper_bgcolor": "rgba(0, 0, 0, 0)", # invisible paper background
+            "plot_bgcolor": secondary_color,
+            "legend_font_color": secondary_text_color,
+            "legend_bgcolor": secondary_color,
+            "yaxis": {"showgrid": False, "fixedrange": True, "color": "white"},
+            "xaxis": {"showgrid": False, "fixedrange": True, "showticklabels": False},
+        }
+    )
+
+    figure.update_traces(hoverinfo="name", mode="lines")
+    
+    return dcc.Graph(
+        figure=figure,
+        config={'displayModeBar': False},
+    )
 
 
 def layout(team=None):
     if team is None:
         return html.Div()
 
-    df = query_to_formatted_df(build_team_query_url(team="All Teams", season="All Seasons", season_type="Regular Season"))
-    team_df = df[df[rename_data_df_cols["team.name"]] == reverse_slugify(team)]
-    # df = query_to_formatted_df(build_team_query_url(team=reverse_slugify(team), season="All Seasons", season_type="Regular Season"))
+    season_summary_df = query_to_formatted_df(build_team_query_url(endpoint="season/teams", team="All Teams", season="All Seasons", season_type="Regular Season"), index="id", sort_by=rename_data_df_cols["season.year"])
+    team_df = season_summary_df[season_summary_df[rename_data_df_cols["team.name"]] == reverse_slugify(team)]
+    games_df = query_to_formatted_df(query="games/results/all", index=None, sort_by=rename_data_df_cols["game_number"], ascending=True)
 
     primary_color = get_colors(team_df[rename_data_df_cols["team.name"]].values[0], "primary")
     secondary_color = get_colors(team_df[rename_data_df_cols["team.name"]].values[0], "secondary")
 
     return html.Div(
         [
-            dcc.Store(data=df.to_json(), id="team-stats-df"),
+            dcc.Store(data=season_summary_df.to_json(), id="team-stats-df"),
             dcc.Store(data=team, id="team-name"),
+            dcc.Store(data=games_df.to_json(), id="game-data-df"),
             
             get_team_card(team_df.iloc[0]),
             html.Div(get_season_summary(team_df.iloc[0], offset=2, layout_id=1), id="current-season-summary"),
@@ -259,7 +304,8 @@ def layout(team=None):
                 ],
                 style={"display": "flex", "paddingLeft": "5%", "alignItems": "center"}
             ),
-            # html.Div(style={"minHeight": 700})
+            get_single_season_rankings_plot(season_summary_df, team, CURRENT_SEASON, rename_data_df_cols["wins"]),
+            html.Div(style={"minHeight": 700})
         ],
         style={"backgroundImage": f"linear-gradient(to bottom right, {primary_color}, {secondary_color})"}
     )
@@ -276,3 +322,5 @@ def update_selected_season_summary(season, data, team_name):
     df = pd.read_json(StringIO(data))
     team_df = df[(df[rename_data_df_cols["team.name"]] == reverse_slugify(team_name)) & (df[rename_data_df_cols["season.year"]] == season)]
     return get_season_summary(team_df.iloc[0], offset=1, layout_id=2)
+
+
