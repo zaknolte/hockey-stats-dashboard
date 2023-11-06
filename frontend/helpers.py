@@ -78,6 +78,7 @@ rename_data_df_cols = {
     "losses": "Losses",
     "overtime_loss": "OTL",
     "rank": "League Rank",
+    "game_number": "Game",
     "team.name": "Team",
     "team.logo": "Logo",
     "team.conference": "Conference",
