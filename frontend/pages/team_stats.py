@@ -60,9 +60,8 @@ def query_to_formatted_df(query: str, index=None, sort_by=None, ascending=False)
     
     if index is not None:
         df= df.set_index(index)
-        
+
     df = df.rename(columns=rename_data_df_cols)
-    print(df.columns)
     if sort_by is not None:
         df = df.sort_values(sort_by, ascending=ascending)
     
@@ -213,16 +212,16 @@ def get_season_summary(team_data, offset, layout_id):
         ]
 
 
-def get_single_season_dropdown(df):
+def get_single_season_dropdown(df, options, id):
     team_name = df[rename_data_df_cols['team.name']].values[0]
 
     return html.Div(
         dcc.Dropdown(
-            options=pd.unique(df[rename_data_df_cols["season.year"]]),
-            value=df[rename_data_df_cols["season.year"]].values[0],
+            options=options,
+            value=options[0],
             clearable=False,
             searchable=False,
-            id="dropdown-team-season",
+            id=id,
             className="team-stats",
             style={
                 "width": "100px",
@@ -241,7 +240,7 @@ def get_single_season_rankings_plot(df, team_name, season, stat):
     lowest_data = df[stat].min()
     avg_data = df[stat].mean()
     highest_data = df[stat].max()
-    x = [i for i in range(1, 11)]
+    x = [0, 1] # two points to make a line - not a single point
     
     primary_color = get_colors(reverse_slugify(team_name), "primary")
     secondary_color = get_colors(reverse_slugify(team_name), "secondary")
@@ -249,9 +248,9 @@ def get_single_season_rankings_plot(df, team_name, season, stat):
     
     figure = go.Figure(
         [
-            go.Scatter(x=x, y=[lowest_data]*len(x), name="Min", marker={"color": "#16FF32", "line": {"color": "#16FF32"}}),
-            go.Scatter(x=x, y=[avg_data]*len(x), name="Average", marker={"color": "#0DF9FF", "line": {"color": "#0DF9FF"}}),
-            go.Scatter(x=x, y=[highest_data]*len(x), name="Max", marker={"color": "#A777F1", "line": {"color": "#A777F1"}}),
+            go.Scatter(x=x, y=[lowest_data]*len(x), name="Min", marker={"color": "#16FF32", "line": {"color": "#16FF32"}}, line={"dash": "dash"}),
+            go.Scatter(x=x, y=[avg_data]*len(x), name="Average", marker={"color": "#0DF9FF", "line": {"color": "#0DF9FF"}}, line={"dash": "dash"}),
+            go.Scatter(x=x, y=[highest_data]*len(x), name="Max", marker={"color": "#A777F1", "line": {"color": "#A777F1"}}, line={"dash": "dash"}),
             go.Scatter(x=x, y=[team_data.iloc[0]]*len(x), name=reverse_slugify(team_name), marker={"color": primary_color, "line_color": primary_color}),
         ],
         layout={
@@ -264,11 +263,54 @@ def get_single_season_rankings_plot(df, team_name, season, stat):
         }
     )
 
-    figure.update_traces(hoverinfo="name", mode="lines")
+    figure.update_traces(mode="lines", hovertemplate = "%{y}")
+    figure.update_layout(hovermode="y unified") # display hover text when hovering anywhere on line - not just on a point
     
     return dcc.Graph(
         figure=figure,
         config={'displayModeBar': False},
+        id="single-season-rankings"
+    )
+    
+    
+def get_single_season_games_plot(df, team_name, season, stat):
+    season_data = df[df[rename_data_df_cols["game.season"]] == season]
+    
+    # calculate cumulative of stat for each successive game
+    season_data["sums"] = season_data.groupby(rename_data_df_cols["team.name"])[stat].cumsum()
+    lowest_data = season_data.groupby("Game")["sums"].min().values
+    avg_data = season_data.groupby("Game")["sums"].mean().values
+    highest_data = season_data.groupby("Game")["sums"].max().values
+    
+    x = pd.unique(df[rename_data_df_cols["game_number"]])
+    
+    primary_color = get_colors(reverse_slugify(team_name), "primary")
+    secondary_color = get_colors(reverse_slugify(team_name), "secondary")
+    secondary_text_color = get_colors(reverse_slugify(team_name), "secondary_text")
+    
+    figure = go.Figure(
+        [
+            go.Scatter(x=x, y=lowest_data, name="Min", marker={"color": "#16FF32", "line": {"color": "#16FF32"}}, line={"dash": "dash"}),
+            go.Scatter(x=x, y=avg_data, name="Average", marker={"color": "#0DF9FF", "line": {"color": "#0DF9FF"}}, line={"dash": "dash"}),
+            go.Scatter(x=x, y=highest_data, name="Max", marker={"color": "#A777F1", "line": {"color": "#A777F1"}}, line={"dash": "dash"}),
+            go.Scatter(x=x, y=season_data["sums"], name=reverse_slugify(team_name), marker={"color": primary_color, "line_color": primary_color}),
+        ],
+        layout={
+            "paper_bgcolor": "rgba(0, 0, 0, 0)", # invisible paper background
+            "plot_bgcolor": secondary_color,
+            "yaxis": {"showgrid": False, "fixedrange": True, "color": "white"},
+            "xaxis": {"showgrid": False, "fixedrange": True, "color": "white"},
+        }
+    )
+
+    figure.update_traces(mode="lines", hovertemplate = "%{y}")
+    # hover bg color not coloring to plot bg color? Re-set it back to same color as plot
+    figure.update_layout(showlegend=False, hovermode="x unified", hoverlabel={"bgcolor": secondary_color, "font_color": secondary_text_color})
+    
+    return dcc.Graph(
+        figure=figure,
+        config={'displayModeBar': False},
+        id="single-season-game"
     )
 
 
@@ -282,6 +324,10 @@ def layout(team=None):
 
     primary_color = get_colors(team_df[rename_data_df_cols["team.name"]].values[0], "primary")
     secondary_color = get_colors(team_df[rename_data_df_cols["team.name"]].values[0], "secondary")
+    
+    excluded = ["gp", "game", "rank", "logo", "conference", "division", "city", "state"]
+    team_cols = [i for i in season_summary_df.columns if "team" not in i.lower() and "season" not in i.lower() and not any([j in i.lower() for j in excluded])]
+    game_cols = [i for i in games_df.columns if "team" not in i.lower() and "season" not in i.lower() and not any([j in i.lower() for j in excluded])]    
 
     return html.Div(
         [
@@ -296,7 +342,7 @@ def layout(team=None):
             html.Div(
                 [
                     html.Div("Season:", style={"color": "white", "paddingRight": "2%"}),
-                    get_single_season_dropdown(team_df),
+                    get_single_season_dropdown(team_df, options=pd.unique(team_df[rename_data_df_cols["season.year"]]), id="single-season-season-dropdown"),
                     html.Div(
                         get_season_summary(team_df.iloc[0], offset=1, layout_id=2),
                         id="selected-season-summary",
@@ -304,7 +350,32 @@ def layout(team=None):
                 ],
                 style={"display": "flex", "paddingLeft": "5%", "alignItems": "center"}
             ),
-            get_single_season_rankings_plot(season_summary_df, team, CURRENT_SEASON, rename_data_df_cols["wins"]),
+            html.Div(
+                [
+                    html.Div(
+                        [
+                            html.H5("Game Stat:", style={"color": "white", "paddingRight": "1%"}),
+                            get_single_season_dropdown(games_df, options=game_cols, id="single-season-games-stat-dropdown"),
+                        ],
+                        style={"display": "flex", "alignItems": "center"}
+                    ),
+                    html.Div(
+                        [
+                            html.H5("Season Stat:", style={"color": "white", "paddingRight": "1%"}),
+                            get_single_season_dropdown(season_summary_df, options=team_cols, id="single-season-season-stat-dropdown"),
+                        ],
+                        style={"display": "flex", "alignItems": "center"}
+                    ),
+                ],
+                style={"display": "flex", "justifyContent": "space-evenly", "paddingTop": "5%"}
+            ),
+            html.Div(
+                [
+                    get_single_season_games_plot(games_df, team, CURRENT_SEASON, rename_data_df_cols["goals"]),
+                    get_single_season_rankings_plot(season_summary_df, team, CURRENT_SEASON, rename_data_df_cols["wins"]),
+                ],
+                style={"display": "flex", "justifyContent": "space-evenly"}
+            ),
             html.Div(style={"minHeight": 700})
         ],
         style={"backgroundImage": f"linear-gradient(to bottom right, {primary_color}, {secondary_color})"}
