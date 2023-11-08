@@ -212,9 +212,7 @@ def get_season_summary(team_data, offset, layout_id):
         ]
 
 
-def get_single_season_dropdown(df, options, id):
-    team_name = df[rename_data_df_cols['team.name']].values[0]
-
+def get_single_season_dropdown(df, team_name, options, id):
     return html.Div(
         dcc.Dropdown(
             options=options,
@@ -236,22 +234,22 @@ def get_single_season_dropdown(df, options, id):
     
 
 def get_single_season_rankings_plot(df, team_name, season, stat):
-    team_data = df[(df[rename_data_df_cols["team.name"]] == reverse_slugify(team_name)) & (df[rename_data_df_cols["season.year"]] == season)][stat]
+    team_data = df[(df[rename_data_df_cols["team.name"]] == team_name) & (df[rename_data_df_cols["season.year"]] == season)][stat]
     lowest_data = df[stat].min()
     avg_data = df[stat].mean()
     highest_data = df[stat].max()
     x = [0, 1] # two points to make a line - not a single point
     
-    primary_color = get_colors(reverse_slugify(team_name), "primary")
-    secondary_color = get_colors(reverse_slugify(team_name), "secondary")
-    secondary_text_color = get_colors(reverse_slugify(team_name), "secondary_text")
+    primary_color = get_colors(team_name, "primary")
+    secondary_color = get_colors(team_name, "secondary")
+    secondary_text_color = get_colors(team_name, "secondary_text")
     
     figure = go.Figure(
         [
             go.Scatter(x=x, y=[lowest_data]*len(x), name="Min", marker={"color": "#16FF32", "line": {"color": "#16FF32"}}, line={"dash": "dash"}),
             go.Scatter(x=x, y=[avg_data]*len(x), name="Average", marker={"color": "#0DF9FF", "line": {"color": "#0DF9FF"}}, line={"dash": "dash"}),
             go.Scatter(x=x, y=[highest_data]*len(x), name="Max", marker={"color": "#A777F1", "line": {"color": "#A777F1"}}, line={"dash": "dash"}),
-            go.Scatter(x=x, y=[team_data.iloc[0]]*len(x), name=reverse_slugify(team_name), marker={"color": primary_color, "line_color": primary_color}),
+            go.Scatter(x=x, y=[team_data.iloc[0]]*len(x), name=team_name, marker={"color": primary_color, "line_color": primary_color}),
         ],
         layout={
             "paper_bgcolor": "rgba(0, 0, 0, 0)", # invisible paper background
@@ -284,16 +282,16 @@ def get_single_season_games_plot(df, team_name, season, stat):
     
     x = pd.unique(df[rename_data_df_cols["game_number"]])
     
-    primary_color = get_colors(reverse_slugify(team_name), "primary")
-    secondary_color = get_colors(reverse_slugify(team_name), "secondary")
-    secondary_text_color = get_colors(reverse_slugify(team_name), "secondary_text")
+    primary_color = get_colors(team_name, "primary")
+    secondary_color = get_colors(team_name, "secondary")
+    secondary_text_color = get_colors(team_name, "secondary_text")
     
     figure = go.Figure(
         [
             go.Scatter(x=x, y=lowest_data, name="Min", marker={"color": "#16FF32", "line": {"color": "#16FF32"}}, line={"dash": "dash"}),
             go.Scatter(x=x, y=avg_data, name="Average", marker={"color": "#0DF9FF", "line": {"color": "#0DF9FF"}}, line={"dash": "dash"}),
             go.Scatter(x=x, y=highest_data, name="Max", marker={"color": "#A777F1", "line": {"color": "#A777F1"}}, line={"dash": "dash"}),
-            go.Scatter(x=x, y=season_data["sums"], name=reverse_slugify(team_name), marker={"color": primary_color, "line_color": primary_color}),
+            go.Scatter(x=x, y=season_data["sums"], name=team_name, marker={"color": primary_color, "line_color": primary_color}),
         ],
         layout={
             "paper_bgcolor": "rgba(0, 0, 0, 0)", # invisible paper background
@@ -342,7 +340,7 @@ def layout(team=None):
             html.Div(
                 [
                     html.Div("Season:", style={"color": "white", "paddingRight": "2%"}),
-                    get_single_season_dropdown(team_df, options=pd.unique(team_df[rename_data_df_cols["season.year"]]), id="single-season-season-dropdown"),
+                    get_single_season_dropdown(team_df, reverse_slugify(team), options=pd.unique(team_df[rename_data_df_cols["season.year"]]), id="single-season-season-dropdown"),
                     html.Div(
                         get_season_summary(team_df.iloc[0], offset=1, layout_id=2),
                         id="selected-season-summary",
@@ -355,14 +353,14 @@ def layout(team=None):
                     html.Div(
                         [
                             html.H5("Game Stat:", style={"color": "white", "paddingRight": "1%"}),
-                            get_single_season_dropdown(games_df, options=game_cols, id="single-season-games-stat-dropdown"),
+                            get_single_season_dropdown(games_df, reverse_slugify(team), options=game_cols, id="single-season-games-stat-dropdown"),
                         ],
                         style={"display": "flex", "alignItems": "center"}
                     ),
                     html.Div(
                         [
                             html.H5("Season Stat:", style={"color": "white", "paddingRight": "1%"}),
-                            get_single_season_dropdown(season_summary_df, options=team_cols, id="single-season-season-stat-dropdown"),
+                            get_single_season_dropdown(season_summary_df, reverse_slugify(team), options=team_cols, id="single-season-season-stat-dropdown"),
                         ],
                         style={"display": "flex", "alignItems": "center"}
                     ),
@@ -371,8 +369,8 @@ def layout(team=None):
             ),
             html.Div(
                 [
-                    get_single_season_games_plot(games_df, team, CURRENT_SEASON, rename_data_df_cols["goals"]),
-                    get_single_season_rankings_plot(season_summary_df, team, CURRENT_SEASON, rename_data_df_cols["wins"]),
+                    get_single_season_games_plot(games_df, reverse_slugify(team), CURRENT_SEASON, rename_data_df_cols["goals"]),
+                    get_single_season_rankings_plot(season_summary_df, reverse_slugify(team), CURRENT_SEASON, rename_data_df_cols["wins"]),
                 ],
                 style={"display": "flex", "justifyContent": "space-evenly"}
             ),
@@ -384,7 +382,7 @@ def layout(team=None):
 
 @callback(
     Output("selected-season-summary", "children"),
-    Input("dropdown-team-season", "value"),
+    Input("single-season-season-dropdown", "value"),
     State("team-stats-df", "data"),
     State("team-name", "data"),
     # prevent_initial_call=True
