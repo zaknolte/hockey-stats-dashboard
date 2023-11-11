@@ -32,3 +32,8 @@
     border-color: var(--team-color-primary);
     box-shadow: var(--team-color-primary);
 }
+
+/* Styling the dropdown arrow for team-specific colored dropdowns */
+.team-colored-dropdown>.Select-control>.Select-arrow-zone>.Select-arrow {
+    border-color: var(--team-text-color-secondary) transparent transparent;
+}

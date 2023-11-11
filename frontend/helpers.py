@@ -1,3 +1,5 @@
+import numpy as np
+
 from data_values import TEAM_COLORS, TEAM_TEXT_COLOR
 
 def get_colors(team_name, color="primary"):
@@ -9,6 +11,21 @@ def get_colors(team_name, color="primary"):
     }
     
     return colors.get(color, "primary")
+
+
+def get_triadics_from_rgba(rgba):
+    first = tuple(np.append(np.roll(rgba[:-1], 1), rgba[-1]))
+    second = tuple(np.append(np.roll(first[:-1], 1), first[-1]))
+    
+    return first, second
+
+
+def get_rgba_complement(rgba):
+    rgb_complement = [255-i for i in rgba[:-1]]
+    rgb_complement.append(rgba[-1])
+    
+    return tuple(rgb_complement)
+
 
 def stringify_season(season:int):
     """
