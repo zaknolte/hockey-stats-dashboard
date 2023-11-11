@@ -8,9 +8,12 @@ app = Dash(
     __name__,
     external_stylesheets=[
         dbc.themes.LUX,
+        dbc.icons.FONT_AWESOME,
     ],
     use_pages=True,
     title="Hockey Stats",
+    update_title=None,
+    suppress_callback_exceptions=True
 )
 
 app.layout = html.Div(

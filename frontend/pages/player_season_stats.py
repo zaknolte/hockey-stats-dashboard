@@ -16,7 +16,7 @@ from io import StringIO
 # from app import DJANGO_ROOT
 from helpers import stringify_season, rename_data_df_cols, get_ag_grid_columnDefs
 
-dash.register_page(__name__, path="/players")
+dash.register_page(__name__, path="/players", title="Hockey Stats | Player Stats")
 
 
 async def query_player_stats(endpoint:str):
@@ -38,7 +38,6 @@ async def query_player_stats(endpoint:str):
 
 
 # default values
-PLAYER_STATS = ["Goals", "Assists", "Points"]
 CURRENT_SEASON = asyncio.run(query_player_stats("current_season"))["season"]
 STRING_CURRENT_SEASON = stringify_season(CURRENT_SEASON)
 ALL_SEASONS = ["All Seasons"] + [stringify_season(season) for season in asyncio.run(query_player_stats("all_seasons"))["season"]]

@@ -1,5 +1,5 @@
 import dash
-from dash import html, dcc, callback, Input, Output, State, Patch, ctx
+from dash import html, dcc, callback, Input, Output, State, Patch
 import dash_bootstrap_components as dbc
 import dash_ag_grid as dag
 import plotly.graph_objs as go
@@ -19,7 +19,7 @@ from helpers import reverse_slugify, rename_data_df_cols, get_colors, get_triadi
 
 
 def title(team):
-    return team.replace("-", " ").title()
+    return f"Hockey Stats | {team.replace('-', ' ').title()}"
 
 
 dash.register_page(__name__, path_template="/teams/<team>", title=title)
