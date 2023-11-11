@@ -1,5 +1,5 @@
 import dash
-from dash import html, dcc, callback, Input, Output, State
+from dash import html, dcc, callback, Input, Output, State, Patch, ctx
 import dash_bootstrap_components as dbc
 import dash_ag_grid as dag
 import plotly.graph_objs as go
@@ -15,7 +15,7 @@ from pathlib import Path
 from io import StringIO
 
 from data_values import TEAM_COLORS, TEAM_TEXT_COLOR
-from helpers import reverse_slugify, rename_data_df_cols, get_colors
+from helpers import reverse_slugify, rename_data_df_cols, get_colors, get_triadics_from_rgba, get_rgba_complement
 
 
 def title(team):
@@ -220,9 +220,9 @@ def get_single_season_dropdown(df, team_name, options, id):
             clearable=False,
             searchable=False,
             id=id,
-            className="team-stats",
+            className="team-stats team-colored-dropdown",
             style={
-                "width": "100px",
+                "width": "200px",
                 "backgroundColor": get_colors(team_name, "secondary"),
                 "--team-text-color-primary": get_colors(team_name, "primary_text"),
                 "--team-text-color-secondary": get_colors(team_name, "secondary_text"),
@@ -233,23 +233,34 @@ def get_single_season_dropdown(df, team_name, options, id):
     )
     
 
+def get_single_season_ranks_y_values(df, team_name, season, stat, num_points=2):
+    team_data = [df[(df[rename_data_df_cols["team.name"]] == team_name) & (df[rename_data_df_cols["season.year"]] == season)][stat].iloc[0]] * num_points
+    lowest_data = [df[stat].min()] * num_points
+    avg_data = [df[stat].mean()] * num_points
+    highest_data = [df[stat].max()] * num_points
+    
+    return team_data, lowest_data, avg_data, highest_data
+
+
 def get_single_season_rankings_plot(df, team_name, season, stat):
-    team_data = df[(df[rename_data_df_cols["team.name"]] == team_name) & (df[rename_data_df_cols["season.year"]] == season)][stat]
-    lowest_data = df[stat].min()
-    avg_data = df[stat].mean()
-    highest_data = df[stat].max()
     x = [0, 1] # two points to make a line - not a single point
+    team_data, lowest_data, avg_data, highest_data = get_single_season_ranks_y_values(df, team_name, season, stat, len(x))
     
     primary_color = get_colors(team_name, "primary")
     secondary_color = get_colors(team_name, "secondary")
     secondary_text_color = get_colors(team_name, "secondary_text")
     
+    raw_primary_color = TEAM_COLORS[team_name][0]
+    triadic_primary_one, triadic_primary_two = get_triadics_from_rgba(raw_primary_color)
+    
+    primary_complement = get_rgba_complement(raw_primary_color)
+    
     figure = go.Figure(
         [
-            go.Scatter(x=x, y=[lowest_data]*len(x), name="Min", marker={"color": "#16FF32", "line": {"color": "#16FF32"}}, line={"dash": "dash"}),
-            go.Scatter(x=x, y=[avg_data]*len(x), name="Average", marker={"color": "#0DF9FF", "line": {"color": "#0DF9FF"}}, line={"dash": "dash"}),
-            go.Scatter(x=x, y=[highest_data]*len(x), name="Max", marker={"color": "#A777F1", "line": {"color": "#A777F1"}}, line={"dash": "dash"}),
-            go.Scatter(x=x, y=[team_data.iloc[0]]*len(x), name=team_name, marker={"color": primary_color, "line_color": primary_color}),
+            go.Scatter(x=x, y=lowest_data, name="Min", marker={"color": f"rgba{triadic_primary_one}"}, line={"dash": "dash"}),
+            go.Scatter(x=x, y=avg_data, name="Average", marker={"color": f"rgba{triadic_primary_two}"}, line={"dash": "dash"}),
+            go.Scatter(x=x, y=highest_data, name="Max", marker={"color": f"rgba{primary_complement}"}, line={"dash": "dash"}),
+            go.Scatter(x=x, y=team_data, name=team_name, marker={"color": primary_color}),
         ],
         layout={
             "paper_bgcolor": "rgba(0, 0, 0, 0)", # invisible paper background
@@ -261,17 +272,30 @@ def get_single_season_rankings_plot(df, team_name, season, stat):
         }
     )
 
-    figure.update_traces(mode="lines", hovertemplate = "%{y}")
-    figure.update_layout(hovermode="y unified") # display hover text when hovering anywhere on line - not just on a point
+    figure.update_traces(
+        mode="lines",
+        hovertemplate = "%{y}",
+        marker_line={"color": "black", "width": 20}
+    )
+    figure.update_layout(
+        hovermode="y unified", # display hover text when hovering anywhere on line - not just on a point
+        legend={
+            "orientation": "h",
+            "xanchor": "left",
+            "x": 0.1,
+            "yanchor": "bottom",
+            "y": 1.1
+        },
+    ) 
     
     return dcc.Graph(
         figure=figure,
         config={'displayModeBar': False},
-        id="single-season-rankings"
+        id="single-season-rankings-graph"
     )
     
-    
-def get_single_season_games_plot(df, team_name, season, stat):
+
+def get_single_season_games_y_values(df, season, stat):
     season_data = df[df[rename_data_df_cols["game.season"]] == season]
     
     # calculate cumulative of stat for each successive game
@@ -280,22 +304,35 @@ def get_single_season_games_plot(df, team_name, season, stat):
     avg_data = season_data.groupby("Game")["sums"].mean().values
     highest_data = season_data.groupby("Game")["sums"].max().values
     
+    return season_data["sums"], lowest_data, avg_data, highest_data
+
+
+def get_single_season_games_plot(df, team_name, season, stat):
+    sums, lowest_data, avg_data, highest_data = get_single_season_games_y_values(df, season, stat)
+    
     x = pd.unique(df[rename_data_df_cols["game_number"]])
     
     primary_color = get_colors(team_name, "primary")
     secondary_color = get_colors(team_name, "secondary")
     secondary_text_color = get_colors(team_name, "secondary_text")
     
+    raw_primary_color = TEAM_COLORS[team_name][0]
+    triadic_primary_one, triadic_primary_two = get_triadics_from_rgba(raw_primary_color)
+    
+    primary_complement = get_rgba_complement(raw_primary_color)
+    
     figure = go.Figure(
         [
-            go.Scatter(x=x, y=lowest_data, name="Min", marker={"color": "#16FF32", "line": {"color": "#16FF32"}}, line={"dash": "dash"}),
-            go.Scatter(x=x, y=avg_data, name="Average", marker={"color": "#0DF9FF", "line": {"color": "#0DF9FF"}}, line={"dash": "dash"}),
-            go.Scatter(x=x, y=highest_data, name="Max", marker={"color": "#A777F1", "line": {"color": "#A777F1"}}, line={"dash": "dash"}),
-            go.Scatter(x=x, y=season_data["sums"], name=team_name, marker={"color": primary_color, "line_color": primary_color}),
+            go.Scatter(x=x, y=lowest_data, name="Min", marker={"color": f"rgba{triadic_primary_one}"}, line={"dash": "dash"}),
+            go.Scatter(x=x, y=avg_data, name="Average", marker={"color": f"rgba{triadic_primary_two}"}, line={"dash": "dash"}),
+            go.Scatter(x=x, y=highest_data, name="Max", marker={"color": f"rgba{primary_complement}"}, line={"dash": "dash"}),
+            go.Scatter(x=x, y=sums, name=team_name, marker={"color": primary_color}),
         ],
         layout={
             "paper_bgcolor": "rgba(0, 0, 0, 0)", # invisible paper background
             "plot_bgcolor": secondary_color,
+            "legend_font_color": secondary_text_color,
+            "legend_bgcolor": secondary_color,
             "yaxis": {"showgrid": False, "fixedrange": True, "color": "white"},
             "xaxis": {"showgrid": False, "fixedrange": True, "color": "white"},
         }
@@ -303,12 +340,22 @@ def get_single_season_games_plot(df, team_name, season, stat):
 
     figure.update_traces(mode="lines", hovertemplate = "%{y}")
     # hover bg color not coloring to plot bg color? Re-set it back to same color as plot
-    figure.update_layout(showlegend=False, hovermode="x unified", hoverlabel={"bgcolor": secondary_color, "font_color": secondary_text_color})
+    figure.update_layout(
+        hovermode="x unified",
+        hoverlabel={"bgcolor": secondary_color, "font_color": secondary_text_color},
+        legend={
+            "orientation": "h",
+            "xanchor": "left",
+            "x": 0.1,
+            "yanchor": "bottom",
+            "y": 1.1
+        },
+    )
     
     return dcc.Graph(
         figure=figure,
         config={'displayModeBar': False},
-        id="single-season-game"
+        id="single-season-game-graph"
     )
 
 
@@ -352,19 +399,20 @@ def layout(team=None):
                 [
                     html.Div(
                         [
-                            html.H5("Game Stat:", style={"color": "white", "paddingRight": "1%"}),
+                            html.H5("Game Stat:", style={"color": "white", "paddingTop": "2%", "minWidth": 200}),
                             get_single_season_dropdown(games_df, reverse_slugify(team), options=game_cols, id="single-season-games-stat-dropdown"),
                         ],
-                        style={"display": "flex", "alignItems": "center"}
+                        style={"display": "flex", "alignItems": "center", "paddingLeft": "3%"}
                     ),
                     html.Div(
                         [
-                            html.H5("Season Stat:", style={"color": "white", "paddingRight": "1%"}),
+                            html.H5("Season Stat:", style={"color": "white", "paddingTop": "2%", "minWidth": 200}),
                             get_single_season_dropdown(season_summary_df, reverse_slugify(team), options=team_cols, id="single-season-season-stat-dropdown"),
                         ],
-                        style={"display": "flex", "alignItems": "center"}
+                        style={"display": "flex", "alignItems": "center", "paddingLeft": "10%"}
                     ),
                 ],
+                # style={"display": "flex", "paddingLeft": "20%", "paddingTop": "5%"}
                 style={"display": "flex", "justifyContent": "space-evenly", "paddingTop": "5%"}
             ),
             html.Div(
@@ -382,14 +430,34 @@ def layout(team=None):
 
 @callback(
     Output("selected-season-summary", "children"),
+    Output("single-season-game-graph", "figure"),
+    Output("single-season-rankings-graph", "figure"),
     Input("single-season-season-dropdown", "value"),
+    Input("single-season-games-stat-dropdown", "value"),
+    Input("single-season-season-stat-dropdown", "value"),
     State("team-stats-df", "data"),
+    State("game-data-df", "data"),
     State("team-name", "data"),
     # prevent_initial_call=True
 )
-def update_selected_season_summary(season, data, team_name):
-    df = pd.read_json(StringIO(data))
-    team_df = df[(df[rename_data_df_cols["team.name"]] == reverse_slugify(team_name)) & (df[rename_data_df_cols["season.year"]] == season)]
-    return get_season_summary(team_df.iloc[0], offset=1, layout_id=2)
-
-
+def update_selected_season_summary(season, game_stat, season_stat, team_data, game_data, team_name):
+    game_df = pd.read_json(StringIO(game_data))
+    
+    game_fig_patch = Patch()
+    game_team_data, lowest_game_data, avg_game_data, highest_game_data = get_single_season_games_y_values(game_df, season, game_stat)
+    game_fig_patch["data"][0]["y"] = lowest_game_data
+    game_fig_patch["data"][1]["y"] = avg_game_data
+    game_fig_patch["data"][2]["y"] = highest_game_data
+    game_fig_patch["data"][3]["y"] = game_team_data
+    
+    team_df = pd.read_json(StringIO(team_data))
+    season_df = team_df[(team_df[rename_data_df_cols["team.name"]] == reverse_slugify(team_name)) & (team_df[rename_data_df_cols["season.year"]] == season)]
+    
+    season_fig_patch = Patch()
+    season_team_data, lowest_season_data, avg_season_data, highest_season_data = get_single_season_ranks_y_values(team_df, reverse_slugify(team_name), season, season_stat)
+    season_fig_patch["data"][0]["y"] = lowest_season_data
+    season_fig_patch["data"][1]["y"] = avg_season_data
+    season_fig_patch["data"][2]["y"] = highest_season_data
+    season_fig_patch["data"][3]["y"] = season_team_data
+    
+    return get_season_summary(season_df.iloc[0], offset=1, layout_id=2), game_fig_patch, season_fig_patch
