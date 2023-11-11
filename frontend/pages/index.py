@@ -32,7 +32,9 @@ def get_vs_card(game):
     
     score_bug = html.H6(f"Start Time: {game_time.strftime('%H')}:{game_time.strftime('%M')} ET", style={"display": "flex", "justifyContent": "center", "paddingTop": "5%"})
     
-    if game.get("gameState") == "FINAL" or game.get("gameState") == "OFF":
+    # gameState cycles through several states on game end: LIVE -> CRIT -> FINAL -> OFF
+    # assume if game isn't live or yet to start then it is finished
+    if game.get("gameState") != "LIVE" and game.get("gameState") != "FUT":
         score_bug = html.Div(
             [
                 html.Div(html.H6("FINAL"), style={"display": "flex", "justifyContent": "center"}),
