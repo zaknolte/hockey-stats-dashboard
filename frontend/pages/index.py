@@ -13,14 +13,17 @@ def get_vs_card(game):
     home_score = game.get("homeTeam").get("score")
     away_score = game.get("awayTeam").get("score")
     home_color, away_color = "black", "black"
+    home_shadow, away_shadow = None, None
     
     if home_score is not None and away_score is not None:
         if home_score > away_score:
             home_color = "green"
             away_color = "red"
+            home_shadow = "drop-shadow(0px 0px 20px green)"
         elif home_score < away_score:
             home_color = "red"
             away_color = "green"
+            away_shadow = "drop-shadow(0px 0px 20px green)"
         elif home_score == away_score:
             home_color = "blue"
             away_color = "blue"
@@ -94,16 +97,12 @@ def get_vs_card(game):
             ),
             html.Div(
                 [
-                    html.Img(src=game.get("homeTeam").get("logo"), style={"maxWidth": 100}),
-                    html.Img(src=game.get("awayTeam").get("logo"), style={"maxWidth": 100}),
+                    html.Img(src=game.get("homeTeam").get("logo"), style={"maxWidth": 100, "filter": home_shadow}),
+                    html.Img(src=game.get("awayTeam").get("logo"), style={"maxWidth": 100, "filter": away_shadow}),
                 ],
                 style={"display": "flex", "justifyContent": "space-evenly"}
             ),
-            score_bug,
-            dcc.Interval(
-                id='score-interval',
-                interval=60*1000, # in milliseconds
-            )
+            score_bug
         ]
     )
     
@@ -133,15 +132,45 @@ def layout():
                 add_game_rows(games),
                 id="scores-container",
             ),
+            dcc.Interval(
+                id='score-interval',
+                interval=60 * 1000, # in milliseconds
+            ),
         ],
-        style={"backgroundColor": "lightgrey"}
+        style={"backgroundColor": "lightgrey", "height": "100vh"}
     )
 
 
 @callback(
     Output("scores-container", "children"),
+    Output("score-interval", "interval"),
     Input("score-interval", "n_intervals")
 )
 def refresh_scores(n_intervals):
     games = requests.get(api_root + f"v1/score/{datetime.date.today()}").json().get("games")
-    return add_game_rows(games)
+    
+    interval = 60 * 1000
+    try:
+        current_time = datetime.datetime.utcnow()
+        
+        # delay interval refresh if starting server on day of games
+        # start refreshing ~10 min before first game of day
+        if games[0].get("gameState") == "FUT":
+            start_time = datetime.datetime.strptime(games[0].get("startTimeUTC"), "%Y-%m-%dT%H:%M:%SZ")
+            
+            time_diff = start_time - current_time - datetime.timedelta(minutes=10)
+            interval = time_diff.total_seconds() * 1000
+                        
+        # no need to keep requesting api data between game days with potential 12+ hours between game times
+        # change interval update time to refresh ~ 6:00 AM ET to initial load games for the day
+        elif games[-1].get("gameState") == "OFF":
+            tomorrow = datetime.date.today() + datetime.timedelta(days=1)
+            start_time = datetime.datetime.strptime(f"{tomorrow}T11:00:00Z", "%Y-%m-%dT%H:%M:%SZ")
+
+            time_diff = start_time - current_time
+            interval = time_diff.total_seconds() * 1000
+        
+    except IndexError:
+        pass
+            
+    return add_game_rows(games), interval
