@@ -30,32 +30,29 @@ def get_vs_card(game):
 
     game_time = utc_game_time - datetime.timedelta(hours=eastern_offset.hour, minutes=eastern_offset.minute)
     
-    score_bug = html.H6(f"Start Time: {game_time.strftime('%H')}:{game_time.strftime('%M')} ET", style={"display": "flex", "justifyContent": "center", "paddingTop": "5%"})
-    
-    # gameState cycles through several states on game end: LIVE -> CRIT -> FINAL -> OFF
-    # assume if game isn't live or yet to start then it is finished
-    if game.get("gameState") != "LIVE" and game.get("gameState") != "FUT":
+    score_bug = html.Div()
+    # game hasn't started yet
+    if game.get("gameState") == "FUT":
+        score_bug = html.H6(f"Start Time: {game_time.strftime('%H')}:{game_time.strftime('%M')} ET", style={"display": "flex", "justifyContent": "center", "paddingTop": "5%"})
+    # pre-game - game starting soon
+    elif game.get("gameState") == "PRE":
         score_bug = html.Div(
             [
-                html.Div(html.H6("FINAL"), style={"display": "flex", "justifyContent": "center"}),
-                html.Div(
-                    [
-                        html.H4(home_score, style={"color": home_color}),
-                        html.H4(away_score, style={"color": away_color}),
-                    ],
-                    style={"display": "flex", "justifyContent": "space-evenly"}
-                ),
+                html.I(className="fas fa-exclamation-circle fa-xs", style={"color": "darkgoldenrod"}),
+                html.H6("Game Starting Soon!", style={"color": "darkgoldenrod", "paddingLeft": "1%"})
             ],
-            style={"paddingTop": "2%"}
+            style={"display": "flex", "justifyContent": "center", "alignItems": "baseline", "paddingTop": "5%"}
         )
+    # game in progress
     elif game.get("gameState") == "LIVE":
+        time_text = f"End Period {game.get('period')}" if game.get("clock").get("inIntermission") else f"P{game.get('period')} | {game.get('clock').get('timeRemaining')}"
         score_bug = html.Div(
             [
                 html.Div(
                     [
                         html.I(className="fas fa-circle-dot fa-xs", style={"color": "red"}),
                         html.H6("Live", style={"color": "red", "paddingLeft": "1%"}),
-                        html.H6(f"P{game.get('period')} | {game.get('clock').get('timeRemaining')}", style={"paddingLeft": "2%", "color": "blue"})
+                        html.H6(time_text, style={"paddingLeft": "2%", "color": "blue"})
                     ],
                     style={"display": "flex", "justifyContent": "center", "alignItems": "baseline"}
                 ),
@@ -66,6 +63,22 @@ def get_vs_card(game):
                     ],
                     style={"display": "flex", "justifyContent": "space-evenly"}
                 )
+            ],
+            style={"paddingTop": "3%"}
+        )
+    # gameState cycles through several states on game startup & end: FUT -> PRE -> LIVE -> CRIT -> FINAL -> OFF
+    # assume if game isn't live or yet to start then it is finished
+    else:
+        score_bug = html.Div(
+            [
+                html.Div(html.H6("FINAL"), style={"display": "flex", "justifyContent": "center"}),
+                html.Div(
+                    [
+                        html.H4(home_score, style={"color": home_color}),
+                        html.H4(away_score, style={"color": away_color}),
+                    ],
+                    style={"display": "flex", "justifyContent": "space-evenly"}
+                ),
             ],
             style={"paddingTop": "2%"}
         )
@@ -114,9 +127,13 @@ def layout():
     
     return html.Div(
         [
-            add_game_rows(games),
+            html.H3("Today's Games:", style={"display": "flex", "justifyContent": "center", "paddingTop": "2%"}),
+            html.H3(datetime.date.today(), style={"display": "flex", "justifyContent": "center"}),
+            html.Div(
+                add_game_rows(games),
+                id="scores-container",
+            ),
         ],
-        id="scores-container",
         style={"backgroundColor": "lightgrey"}
     )
 
