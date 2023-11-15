@@ -14,7 +14,7 @@ from pathlib import Path
 from io import StringIO
 
 # from app import DJANGO_ROOT
-from helpers import stringify_season, rename_data_df_cols, get_ag_grid_columnDefs
+from helpers import stringify_season, rename_data_df_cols, get_agGrid_layout, get_agGrid_columnDefs
 
 dash.register_page(__name__, path="/players", title="Hockey Stats | Player Stats")
 
@@ -174,7 +174,7 @@ def get_leaders_dropdown_options(position="All Skaters"):
         rename_data_df_cols["player.team.name"],
         rename_data_df_cols["player.position"]
     ]
-    for col in get_ag_grid_columnDefs(position):
+    for col in get_agGrid_columnDefs(position):
         if col["field"] not in ignore:
             options.append(col["field"])
             
@@ -287,28 +287,6 @@ def get_player_position_options_layout():
         input_class_name="btn-check",
         label_class_name="btn btn-outline-primary",
         value="All Positions"
-    )
-
-
-def get_agGrid_layout(df:object, position:str):
-    """
-    Return stylized ag Grid of filtered data.
- 
-    Args:
-        df (obj): dataFrame of filtered data.
-        position (str): Position used to select displayed columns.
- 
-    Returns:
-        obj: ag Grid.
-    """
-    return dag.AgGrid(
-        rowData=df.to_dict("records"),
-        columnDefs=get_ag_grid_columnDefs(position),
-        id="player-stats-grid",
-        className="ag-theme-alpine playerstats-grid",
-        columnSize="autoSize",
-        defaultColDef = {"headerClass": 'center-aligned-header'},
-        style={"paddingLeft": 50, "paddingRight": 50, "paddingBottom": 50},
     )
 
 
@@ -473,7 +451,7 @@ def layout():
                 ]
             ),
             get_league_leaders_layout(players_df, [rename_data_df_cols["goals"], rename_data_df_cols["assists"], rename_data_df_cols["points"]]),
-            get_agGrid_layout(players_df, "Forwards"),
+            get_agGrid_layout(players_df, "Forwards", "player-stats-grid", style={"paddingLeft": 50, "paddingRight": 50, "paddingBottom": 50}),
         ],
     )
 
@@ -540,4 +518,4 @@ def update_filtered_stats(stat_left:str, stat_center:str, stat_right:str, player
     right = get_leaders_layout_rows(df, stat_right, player_position)
     df = df.rename(columns=rename_data_df_cols)
 
-    return left, center, right, df.to_dict("records"), get_ag_grid_columnDefs(player_position)
+    return left, center, right, df.to_dict("records"), get_agGrid_columnDefs(player_position)

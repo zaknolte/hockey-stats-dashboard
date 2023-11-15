@@ -1,3 +1,5 @@
+import dash_bootstrap_components as dbc
+import dash_ag_grid as dag
 import numpy as np
 
 from data_values import TEAM_COLORS, TEAM_TEXT_COLOR
@@ -191,7 +193,7 @@ def add_default_number_columnDef(field:str, center=True, **kwargs):
     return columnDef
     
 
-def get_ag_grid_columnDefs(grid_type:str):
+def get_agGrid_columnDefs(grid_type:str):
     """
     Return a list of all columnDef fields to add to existing dag.AgGrid.
  
@@ -201,7 +203,7 @@ def get_ag_grid_columnDefs(grid_type:str):
     Returns:
         List of dicts of all columnDef field parameters.
     """
-    columnDefs = [
+    base_defs = [
         add_default_text_columnDef(rename_data_df_cols["player.full_name"], pinned="left", lockPinned=True, cellRenderer="NameLink"),
         add_default_number_columnDef(rename_data_df_cols["season.year"], center=False, width=None),
         {"field": rename_data_df_cols["season.season_type"]},
@@ -209,8 +211,42 @@ def get_ag_grid_columnDefs(grid_type:str):
         {"field": rename_data_df_cols["player.position"], "cellStyle": {"textAlign": "center"}},
         add_default_number_columnDef(rename_data_df_cols["games_played"], headerTooltip="Games Played"),
     ]
-    if grid_type != "G":
-        player_defs = [
+    if grid_type == "Team":
+        column_defs = [
+            add_default_number_columnDef(rename_data_df_cols["season.year"], pinned="left", lockPinned=True),
+            add_default_number_columnDef(rename_data_df_cols["games_played"], headerTooltip="Games Played"),
+            add_default_number_columnDef(rename_data_df_cols["wins"], headerTooltip="Wins"),
+            add_default_number_columnDef(rename_data_df_cols["losses"], headerTooltip="Losses"),
+            add_default_number_columnDef(rename_data_df_cols["overtime_loss"], headerTooltip="Overtime Losses"),
+            add_default_number_columnDef(rename_data_df_cols["points"], headerTooltip="Points"),
+            add_default_number_columnDef(rename_data_df_cols["goals_per_game"], headerTooltip="GPG"),
+            add_default_number_columnDef(rename_data_df_cols["goals_against_per_game"], headerTooltip="Points"),
+            add_default_number_columnDef(rename_data_df_cols["goals_pp"], headerTooltip="Points"),
+            add_default_number_columnDef(rename_data_df_cols["goals_against_pp"], headerTooltip="Points"),
+            add_default_number_columnDef(rename_data_df_cols["goals_sh"], headerTooltip="Points"),
+            add_default_number_columnDef(rename_data_df_cols["goals_against_sh"], headerTooltip="Points"),
+            add_default_number_columnDef(rename_data_df_cols["pp_chances"], headerTooltip="Points"),
+            add_default_number_columnDef(rename_data_df_cols["penalty_minutes"], headerTooltip="Points"),
+            add_default_number_columnDef(rename_data_df_cols["penalties_taken"], headerTooltip="Points"),
+            add_default_number_columnDef(rename_data_df_cols["pp_percent"], headerTooltip="Points"),
+            add_default_number_columnDef(rename_data_df_cols["pk_percent"], headerTooltip="Points"),
+            add_default_number_columnDef(rename_data_df_cols["shots"], headerTooltip="Points"),
+            add_default_number_columnDef(rename_data_df_cols["shots_against"], headerTooltip="Points"),
+            add_default_number_columnDef(rename_data_df_cols["shots_per_game"], headerTooltip="Points"),
+            add_default_number_columnDef(rename_data_df_cols["shots_against_per_game"], headerTooltip="Points"),
+            add_default_number_columnDef(rename_data_df_cols["shots_pp"], headerTooltip="Points"),
+            add_default_number_columnDef(rename_data_df_cols["shots_against_pp"], headerTooltip="Points"),
+            add_default_number_columnDef(rename_data_df_cols["shots_sh"], headerTooltip="Points"),
+            add_default_number_columnDef(rename_data_df_cols["shots_against_sh"], headerTooltip="Points"),
+            add_default_number_columnDef(rename_data_df_cols["shot_percent"], headerTooltip="Points"),
+            add_default_number_columnDef(rename_data_df_cols["faceoffs_taken"], headerTooltip="Points"),
+            add_default_number_columnDef(rename_data_df_cols["faceoffs_won"], headerTooltip="Points"),
+            add_default_number_columnDef(rename_data_df_cols["faceoffs_lost"], headerTooltip="Points"),
+            add_default_number_columnDef(rename_data_df_cols["faceoff_percent"], headerTooltip="Points"),
+            add_default_number_columnDef(rename_data_df_cols["save_percent"], headerTooltip="Points"),            
+        ]
+    elif grid_type != "G":
+        skater_defs = [
             add_default_number_columnDef(rename_data_df_cols["goals"], headerName=abbreviated_data_df_cols["goals"], headerTooltip="Goals"),
             add_default_number_columnDef(rename_data_df_cols["assists"], headerName=abbreviated_data_df_cols["assists"], headerTooltip="Assists"),
             add_default_number_columnDef(rename_data_df_cols["points"], headerName=abbreviated_data_df_cols["points"], headerTooltip="Points}"),
@@ -224,8 +260,9 @@ def get_ag_grid_columnDefs(grid_type:str):
             add_default_number_columnDef(rename_data_df_cols["takeaways"], width=None),
             add_default_number_columnDef(rename_data_df_cols["blocked_shots"], width=None),
         ]
+        column_defs = base_defs + skater_defs
     else:
-        player_defs = [
+        goalie_defs = [
             add_default_number_columnDef(rename_data_df_cols["wins"], headerName=abbreviated_data_df_cols["wins"], headerTooltip="Wins"),
             add_default_number_columnDef(rename_data_df_cols["shots_against"], headerName=abbreviated_data_df_cols["shots_against"], headerTooltip="Shots Against"),
             add_default_number_columnDef(rename_data_df_cols["saves"], headerName=abbreviated_data_df_cols["saves"], headerTooltip="Saves"),
@@ -234,5 +271,37 @@ def get_ag_grid_columnDefs(grid_type:str):
             add_default_number_columnDef(rename_data_df_cols["shots_against_sh"], headerName=abbreviated_data_df_cols["shots_against_sh"], headerTooltip="Shots Against when Shorthanded"),
             add_default_number_columnDef(rename_data_df_cols["saves_sh"], headerName=abbreviated_data_df_cols["saves_sh"], headerTooltip="Saves when Shorthanded"),
         ]
+        column_defs = base_defs + goalie_defs
         
-    return columnDefs + player_defs
+    return column_defs
+
+
+def get_agGrid_layout(df:object, grid_type:str, grid_id, **kwargs):
+    """
+    Return stylized ag Grid of filtered data.
+ 
+    Args:
+        df (obj): dataFrame of filtered data.
+        grid_type (str): Group used to select displayed columns.
+ 
+    Returns:
+        obj: ag Grid.
+    """
+    try:
+        className = kwargs.pop("className")
+    except KeyError:
+        className = "ag-theme-alpine base-grid"
+        
+    return dbc.Spinner(
+        dag.AgGrid(
+            rowData=df.to_dict("records"),
+            columnDefs=get_agGrid_columnDefs(grid_type),
+            id=grid_id,
+            className=className,
+            columnSize="autoSize",
+            defaultColDef = {"headerClass": 'center-aligned-header'},
+            **kwargs,
+        ),
+        color="light"
+    )
+    
