@@ -15,7 +15,7 @@ from pathlib import Path
 from io import StringIO
 
 from data_values import TEAM_COLORS, TEAM_TEXT_COLOR
-from helpers import reverse_slugify, rename_data_df_cols, get_colors, get_triadics_from_rgba, get_rgba_complement
+from helpers import reverse_slugify, rename_data_df_cols, get_colors, get_triadics_from_rgba, get_rgba_complement, get_agGrid_layout
 
 
 def title(team):
@@ -367,8 +367,11 @@ def layout(team=None):
     team_df = season_summary_df[season_summary_df[rename_data_df_cols["team.name"]] == reverse_slugify(team)]
     games_df = query_to_formatted_df(query="games/results/all", index=None, sort_by=rename_data_df_cols["game_number"], ascending=True)
 
-    primary_color = get_colors(team_df[rename_data_df_cols["team.name"]].values[0], "primary")
-    secondary_color = get_colors(team_df[rename_data_df_cols["team.name"]].values[0], "secondary")
+    primary_color = get_colors(reverse_slugify(team), "primary")
+    primary_color_soft = TEAM_COLORS[reverse_slugify(team)][0][:-1] + (0.5, )
+    secondary_color = get_colors(reverse_slugify(team), "secondary")
+    secondary_color_soft = TEAM_COLORS[reverse_slugify(team)][1][:-1] + (0.5, )
+    secondary_color_softer = TEAM_COLORS[reverse_slugify(team)][1][:-1] + (0.9, )
     
     excluded = ["gp", "game", "rank", "logo", "conference", "division", "city", "state"]
     team_cols = [i for i in season_summary_df.columns if "team" not in i.lower() and "season" not in i.lower() and not any([j in i.lower() for j in excluded])]
@@ -382,6 +385,20 @@ def layout(team=None):
             
             get_team_card(team_df.iloc[0]),
             html.Div(get_season_summary(team_df.iloc[0], offset=2, layout_id=1), id="current-season-summary"),
+            get_agGrid_layout(
+                team_df, 
+                "Team", 
+                "team-stats-grid", 
+                className="ag-theme-alpine team-grid",
+                style={
+                    "padding": 50,
+                    "--team-text-color-primary": get_colors(reverse_slugify(team), "primary_text"),
+                    "--team-text-color-secondary": get_colors(reverse_slugify(team), "secondary_text"),
+                    "--team-color-primary": f"rgba{primary_color_soft}",
+                    "--team-color-secondary-soft": f"rgba{secondary_color_soft}",
+                    "--team-color-secondary-softer": f"rgba{secondary_color_softer}",
+                },
+            ),
             html.Div(style={"borderBottom": 1, "borderBottomStyle": "solid", "width": 500, "color": "white", "margin": "auto", "paddingTop": 25}),
             html.H3("Single Season Stats", style={"color": "white", "display": "flex", "justifyContent": "center", "paddingTop": 25, "paddingBottom": 25}),
             html.Div(
