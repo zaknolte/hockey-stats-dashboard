@@ -137,7 +137,7 @@ def layout():
                 interval=60 * 1000, # in milliseconds
             ),
         ],
-        style={"backgroundColor": "lightgrey", "height": "100vh"}
+        style={"height": "100vh"}
     )
 
 
