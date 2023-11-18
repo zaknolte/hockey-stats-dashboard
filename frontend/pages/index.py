@@ -53,7 +53,7 @@ def get_vs_card(game):
             [
                 html.Div(
                     [
-                        html.I(className="fas fa-circle-dot fa-xs", style={"color": "red"}),
+                        html.I(className="fas fa-circle-dot fa-2xs", style={"color": "red"}),
                         html.H6("Live", style={"color": "red", "paddingLeft": "1%"}),
                         html.H6(time_text, style={"paddingLeft": "2%", "color": "blue"})
                     ],
@@ -110,13 +110,22 @@ def get_vs_card(game):
 def add_game_rows(games):
     rows = []
     cols = []
+    padding_left = None
+    padding_right = None
+    num_cards = 1
     for i, game in enumerate(games):
         if i % 3 == 0:
             rows.append(dbc.Row(cols, style={"paddingBottom": "5%"}))
             cols = []
+            num_cards = 1
+            
         cols.append(dbc.Col(get_vs_card(game)))
-    
-    rows.append(dbc.Row(cols, style={"paddingBottom": "5%"}))
+        
+        padding_left = 33 / num_cards
+        padding_right = 33 / num_cards
+        num_cards += 1
+            
+    rows.append(dbc.Row(cols, style={"paddingBottom": "5%", "paddingLeft": f"{padding_left}%", "paddingRight": f"{padding_right}%"}))
     
     return dbc.Container(rows)
         
