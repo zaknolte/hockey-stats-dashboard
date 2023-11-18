@@ -102,4 +102,4 @@ class TeamGame(models.Model):
     blocked_shots = models.IntegerField()
     
     def __str__(self):
-        return f'{self.team__name} {self.game__game_date}'
+        return f'{self.team.name} {self.game.game_date}'

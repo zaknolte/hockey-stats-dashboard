@@ -47,11 +47,19 @@ admin.site.register(GoalieGame, GoalieGameAdmin)
 
 
 class TeamGameAdmin(admin.ModelAdmin):
-    list_display = ("team", "game")
-    search_fields = ["team", "game"]
+    list_display = ("get_team_name", "get_game_date")
+    search_fields = ["team__name", "game__game_date"]
+
+    @admin.display(ordering='team__name', description='Team')
+    def get_team_name(self, obj):
+        return obj.team.name
+    
+    @admin.display(ordering='game__game_date', description='Game')
+    def get_game_date(self, obj):
+        return obj.game.game_date
 
     def get_ordering(self, request):
-        return ["game", "team"]
+        return ["game__game_date", Lower("team__name")]  # sort case insensitive
 
 
 admin.site.register(TeamGame, TeamGameAdmin)
