@@ -2,14 +2,14 @@ import dash_bootstrap_components as dbc
 import dash_ag_grid as dag
 import numpy as np
 
-from data_values import TEAM_COLORS, TEAM_TEXT_COLOR
+from data_values import TEAM_COLORS
 
 def get_colors(team_name, color="primary"):
     colors = {
-        "primary": f"rgba{TEAM_COLORS[team_name][0]}",
-        "primary_text": f"rgba{TEAM_TEXT_COLOR[team_name][0]}",
-        "secondary": f"rgba{TEAM_COLORS[team_name][1]}",
-        "secondary_text": f"rgba{TEAM_TEXT_COLOR[team_name][1]}",
+        "primary": f"rgba{TEAM_COLORS[team_name]['primary']}",
+        "primary_text": f"rgba{TEAM_COLORS[team_name]['primary_text']}",
+        "secondary": f"rgba{TEAM_COLORS[team_name]['secondary']}",
+        "secondary_text": f"rgba{TEAM_COLORS[team_name]['secondary_text']}",
     }
     
     return colors.get(color, "primary")

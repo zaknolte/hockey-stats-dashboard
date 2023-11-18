@@ -14,7 +14,7 @@ from django.utils.text import slugify
 from pathlib import Path
 from io import StringIO
 
-from data_values import TEAM_COLORS, TEAM_TEXT_COLOR
+from data_values import TEAM_COLORS
 from helpers import reverse_slugify, rename_data_df_cols, get_colors, get_triadics_from_rgba, get_rgba_complement, get_agGrid_layout
 
 
@@ -160,7 +160,6 @@ def get_team_card(team_data):
                             ),
                             className="col-md-8",
                             style={"paddingLeft": 10, "color": "white"}
-                            # style={"paddingLeft": 10, "color": TEAM_TEXT_COLOR[team_data["team"]["name"]][0]}
                         ),
                     ],
                     className="g-0 d-flex align-items-center",
@@ -250,7 +249,7 @@ def get_single_season_rankings_plot(df, team_name, season, stat):
     secondary_color = get_colors(team_name, "secondary")
     secondary_text_color = get_colors(team_name, "secondary_text")
     
-    raw_primary_color = TEAM_COLORS[team_name][0]
+    raw_primary_color = TEAM_COLORS[team_name]["primary"]
     triadic_primary_one, triadic_primary_two = get_triadics_from_rgba(raw_primary_color)
     
     primary_complement = get_rgba_complement(raw_primary_color)
@@ -316,7 +315,7 @@ def get_single_season_games_plot(df, team_name, season, stat):
     secondary_color = get_colors(team_name, "secondary")
     secondary_text_color = get_colors(team_name, "secondary_text")
     
-    raw_primary_color = TEAM_COLORS[team_name][0]
+    raw_primary_color = TEAM_COLORS[team_name]["primary"]
     triadic_primary_one, triadic_primary_two = get_triadics_from_rgba(raw_primary_color)
     
     primary_complement = get_rgba_complement(raw_primary_color)
@@ -368,10 +367,10 @@ def layout(team=None):
     games_df = query_to_formatted_df(query="games/results/all", index=None, sort_by=rename_data_df_cols["game_number"], ascending=True)
 
     primary_color = get_colors(reverse_slugify(team), "primary")
-    primary_color_soft = TEAM_COLORS[reverse_slugify(team)][0][:-1] + (0.5, )
+    primary_color_soft = TEAM_COLORS[reverse_slugify(team)]["primary"][:-1] + (0.5, )
     secondary_color = get_colors(reverse_slugify(team), "secondary")
-    secondary_color_soft = TEAM_COLORS[reverse_slugify(team)][1][:-1] + (0.5, )
-    secondary_color_softer = TEAM_COLORS[reverse_slugify(team)][1][:-1] + (0.9, )
+    secondary_color_soft = TEAM_COLORS[reverse_slugify(team)]["secondary"][:-1] + (0.5, )
+    secondary_color_softer = TEAM_COLORS[reverse_slugify(team)]["secondary"][:-1] + (0.9, )
     
     excluded = ["gp", "game", "rank", "logo", "conference", "division", "city", "state"]
     team_cols = [i for i in season_summary_df.columns if "team" not in i.lower() and "season" not in i.lower() and not any([j in i.lower() for j in excluded])]
