@@ -43,9 +43,6 @@ async def query_team_stats(endpoint):
     return data
 
 
-CURRENT_SEASON = asyncio.run(query_team_stats("season/current_season"))["season"]
-
-
 def query_to_formatted_df(query: str, index=None, sort_by=None, ascending=False):
     """
     Queries backend database for data then formats the returned data into a dataFrame.
@@ -68,7 +65,7 @@ def query_to_formatted_df(query: str, index=None, sort_by=None, ascending=False)
     return df
 
 
-def build_team_query_url(endpoint, **kwargs):
+def build_team_query_url(endpoint:str, **kwargs):
     """
     Builds and returns a query url to query the backend database.
 
@@ -87,7 +84,7 @@ def build_team_query_url(endpoint, **kwargs):
 
 # can't host static images in dash normally outside assets folder
 # encode and decode from image url to render image
-def format_image(image_url):
+def format_image(image_url:str):
     """
     Encodes then returns the base64 decoded image supplied from image_url
 
@@ -107,7 +104,16 @@ def format_image(image_url):
     return encoded.decode()
 
 
-def get_team_card(team_data):
+def get_team_card(team_data:object):
+    """
+    Build and return a card of general team information including logo, division, conference, and inagural season.
+
+    Args:
+        team_data (DataFrame): DataFrame data of a given team.
+
+    Returns:
+        html.Div: Card component of team information.
+    """
     logo = team_data[rename_data_df_cols["team.logo"]][1:].replace("%3A", ":").replace("%20", " ")
     return html.Div(
         dbc.Card(
@@ -172,7 +178,18 @@ def get_team_card(team_data):
     )
 
 
-def get_season_summary(team_data, offset, layout_id):
+def get_season_summary(team_data:object, offset:int, layout_id:[int, str]):
+    """
+    Return a list of dbc.Rows containing general season stats for a given team.
+
+    Args:
+        team_data (DataFrame): DataFrame data of a given team.
+        offset (int): Number to offset the first col in the grid layout.
+        layout_id (int, str): Ids applied to each season stat component used to sync data with a tooltip.
+
+    Returns:
+        list: dbc.Rows of season stat headers and data synced with tooltip information.
+    """
     col_style = {"border": 1, "borderRightStyle": "solid", "display": "flex", "justifyContent": "center"}
     return [
             dbc.Row(
@@ -211,9 +228,19 @@ def get_season_summary(team_data, offset, layout_id):
         ]
 
 
-def get_single_season_dropdown(df, team_name, options, id):
-    return html.Div(
-        dcc.Dropdown(
+def get_single_season_dropdown(team_name:str, options:list, id:str):
+    """
+    Return a team-specific stylized dcc.Dropdown of 'options'.
+
+    Args:
+        team_name (str): Team name used to get specific colors to style dropdown.
+        options (list): List of values to fill the dropdown options with.
+        id (str): Id of dropdown component.
+
+    Returns:
+        dcc.Dropdown: Team color themed dropdown.
+    """
+    return dcc.Dropdown(
             options=options,
             value=options[0],
             clearable=False,
@@ -228,12 +255,22 @@ def get_single_season_dropdown(df, team_name, options, id):
                 "--team-color-primary": get_colors(team_name, "primary"),
                 "--team-color-secondary": get_colors(team_name, "secondary")
             },
-        ),
-    )
-    
+        )    
 
-def get_single_season_ranks_y_values(df, team_name, season, stat, num_points=2):
-    team_data = [df[(df[rename_data_df_cols["team.name"]] == team_name) & (df[rename_data_df_cols["season.year"]] == season)][stat].iloc[0]] * num_points
+def get_single_season_ranks_y_values(df:object, team_name:str, stat:str, num_points=2):
+    """
+    Calculate and return y-value graph pairs for league min, max, avg, and team data of given stat.
+
+    Args:
+        df (DataFrame): Single season league data.
+        team_name (str): Team name to get data from.
+        stat (str): Specific stat to plot.
+        num_points (int): Number of copies of y-data to match the number of x-points needed.
+
+    Returns:
+        tuple: team stat data, league low data, league average data, league max data.
+    """
+    team_data = [df[df[rename_data_df_cols["team.name"]] == team_name][stat].iloc[0]] * num_points
     lowest_data = [df[stat].min()] * num_points
     avg_data = [df[stat].mean()] * num_points
     highest_data = [df[stat].max()] * num_points
@@ -241,9 +278,20 @@ def get_single_season_ranks_y_values(df, team_name, season, stat, num_points=2):
     return team_data, lowest_data, avg_data, highest_data
 
 
-def get_single_season_rankings_plot(df, team_name, season, stat):
+def get_single_season_rankings_plot(df:object, team_name:str, stat:str):
+    """
+    Return a team specific themed dcc.Graph of league season data for a given stat.
+
+    Args:
+        df (DataFrame): Single season league data.
+        team_name (str): Team name to get data from and style graph colors.
+        stat (str): Specific stat to plot.
+
+    Returns:
+        dcc.Graph: Team color themed graph of team data, league min, league max, and league average.
+    """
     x = [0, 1] # two points to make a line - not a single point
-    team_data, lowest_data, avg_data, highest_data = get_single_season_ranks_y_values(df, team_name, season, stat, len(x))
+    team_data, lowest_data, avg_data, highest_data = get_single_season_ranks_y_values(df, team_name, stat, len(x))
     
     primary_color = get_colors(team_name, "primary")
     secondary_color = get_colors(team_name, "secondary")
@@ -256,9 +304,9 @@ def get_single_season_rankings_plot(df, team_name, season, stat):
     
     figure = go.Figure(
         [
-            go.Scatter(x=x, y=lowest_data, name="Min", marker={"color": f"rgba{triadic_primary_one}"}, line={"dash": "dash"}),
-            go.Scatter(x=x, y=avg_data, name="Average", marker={"color": f"rgba{triadic_primary_two}"}, line={"dash": "dash"}),
-            go.Scatter(x=x, y=highest_data, name="Max", marker={"color": f"rgba{primary_complement}"}, line={"dash": "dash"}),
+            go.Scatter(x=x, y=lowest_data, name="Min", marker={"color": triadic_primary_one}, line={"dash": "dash"}),
+            go.Scatter(x=x, y=avg_data, name="Average", marker={"color": triadic_primary_two}, line={"dash": "dash"}),
+            go.Scatter(x=x, y=highest_data, name="Max", marker={"color": primary_complement}, line={"dash": "dash"}),
             go.Scatter(x=x, y=team_data, name=team_name, marker={"color": primary_color}),
         ],
         layout={
@@ -271,11 +319,9 @@ def get_single_season_rankings_plot(df, team_name, season, stat):
         }
     )
 
-    figure.update_traces(
-        mode="lines",
-        hovertemplate = "%{y}",
-        marker_line={"color": "black", "width": 20}
-    )
+    # update all scatter traces at once
+    figure.update_traces(mode="lines",hovertemplate = "%{y}")
+    
     figure.update_layout(
         hovermode="y unified", # display hover text when hovering anywhere on line - not just on a point
         legend={
@@ -294,20 +340,42 @@ def get_single_season_rankings_plot(df, team_name, season, stat):
     )
     
 
-def get_single_season_games_y_values(df, season, stat):
-    season_data = df[df[rename_data_df_cols["game.season"]] == season]
-    
+def get_single_season_games_y_values(df:object, team_name:str, stat:str):
+    """
+    Calculate and return cumulative sum y-value graph pairs for league min, max, avg, and team data of given stat for each game.
+
+    Args:
+        df (DataFrame): League data for each game.
+        stat (str): Specific stat to plot.
+
+    Returns:
+        tuple: team stat data, league low data, league average data, league max data.
+    """    
     # calculate cumulative of stat for each successive game
-    season_data["sums"] = season_data.groupby(rename_data_df_cols["team.name"])[stat].cumsum()
-    lowest_data = season_data.groupby("Game")["sums"].min().values
-    avg_data = season_data.groupby("Game")["sums"].mean().values
-    highest_data = season_data.groupby("Game")["sums"].max().values
+    game_df = df.copy()
+    team_sum = game_df[game_df[rename_data_df_cols["team.name"]] == team_name][stat].cumsum().values
+    game_df["sums"] = game_df.groupby(rename_data_df_cols["team.name"])[stat].cumsum()
+    lowest_data = game_df.groupby("Game")["sums"].min().values
+    avg_data = game_df.groupby("Game")["sums"].mean().values
+    highest_data = game_df.groupby("Game")["sums"].max().values
+    highest_data[np.argmax(highest_data):] = np.max(highest_data)
     
-    return season_data["sums"], lowest_data, avg_data, highest_data
+    return team_sum, lowest_data, avg_data, highest_data
 
 
-def get_single_season_games_plot(df, team_name, season, stat):
-    sums, lowest_data, avg_data, highest_data = get_single_season_games_y_values(df, season, stat)
+def get_single_season_games_plot(df:object, team_name:str, stat:str):
+    """
+    Return a team specific themed dcc.Graph of league game data for a given stat.
+
+    Args:
+        df (DataFrame): League game specific data.
+        team_name (str): Team name to get data from and style graph colors.
+        stat (str): Specific stat to plot.
+
+    Returns:
+        dcc.Graph: Team color themed graph of team data, league min, league max, and league average.
+    """
+    sums, lowest_data, avg_data, highest_data = get_single_season_games_y_values(df, team_name, stat)
     
     x = pd.unique(df[rename_data_df_cols["game_number"]])
     
@@ -322,9 +390,9 @@ def get_single_season_games_plot(df, team_name, season, stat):
     
     figure = go.Figure(
         [
-            go.Scatter(x=x, y=lowest_data, name="Min", marker={"color": f"rgba{triadic_primary_one}"}, line={"dash": "dash"}),
-            go.Scatter(x=x, y=avg_data, name="Average", marker={"color": f"rgba{triadic_primary_two}"}, line={"dash": "dash"}),
-            go.Scatter(x=x, y=highest_data, name="Max", marker={"color": f"rgba{primary_complement}"}, line={"dash": "dash"}),
+            go.Scatter(x=x, y=lowest_data, name="Min", marker={"color": triadic_primary_one}, line={"dash": "dash"}),
+            go.Scatter(x=x, y=avg_data, name="Average", marker={"color": triadic_primary_two}, line={"dash": "dash"}),
+            go.Scatter(x=x, y=highest_data, name="Max", marker={"color": primary_complement}, line={"dash": "dash"}),
             go.Scatter(x=x, y=sums, name=team_name, marker={"color": primary_color}),
         ],
         layout={
@@ -362,8 +430,10 @@ def layout(team=None):
     if team is None:
         return html.Div()
 
-    season_summary_df = query_to_formatted_df(build_team_query_url(endpoint="season/teams", team="All Teams", season="All Seasons", season_type="Regular Season"), index="id", sort_by=rename_data_df_cols["season.year"])
-    team_df = season_summary_df[season_summary_df[rename_data_df_cols["team.name"]] == reverse_slugify(team)]
+    CURRENT_SEASON = asyncio.run(query_team_stats("season/current_season"))["season"]
+
+    all_seasons_df = query_to_formatted_df(build_team_query_url(endpoint="season/teams", team="All Teams", season="All Seasons", season_type="Regular Season"), index="id", sort_by=rename_data_df_cols["season.year"])
+    team_df = all_seasons_df[all_seasons_df[rename_data_df_cols["team.name"]] == reverse_slugify(team)]
     games_df = query_to_formatted_df(query="games/results/all", index=None, sort_by=rename_data_df_cols["game_number"], ascending=True)
 
     primary_color = get_colors(reverse_slugify(team), "primary")
@@ -373,12 +443,12 @@ def layout(team=None):
     secondary_color_softer = TEAM_COLORS[reverse_slugify(team)]["secondary"][:-1] + (0.9, )
     
     excluded = ["gp", "game", "rank", "logo", "conference", "division", "city", "state"]
-    team_cols = [i for i in season_summary_df.columns if "team" not in i.lower() and "season" not in i.lower() and not any([j in i.lower() for j in excluded])]
+    team_cols = [i for i in all_seasons_df.columns if "team" not in i.lower() and "season" not in i.lower() and not any([j in i.lower() for j in excluded])]
     game_cols = [i for i in games_df.columns if "team" not in i.lower() and "season" not in i.lower() and not any([j in i.lower() for j in excluded])]    
 
     return html.Div(
         [
-            dcc.Store(data=season_summary_df.to_json(), id="team-stats-df"),
+            dcc.Store(data=all_seasons_df.to_json(), id="team-stats-df"),
             dcc.Store(data=team, id="team-name"),
             dcc.Store(data=games_df.to_json(), id="game-data-df"),
             
@@ -403,7 +473,7 @@ def layout(team=None):
             html.Div(
                 [
                     html.Div("Season:", style={"color": "white", "paddingRight": "2%"}),
-                    get_single_season_dropdown(team_df, reverse_slugify(team), options=pd.unique(team_df[rename_data_df_cols["season.year"]]), id="single-season-season-dropdown"),
+                    get_single_season_dropdown(reverse_slugify(team), options=pd.unique(team_df[rename_data_df_cols["season.year"]]), id="single-season-season-dropdown"),
                     html.Div(
                         get_season_summary(team_df.iloc[0], offset=1, layout_id=2),
                         id="selected-season-summary",
@@ -416,14 +486,14 @@ def layout(team=None):
                     html.Div(
                         [
                             html.H5("Game Stat:", style={"color": "white", "paddingTop": "2%", "minWidth": 200}),
-                            get_single_season_dropdown(games_df, reverse_slugify(team), options=game_cols, id="single-season-games-stat-dropdown"),
+                            get_single_season_dropdown(reverse_slugify(team), options=game_cols, id="single-season-games-stat-dropdown"),
                         ],
                         style={"display": "flex", "alignItems": "center", "paddingLeft": "3%"}
                     ),
                     html.Div(
                         [
                             html.H5("Season Stat:", style={"color": "white", "paddingTop": "2%", "minWidth": 200}),
-                            get_single_season_dropdown(season_summary_df, reverse_slugify(team), options=team_cols, id="single-season-season-stat-dropdown"),
+                            get_single_season_dropdown(reverse_slugify(team), options=team_cols, id="single-season-season-stat-dropdown"),
                         ],
                         style={"display": "flex", "alignItems": "center", "paddingLeft": "10%"}
                     ),
@@ -433,8 +503,8 @@ def layout(team=None):
             ),
             html.Div(
                 [
-                    get_single_season_games_plot(games_df, reverse_slugify(team), CURRENT_SEASON, rename_data_df_cols["goals"]),
-                    get_single_season_rankings_plot(season_summary_df, reverse_slugify(team), CURRENT_SEASON, rename_data_df_cols["wins"]),
+                    get_single_season_games_plot(games_df[games_df[rename_data_df_cols["season.year"]] == CURRENT_SEASON], reverse_slugify(team), rename_data_df_cols["goals"]),
+                    get_single_season_rankings_plot(all_seasons_df[all_seasons_df[rename_data_df_cols["season.year"]] == CURRENT_SEASON], reverse_slugify(team), rename_data_df_cols["wins"]),
                 ],
                 style={"display": "flex", "justifyContent": "space-evenly"}
             ),
@@ -454,26 +524,26 @@ def layout(team=None):
     State("team-stats-df", "data"),
     State("game-data-df", "data"),
     State("team-name", "data"),
-    # prevent_initial_call=True
+    prevent_initial_call=True
 )
 def update_selected_season_summary(season, game_stat, season_stat, team_data, game_data, team_name):
     game_df = pd.read_json(StringIO(game_data))
     
     game_fig_patch = Patch()
-    game_team_data, lowest_game_data, avg_game_data, highest_game_data = get_single_season_games_y_values(game_df, season, game_stat)
+    game_team_data, lowest_game_data, avg_game_data, highest_game_data = get_single_season_games_y_values(game_df[game_df[rename_data_df_cols["season.year"]] == season], team_name, game_stat)
     game_fig_patch["data"][0]["y"] = lowest_game_data
     game_fig_patch["data"][1]["y"] = avg_game_data
     game_fig_patch["data"][2]["y"] = highest_game_data
     game_fig_patch["data"][3]["y"] = game_team_data
     
     team_df = pd.read_json(StringIO(team_data))
-    season_df = team_df[(team_df[rename_data_df_cols["team.name"]] == reverse_slugify(team_name)) & (team_df[rename_data_df_cols["season.year"]] == season)]
     
     season_fig_patch = Patch()
-    season_team_data, lowest_season_data, avg_season_data, highest_season_data = get_single_season_ranks_y_values(team_df, reverse_slugify(team_name), season, season_stat)
+    season_team_data, lowest_season_data, avg_season_data, highest_season_data = get_single_season_ranks_y_values(team_df[team_df[rename_data_df_cols["season.year"]] == season], reverse_slugify(team_name), season_stat)
     season_fig_patch["data"][0]["y"] = lowest_season_data
     season_fig_patch["data"][1]["y"] = avg_season_data
     season_fig_patch["data"][2]["y"] = highest_season_data
     season_fig_patch["data"][3]["y"] = season_team_data
     
+    season_df = team_df[(team_df[rename_data_df_cols["team.name"]] == reverse_slugify(team_name)) & (team_df[rename_data_df_cols["season.year"]] == season)]
     return get_season_summary(season_df.iloc[0], offset=1, layout_id=2), game_fig_patch, season_fig_patch

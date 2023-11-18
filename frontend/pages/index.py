@@ -9,7 +9,16 @@ dash.register_page(__name__, path="/", title="Hockey Stats")
 api_root = "https://api-web.nhle.com/"
 
 
-def get_vs_card(game):
+def get_vs_card(game:dict):
+    """
+    Return a series of html components to display home team, away team, and live score information from a given nhl api game.
+     
+    Args:
+        game (dict): NHL api live single game json data from https://api-web.nhle.com/v1/score/{date}'.
+ 
+    Returns:
+        html.Div: Nested html components of live score information.
+    """
     home_score = game.get("homeTeam").get("score")
     away_score = game.get("awayTeam").get("score")
     home_color, away_color = "black", "black"
@@ -28,12 +37,13 @@ def get_vs_card(game):
             home_color = "blue"
             away_color = "blue"
             
+    # nhl game times are given in UTC time
+    # convert to ET
     utc_game_time = datetime.datetime.strptime(game.get("startTimeUTC"), "%Y-%m-%dT%H:%M:%SZ")
     eastern_offset = datetime.datetime.strptime(game.get("easternUTCOffset"), "-%H:%M").time()
 
     game_time = utc_game_time - datetime.timedelta(hours=eastern_offset.hour, minutes=eastern_offset.minute)
     
-    score_bug = html.Div()
     # game hasn't started yet
     if game.get("gameState") == "FUT":
         score_bug = html.H6(f"Start Time: {game_time.strftime('%H')}:{game_time.strftime('%M')} ET", style={"display": "flex", "justifyContent": "center", "paddingTop": "5%"})
@@ -107,7 +117,16 @@ def get_vs_card(game):
     )
     
     
-def add_game_rows(games):
+def add_game_rows(games:list):
+    """
+    Return a series of rows of html score bug cards from a give nhl api game date.
+     
+    Args:
+        games (list): List of NHL api live game json data from https://api-web.nhle.com/v1/score/{date}'.
+ 
+    Returns:
+        dbc.Container: Multiple rows of dbc components of live score information.
+    """
     rows = []
     cols = []
     padding_left = None
@@ -162,7 +181,7 @@ def refresh_scores(n_intervals):
     try:
         current_time = datetime.datetime.utcnow()
         
-        # delay interval refresh if starting server on day of games
+        # delay interval refresh if starting refresh on day of games
         # start refreshing ~10 min before first game of day
         if games[0].get("gameState") == "FUT":
             start_time = datetime.datetime.strptime(games[0].get("startTimeUTC"), "%Y-%m-%dT%H:%M:%SZ")
@@ -171,7 +190,7 @@ def refresh_scores(n_intervals):
             interval = time_diff.total_seconds() * 1000
                         
         # no need to keep requesting api data between game days with potential 12+ hours between game times
-        # change interval update time to refresh ~ 6:00 AM ET to initial load games for the day
+        # change interval update time to refresh ~ 6:00 AM ET to initially load games for the day
         elif games[-1].get("gameState") == "OFF":
             tomorrow = datetime.date.today() + datetime.timedelta(days=1)
             start_time = datetime.datetime.strptime(f"{tomorrow}T11:00:00Z", "%Y-%m-%dT%H:%M:%SZ")

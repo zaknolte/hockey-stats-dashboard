@@ -4,7 +4,19 @@ import numpy as np
 
 from data_values import TEAM_COLORS
 
-def get_colors(team_name, color="primary"):
+def get_colors(team_name:str, color="primary"):
+    """
+    Return a formatted css rgba string for a specific team of type 'color'
+    
+    Example: get_colors('Arizona Coyotes', 'secondary') -> 'rgba(226, 214, 181, 1)'
+ 
+    Args:
+        team_name (str): Team name to get color values for.
+        color (str): Specific color to obtain. Ex: 'primary', 'secondary', 'primary_text', etc.
+ 
+    Returns:
+        str: String of css rgba color.
+    """
     colors = {
         "primary": f"rgba{TEAM_COLORS[team_name]['primary']}",
         "primary_text": f"rgba{TEAM_COLORS[team_name]['primary_text']}",
@@ -15,18 +27,40 @@ def get_colors(team_name, color="primary"):
     return colors.get(color, "primary")
 
 
-def get_triadics_from_rgba(rgba):
+def get_triadics_from_rgba(rgba:tuple):
+    """
+    Return two formatted css rgba strings equal distances on the color wheel from the given 'rgba'.
+    
+    Example: get_triadics_from_rgba((255, 125, 34, 1)) -> 'rgba(34, 255, 125, 1), rgba(125, 34, 255, 1)'
+ 
+    Args:
+        rgba (tuple): Tuple of rgba values to calculate triadics.
+ 
+    Returns:
+        tuple[str]: Strings of css rgba colors for (triadic 1, triadic 2).
+    """
     first = tuple(np.append(np.roll(rgba[:-1], 1), rgba[-1]))
     second = tuple(np.append(np.roll(first[:-1], 1), first[-1]))
     
-    return first, second
+    return f"rgba{first}", f"rgba{second}"
 
 
-def get_rgba_complement(rgba):
+def get_rgba_complement(rgba:tuple):
+    """
+    Return a formatted css rgba string opposite on the color wheel from given 'rgba'.
+    
+    Example: get_rgba_complement((255, 125, 0, 1)) -> 'rgba(0, 125, 255, 1)'
+ 
+    Args:
+        rgba (tuple): Tuple of rgba values to calculate complement.
+ 
+    Returns:
+        tuple[str]: Strings of css rgba colors for (triadic 1, triadic 2).
+    """
     rgb_complement = [255-i for i in rgba[:-1]]
     rgb_complement.append(rgba[-1])
     
-    return tuple(rgb_complement)
+    return f"rgba{tuple(rgb_complement)}"
 
 
 def stringify_season(season:int):
@@ -276,13 +310,15 @@ def get_agGrid_columnDefs(grid_type:str):
     return column_defs
 
 
-def get_agGrid_layout(df:object, grid_type:str, grid_id, **kwargs):
+def get_agGrid_layout(df:object, grid_type:str, grid_id:str, **kwargs):
     """
     Return stylized ag Grid of filtered data.
+    Will default to use ag-theme-alpine theme. Can optionally provide a className kwarg that corresponds to a custom css class.
  
     Args:
         df (obj): dataFrame of filtered data.
         grid_type (str): Group used to select displayed columns.
+        grid_id (str): Id of grid component.
  
     Returns:
         obj: ag Grid.
