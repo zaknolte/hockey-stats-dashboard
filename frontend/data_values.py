@@ -42,6 +42,7 @@ DIVISION_TEAMS = {
 }
 
 TEAM_BY_ABBR = {
+    "ANA": "Anaheim Ducks",
     "ARI": "Arizona Coyotes",
     "ATL": "Atlanta Thrashers",
     "BOS": "Boston Bruins",
@@ -100,7 +101,7 @@ TEAM_BY_ABBR = {
     "WSH": "Washington Capitals",
 }
 
-# tuple of rgba values of (primary color, secondary color)
+# tuple of rgba values of colors to use for specific teams
 TEAM_COLORS = {
     'Anaheim Ducks': {
         "primary": (252, 76, 2, 1),
