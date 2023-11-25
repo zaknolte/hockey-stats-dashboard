@@ -37,3 +37,42 @@
 .team-colored-dropdown>.Select-control>.Select-arrow-zone>.Select-arrow {
     border-color: var(--team-text-color-secondary) transparent transparent;
 }
+
+/* INDEX PLAYER SEARCH BAR */
+.player-search .Select-value-label>.player-results {
+    color: white !important;
+    text-transform: capitalize;
+}
+
+.player-search .Select-control,
+.Select-input>input {
+    color: white !important;
+    text-transform: capitalize;
+}
+
+.player-search .VirtualizedSelectOption {
+    background-color: lightgray;
+    text-transform: capitalize;
+}
+
+.player-search .VirtualizedSelectFocusedOption {
+    background-color: black;
+    color: white;
+    text-transform: capitalize;
+}
+
+.player-search .VirtualizedSelectFocusedOption>.player-results {
+    color: white;
+    text-transform: capitalize;
+}
+
+.player-search .Select-noresults {
+    background-color: black;
+    color: white;
+    text-transform: capitalize;
+}
+
+/* hide dropdown arrow */
+.player-search .Select-arrow {
+    display: none;
+}
