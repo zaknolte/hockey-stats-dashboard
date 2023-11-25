@@ -1,8 +1,12 @@
 import dash
 from dash import html, dcc, callback, Output, Input
 import dash_bootstrap_components as dbc
+
+from django.utils.text import slugify
 import requests
 import datetime
+
+from data_values import TEAM_BY_ABBR
 
 dash.register_page(__name__, path="/", title="Hockey Stats")
 
@@ -19,8 +23,12 @@ def get_vs_card(game:dict):
     Returns:
         html.Div: Nested html components of live score information.
     """
-    home_score = game.get("homeTeam").get("score")
-    away_score = game.get("awayTeam").get("score")
+    home_team = game.get("homeTeam")
+    away_team = game.get("awayTeam")
+    
+    home_score = home_team.get("score")
+    away_score = away_team.get("score")
+
     home_color, away_color = "black", "black"
     home_shadow, away_shadow = None, None
     
@@ -107,8 +115,14 @@ def get_vs_card(game:dict):
             ),
             html.Div(
                 [
-                    html.Img(src=game.get("homeTeam").get("logo"), style={"maxWidth": 100, "filter": home_shadow}),
-                    html.Img(src=game.get("awayTeam").get("logo"), style={"maxWidth": 100, "filter": away_shadow}),
+                    html.A(
+                        html.Img(src=game.get("homeTeam").get("logo"), style={"width": 100, "maxWidth": 100, "filter": home_shadow}),
+                        href=f"http://127.0.0.1:8050/teams/{slugify(TEAM_BY_ABBR[home_team.get('abbrev')])}"
+                    ),
+                    html.A(
+                        html.Img(src=game.get("awayTeam").get("logo"), style={"width": 100, "maxWidth": 100, "filter": away_shadow}),
+                        href=f"http://127.0.0.1:8050/teams/{slugify(TEAM_BY_ABBR[away_team.get('abbrev')])}"
+                    )
                 ],
                 style={"display": "flex", "justifyContent": "space-evenly"}
             ),
