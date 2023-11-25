@@ -1,4 +1,4 @@
-from dash import html, dcc, callback, Output, Input
+from dash import html, dcc, callback, Output, Input, no_update
 import dash_bootstrap_components as dbc
 from dash import html
 
@@ -94,7 +94,8 @@ nav = dbc.NavbarSimple(
             className="player-search",
             id="player-search",
             maxHeight=0,
-            )
+            ),
+        dcc.Location(id="player-routing")
     ],
     brand="Home",
     brand_href="/",
@@ -114,3 +115,15 @@ def show_dropdown(value):
     if value:
         return 500
     return 0
+
+# player dropdown links only work when clicking on the name itself
+# add addintional dcc.Location routing if selecting player by pressing Enter
+# or by selecting the dropdown option row area next to the text
+@callback(
+    Output("player-routing", "href"),
+    Input("player-search", "value")
+)
+def route_player_page(name):
+    if name:
+        return f"http://127.0.0.1:8050/player/{slugify(name)}"
+    return no_update
