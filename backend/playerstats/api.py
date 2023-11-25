@@ -42,10 +42,18 @@ class PlayerSchema(ModelSchema):
          return [i.position for i in obj.position.all()]
      
      
+class PlayerNameSchema(Schema):
+    name: str = Field(..., alias="full_name")
+     
+     
 @player_router.get("/", response=PlayerSchema)
 def get_player(request, id):
     return Player.objects.get(pk=id)
 
 @player_router.get("/all", response=List[PlayerSchema])
-def get_all_players(request, pk):
+def get_all_players(request):
     return Player.objects.all()
+
+@player_router.get("/all_names", response=List[PlayerNameSchema])
+def get_player_names(request):
+    return Player.objects.values("full_name").order_by("full_name")
