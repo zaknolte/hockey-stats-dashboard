@@ -1,9 +1,47 @@
+from dash import html, dcc, callback, Output, Input
 import dash_bootstrap_components as dbc
 from dash import html
 
 from django.utils.text import slugify
+import aiohttp
+import asyncio
+import pandas as pd
 
 from data_values import DIVISION_TEAMS
+
+
+async def query_all_player_names():
+    """
+    Performs an async query to the backed server to get all player names.
+
+    Returns:
+        json response of data.
+    """
+    async with aiohttp.ClientSession() as session:
+        api_url = f"http://127.0.0.1:8000/api/players/all_names"
+        async with session.get(api_url) as resp:
+            data = await resp.json()
+
+    return data
+
+
+def get_player_names():
+    """
+    Queries backend database for data then returns list of player names.
+
+    Returns:
+        list: List of all player names in json format.
+    """
+    return asyncio.run(query_all_player_names())
+
+def get_options_from_names():
+    return [
+        {
+            "label": dcc.Link(name["name"], href=f"http://127.0.0.1:8050/player/{slugify(name['name'])}", className="player-results"),
+            "value": name["name"],
+        } for name in get_player_names()
+    ]
+
 
 def build_team_col(division, division_teams):
     col = [
@@ -49,6 +87,14 @@ nav = dbc.NavbarSimple(
             align_end=True,
         ),
         dbc.NavItem(dbc.NavLink("League", href="/league")),
+        dcc.Dropdown(
+            placeholder="Search Players...",
+            options=get_options_from_names(),
+            style={"width": 200, "backgroundColor": "black", "borderColor": "darkgrey", "marginTop": "0.5%"},
+            className="player-search",
+            id="player-search",
+            maxHeight=0,
+            )
     ],
     brand="Home",
     brand_href="/",
@@ -56,3 +102,15 @@ nav = dbc.NavbarSimple(
     dark=True,
     class_name="d-flex justify-content-start",
 )
+
+
+# change the dropdown to mimic a traditional search bar
+# hide options until a search is started
+@callback(
+    Output("player-search", "maxHeight"),
+    Input("player-search", "search_value")
+)
+def show_dropdown(value):
+    if value:
+        return 500
+    return 0
