@@ -117,7 +117,7 @@ def show_dropdown(value):
     return 0
 
 # player dropdown links only work when clicking on the name itself
-# add addintional dcc.Location routing if selecting player by pressing Enter
+# add additional dcc.Location routing if selecting player by pressing Enter
 # or by selecting the dropdown option row area next to the text
 @callback(
     Output("player-routing", "href"),
