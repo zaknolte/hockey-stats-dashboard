@@ -1,17 +1,17 @@
 from ninja import ModelSchema, Router, Field, Schema
-from typing import List
+from typing import List, Union
 
 from .models import Player
-from teamstats.api import TeamSchema
+from teamstats.api import TeamSchema, SimpleTeamSchema
 
 
 player_router = Router()
 
-
+    
 class PlayerSchema(ModelSchema):
     # position: List[PlayerPositionSchema]
     position: list[str] = Field(..., alias="position")
-    team: TeamSchema
+    team: SimpleTeamSchema = None
     class Config:
         model = Player
         model_fields = [
@@ -47,8 +47,17 @@ class PlayerNameSchema(Schema):
      
      
 @player_router.get("/", response=PlayerSchema)
-def get_player(request, id):
-    return Player.objects.get(pk=id)
+# make sure int typing is before str for parameter
+# passed ints can be converted to str so do int first to preserve type
+def get_player(request, player: Union[int, str]):
+    kwargs = {}
+    if type(player) is int:
+        kwargs["pk"] = player
+    elif type(player) is str:
+        player = player.replace("-", " ").replace("%20", " ").title()
+        kwargs["full_name"] = player
+    return Player.objects.get(**kwargs)
+
 
 @player_router.get("/all", response=List[PlayerSchema])
 def get_all_players(request):
