@@ -1,22 +1,23 @@
 from django.contrib import admin
 from django.db.models.functions import Lower
 
-from .models import Season, PlayerSeason, GoalieSeason, TeamSeason
+# from .models import Season, PlayerSeason, GoalieSeason, TeamSeason
+from .models import RegularSeason, PlayoffSeason, PlayerRegularSeason, PlayerPlayoffSeason, GoalieRegularSeason, GoaliePlayoffSeason, TeamRegularSeason, TeamPlayoffSeason
 
 
-class SeasonAdmin(admin.ModelAdmin):
-    list_display = ("year", "season_type")
+class RegularSeasonAdmin(admin.ModelAdmin):
+    list_display = ("year",)
     search_fields = ["year"]
 
     def get_ordering(self, request):
         return ["year"]
 
 
-admin.site.register(Season, SeasonAdmin)
+admin.site.register(RegularSeason, RegularSeasonAdmin)
 
 
-class PlayerSeasonAdmin(admin.ModelAdmin):
-    list_display = ("get_season_year", "get_player_name", "get_season_type")
+class PlayerRegularSeasonAdmin(admin.ModelAdmin):
+    list_display = ("get_season_year", "get_player_name")
     search_fields = ["season__year"]
     
     @admin.display(ordering='season__year', description='Season Year')
@@ -26,19 +27,15 @@ class PlayerSeasonAdmin(admin.ModelAdmin):
     @admin.display(ordering='player__full_name', description='Player Name')
     def get_player_name(self, obj):
         return obj.player.full_name
-    
-    @admin.display(ordering='season__season_type', description='Season Type')
-    def get_season_type(self, obj):
-        return obj.season.season_type
 
     def get_ordering(self, request):
         return ["season__year", Lower("player__last_name")]  # sort case insensitive
 
 
-admin.site.register(PlayerSeason, PlayerSeasonAdmin)
+admin.site.register(PlayerRegularSeason, PlayerRegularSeasonAdmin)
 
-class GoalieSeasonAdmin(admin.ModelAdmin):
-    list_display = ("get_season_year", "get_player_name", "get_season_type")
+class GoalieRegularSeasonAdmin(admin.ModelAdmin):
+    list_display = ("get_season_year", "get_player_name")
     search_fields = ["season__year"]
     
     @admin.display(ordering='season__year', description='Season Year')
@@ -48,20 +45,16 @@ class GoalieSeasonAdmin(admin.ModelAdmin):
     @admin.display(ordering='player__full_name', description='Player Name')
     def get_player_name(self, obj):
         return obj.player.full_name
-    
-    @admin.display(ordering='season__season_type', description='Season Type')
-    def get_season_type(self, obj):
-        return obj.season.season_type
 
     def get_ordering(self, request):
         return ["season__year", Lower("player__last_name")]  # sort case insensitive
 
 
-admin.site.register(GoalieSeason, GoalieSeasonAdmin)
+admin.site.register(GoalieRegularSeason, GoalieRegularSeasonAdmin)
 
 
-class TeamSeasonAdmin(admin.ModelAdmin):
-    list_display = ("get_season_year", "get_team_name", "get_season_type")
+class TeamRegularSeasonAdmin(admin.ModelAdmin):
+    list_display = ("get_season_year", "get_team_name")
     search_fields = ["season__year"]
     
     @admin.display(ordering='season__year', description='Season Year')
@@ -71,13 +64,9 @@ class TeamSeasonAdmin(admin.ModelAdmin):
     @admin.display(ordering='team__name', description='Team')
     def get_team_name(self, obj):
         return obj.team.name
-    
-    @admin.display(ordering='season__season_type', description='Season Type')
-    def get_season_type(self, obj):
-        return obj.season.season_type
 
     def get_ordering(self, request):
         return ["season__year", Lower("team__name")]  # sort case insensitive
 
 
-admin.site.register(TeamSeason, TeamSeasonAdmin)
+admin.site.register(TeamRegularSeason, TeamRegularSeasonAdmin)
