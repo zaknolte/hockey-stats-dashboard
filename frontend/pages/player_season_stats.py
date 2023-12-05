@@ -1,5 +1,5 @@
 import dash
-from dash import html, dcc, callback, Input, Output, State
+from dash import html, dcc, callback, Input, Output, State, ctx, no_update
 import dash_bootstrap_components as dbc
 import dash_ag_grid as dag
 
@@ -14,7 +14,7 @@ from pathlib import Path
 from io import StringIO
 
 # from app import DJANGO_ROOT
-from helpers import stringify_season, rename_data_df_cols, get_agGrid_layout, get_agGrid_columnDefs
+from helpers import stringify_season, rename_data_df_cols, get_agGrid_layout, get_agGrid_columnDefs, cols_to_percent
 
 dash.register_page(__name__, path="/players", title="Hockey Stats | Player Stats")
 
@@ -41,7 +41,7 @@ async def query_player_stats(endpoint:str):
 CURRENT_SEASON = asyncio.run(query_player_stats("current_season"))["season"]
 STRING_CURRENT_SEASON = stringify_season(CURRENT_SEASON)
 ALL_SEASONS = ["All Seasons"] + [stringify_season(season) for season in asyncio.run(query_player_stats("all_seasons"))["season"]]
-ALL_SEASON_TYPES = [k["season_type"] for k in asyncio.run(query_player_stats("all_season_types"))]
+ALL_SEASON_TYPES = ["Regular Season", "Playoffs"]
 
 
 # can't host static images in dash normally outside assets folder
@@ -65,8 +65,9 @@ def format_image(image_url:str):
     return encoded.decode()
 
 
-def build_player_query_url(player_type="all", season="All Seasons", season_type="Regular Season", team="All Teams"):
+def build_player_query_url(skater_type="skater", player_type="all", season="All Seasons", season_type="Regular Season", team="All Teams"):
     """
+    
     Builds and returns a query url to query the backend database.
  
     Args:
@@ -77,7 +78,7 @@ def build_player_query_url(player_type="all", season="All Seasons", season_type=
     Returns:
         str: The compiled endpoint url string.
     """
-    return f"players/{player_type}?season={season}&season_type={season_type}&team_name={team}"
+    return f"{skater_type}/{player_type}?season={season}&season_type={season_type}&team={team}"
 
 
 def get_player_options(position:str):
@@ -95,9 +96,9 @@ def get_player_options(position:str):
     if position == "Forwards":
         player_options = ["C", "RW", "LW"]
     elif position == "Defense":
-        player_options = ["RD", "LD"]
+        player_options = ["RD", "LD", "D"]
     elif position == "All Positions" or position == "All Skaters":
-        player_options = ["C", "RW", "LW", "RD" ,"LD", "G"]
+        player_options = ["C", "RW", "LW", "RD" ,"LD", "D", "G"]
     elif position == "Goalies":
         player_options = ["G"]
             
@@ -133,6 +134,16 @@ def query_to_formatted_df(query:str):
     """
     df = pd.json_normalize(asyncio.run(query_player_stats(query))).set_index("id")
     df = df.rename(columns=rename_data_df_cols)
+    df[rename_data_df_cols["player.team.name"]] = df[rename_data_df_cols["player.team.name"]].fillna("N/A")
+    
+    df = cols_to_percent(df, [rename_data_df_cols["faceoff_percent"]])
+    
+    rounding = {
+        rename_data_df_cols["faceoff_percent"]: 2,
+        rename_data_df_cols["save_percent"]: 3,
+        rename_data_df_cols["goals_against_average"]: 2,
+    }
+    df = df.round(rounding)
 
     return df
     
@@ -275,6 +286,7 @@ def get_player_position_options_layout():
             {"label": "LW", "value": "LW"},
             {"label": "RD", "value": "RD"},
             {"label": "LD", "value": "LD"},
+            {"label": "D", "value": "D"},
             {"label": "G", "value": "G"},
         ],
         style={
@@ -429,7 +441,7 @@ def get_leaders_layout_rows(df:object, stat:str, position:str):
 
 def layout():
     # get database data with defaults for current regular season for all teams
-    players_df = query_to_formatted_df(build_player_query_url(season=CURRENT_SEASON))
+    players_df = query_to_formatted_df(build_player_query_url(season=CURRENT_SEASON)).sort_values(rename_data_df_cols["points"], ascending=False)
     
     return html.Div(
         [
@@ -466,9 +478,14 @@ def layout():
     prevent_initial_call=True
 )
 def update_displayed_data(season:str, season_type:str, team:str, position:str, position_group:str):
-    formatted_season = int(season[:4]) if season != "All Seasons" else season
+    season = season.replace("-", "") if season != "All Seasons" else season.replace("-", "")
     
-    df = query_to_formatted_df(build_player_query_url(season=formatted_season, season_type=season_type, team=team))
+    if position != "G":
+        df = query_to_formatted_df(build_player_query_url(skater_type="skater", season=season, season_type=season_type, team=team))
+        df = df.sort_values(rename_data_df_cols["points"], ascending=False)
+    else:
+        df = query_to_formatted_df(build_player_query_url(skater_type="goalie", season=season, season_type=season_type, team=team))
+        df = df.sort_values(rename_data_df_cols["wins"], ascending=False)
     df = filter_data_by_position(df, position_group)
     
     if position != "All Positions":
@@ -498,6 +515,25 @@ def update_player_position_options(player_group:str):
 
 
 @callback(
+    Output("dropdown-leader-stat-1", "options"),
+    Output("dropdown-leader-stat-2", "options"),
+    Output("dropdown-leader-stat-3", "options"),
+    Output("dropdown-leader-stat-1", "value"),
+    Output("dropdown-leader-stat-2", "value"),
+    Output("dropdown-leader-stat-3", "value"),
+    Input("player-position-options", "value"),
+    prevent_initial_call=True,
+)
+def update_filtered_stats(position):
+    if position == "G":
+        values = [rename_data_df_cols["wins"], rename_data_df_cols["save_percent"], rename_data_df_cols["goals_against_average"]]
+    else:
+        values = [rename_data_df_cols["goals"], rename_data_df_cols["assists"], rename_data_df_cols["points"]]
+    player_options = [get_leaders_dropdown_options(position)] * 3
+    return player_options + values
+
+
+@callback(
     Output("rows-leader-stat-1", "children"),
     Output("rows-leader-stat-2", "children"),
     Output("rows-leader-stat-3", "children"),
@@ -516,6 +552,13 @@ def update_filtered_stats(stat_left:str, stat_center:str, stat_right:str, player
     left = get_leaders_layout_rows(df, stat_left, player_position)
     center = get_leaders_layout_rows(df, stat_center, player_position)
     right = get_leaders_layout_rows(df, stat_right, player_position)
-    df = df.rename(columns=rename_data_df_cols)
+        
+    if ctx.triggered_id == "player-position-options" or ctx.triggered_id == "season-stats-df":
+        df = df.rename(columns=rename_data_df_cols)
+        rowData = df.to_dict("records")
+        columnDefs = get_agGrid_columnDefs(player_position)
+    else:
+        rowData = no_update
+        columnDefs = no_update
 
-    return left, center, right, df.to_dict("records"), get_agGrid_columnDefs(player_position)
+    return left, center, right, rowData, columnDefs
