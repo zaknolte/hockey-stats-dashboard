@@ -1,27 +1,17 @@
 from django.db import models
 
 class Team(models.Model):
-    conference_choices = [
-        ("Western Conference", "Western Conference"),
-        ("Eastern Conference", "Eastern Conference"),
-    ]
-    
-    division_choices = [
-        ("Pacific Division", "Pacific"),
-        ("Central Division", "Central"),
-        ("Atlantic Division", "Atlantic"),
-        ("Metropolitan Division", "Metropolitan"),
-    ]
-    
-    name = models.CharField(max_length=50)
+    team_id = models.IntegerField(primary_key=True)
+    franchise_id = models.IntegerField(null=True)
+    name = models.CharField(max_length=50, null=True)
     logo = models.ImageField(upload_to="images/team-logo", null=True)
-    conference = models.CharField(max_length=50, choices=conference_choices)
-    division = models.CharField(max_length=50, choices=division_choices)
-    start_season = models.IntegerField()
-    final_season = models.IntegerField(default=9999)
-    city = models.CharField(max_length=50)
-    state = models.CharField(max_length=50)
-    venue = models.CharField(max_length=50)
+    conference = models.CharField(max_length=50, null=True)
+    division = models.CharField(max_length=50, null=True)
+    start_season = models.IntegerField(null=True)
+    final_season = models.IntegerField(null=True)
+    city = models.CharField(max_length=50, null=True)
+    state = models.CharField(max_length=50, null=True)
+    venue = models.CharField(max_length=50, null=True)
     
 
     def __str__(self):
