@@ -38,6 +38,13 @@
         "model": "playerstats.playerposition",
         "pk": 6,
         "fields": {
+            "position": "D"
+        }
+    },
+    {
+        "model": "playerstats.playerposition",
+        "pk": 7,
+        "fields": {
             "position": "G"
         }
     }

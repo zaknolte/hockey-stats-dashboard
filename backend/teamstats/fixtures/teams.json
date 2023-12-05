@@ -1,482 +1,930 @@
 [
     {
         "model": "teamstats.team",
-        "pk": 1,
         "fields": {
-            "name": "Anaheim Ducks",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/anaheim_ducks.png",
-            "conference": "Western Conference",
-            "division": "Pacific",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "Anaheim",
-            "state": "California",
-            "venue": "Anaheim arena"
-        }
-    },
-    {
-        "model": "teamstats.team",
-        "pk": 2,
-        "fields": {
-            "name": "Calgary Flames",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/calgary_flames.png",
-            "conference": "Western Conference",
-            "division": "Pacific",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "Calgary",
-            "state": "Alberta",
-            "venue": "Los Angeles arena"
-        }
-    },
-    {
-        "model": "teamstats.team",
-        "pk": 3,
-        "fields": {
-            "name": "Edmonton Oilers",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/edmonton_oilers.png",
-            "conference": "Western Conference",
-            "division": "Pacific",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "Edmonton",
-            "state": "Alberta",
-            "venue": "Edmonton arena"
-        }
-    },
-    {
-        "model": "teamstats.team",
-        "pk": 4,
-        "fields": {
-            "name": "Los Angeles Kings",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/los_angeles_kings.png",
-            "conference": "Western Conference",
-            "division": "Pacific",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "Los Angeles",
-            "state": "California",
-            "venue": "Calgary arena"
-        }
-    },
-    {
-        "model": "teamstats.team",
-        "pk": 5,
-        "fields": {
-            "name": "San Jose Sharks",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/san_jose_sharks.png",
-            "conference": "Western Conference",
-            "division": "Pacific",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "San Jose",
-            "state": "California",
-            "venue": "San Jose arena"
-        }
-    },
-    {
-        "model": "teamstats.team",
-        "pk": 6,
-        "fields": {
-            "name": "Seattle Kraken",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/seattle_kraken.png",
-            "conference": "Western Conference",
-            "division": "Pacific",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "Seattle",
-            "state": "Washington",
-            "venue": "Seattle arena"
-        }
-    },
-    {
-        "model": "teamstats.team",
-        "pk": 7,
-        "fields": {
-            "name": "Vancouver Canucks",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/vancouver_canucks.png",
-            "conference": "Western Conference",
-            "division": "Pacific",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "Vancouver",
-            "state": "British Columbia",
-            "venue": "Vancouver arena"
-        }
-    },
-    {
-        "model": "teamstats.team",
-        "pk": 8,
-        "fields": {
-            "name": "Vegas Golden Knights",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/vegas_golden_knights.png",
-            "conference": "Western Conference",
-            "division": "Pacific",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "Paradise",
-            "state": "Nevada",
-            "venue": "Vegas arena"
-        }
-    },
-    {
-        "model": "teamstats.team",
-        "pk": 9,
-        "fields": {
-            "name": "Arizona Coyotes",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/arizona_coyotes.png",
-            "conference": "Western Conference",
-            "division": "Central",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "Tempe",
-            "state": "Arizona",
-            "venue": "Arizona arena"
-        }
-    },
-    {
-        "model": "teamstats.team",
-        "pk": 10,
-        "fields": {
-            "name": "Chicago Blackhawks",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/chicago_blackhawks.png",
-            "conference": "Western Conference",
-            "division": "Central",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "Chicago",
-            "state": "Illinois",
-            "venue": "Chicago arena"
-        }
-    },
-    {
-        "model": "teamstats.team",
-        "pk": 11,
-        "fields": {
-            "name": "Colorado Avalanche",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/colorado_avalanche.png",
-            "conference": "Western Conference",
-            "division": "Pacific",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "Denver",
-            "state": "Colorado",
-            "venue": "Colorado arena"
-        }
-    },
-    {
-        "model": "teamstats.team",
-        "pk": 12,
-        "fields": {
-            "name": "Dallas Stars",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/dallas_stars.png",
-            "conference": "Western Conference",
-            "division": "Pacific",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "Dallas",
-            "state": "Texas",
-            "venue": "Dallas arena"
-        }
-    },
-    {
-        "model": "teamstats.team",
-        "pk": 13,
-        "fields": {
-            "name": "Minnesota Wild",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/minnesota_wild.png",
-            "conference": "Western Conference",
-            "division": "Pacific",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "St. Paul",
-            "state": "Minnesota",
-            "venue": "Minnesota arena"
-        }
-    },
-    {
-        "model": "teamstats.team",
-        "pk": 14,
-        "fields": {
-            "name": "Nashville Predators",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/nashville_predators.png",
-            "conference": "Western Conference",
-            "division": "Pacific",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "Nashville",
-            "state": "Tennesee",
-            "venue": "Nashville arena"
-        }
-    },
-    {
-        "model": "teamstats.team",
-        "pk": 15,
-        "fields": {
-            "name": "St Louis Blues",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/st_louis_blues.png",
-            "conference": "Western Conference",
-            "division": "Pacific",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "St. Louis",
-            "state": "Missouri",
-            "venue": "St. Louis arena"
-        }
-    },
-    {
-        "model": "teamstats.team",
-        "pk": 16,
-        "fields": {
-            "name": "Winnipeg Jets",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/winnipeg_jets.png",
-            "conference": "Western Conference",
-            "division": "Pacific",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "Winnipeg",
-            "state": "Manitoba",
-            "venue": "Winnipeg arena"
-        }
-    },
-    {
-        "model": "teamstats.team",
-        "pk": 17,
-        "fields": {
-            "name": "Carolina Hurricanes",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/carolina_hurricanes.png",
-            "conference": "Eastern Conference",
-            "division": "Metropolitan",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "Raliegh",
-            "state": "North Carolina",
-            "venue": "Carolina arena"
-        }
-    },
-    {
-        "model": "teamstats.team",
-        "pk": 18,
-        "fields": {
-            "name": "Columbus Blue Jackets",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/columbus_blue_jackets.png",
-            "conference": "Eastern Conference",
-            "division": "Metropolitan",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "Columbus",
-            "state": "Ohio",
-            "venue": "Columbus arena"
-        }
-    },
-    {
-        "model": "teamstats.team",
-        "pk": 19,
-        "fields": {
-            "name": "New Jersey Devils",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/new_jersey_devils.png",
-            "conference": "Western Conference",
-            "division": "Pacific",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "Newark",
-            "state": "New Jersey",
-            "venue": "New Jersey arena"
-        }
-    },
-    {
-        "model": "teamstats.team",
-        "pk": 20,
-        "fields": {
-            "name": "New York Islanders",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/new_york_islanders.png",
-            "conference": "Western Conference",
-            "division": "Pacific",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "Elmont",
-            "state": "New York",
-            "venue": "Islander arena"
-        }
-    },
-    {
-        "model": "teamstats.team",
-        "pk": 21,
-        "fields": {
-            "name": "New York Rangers",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/new_york_rangers.png",
-            "conference": "Western Conference",
-            "division": "Pacific",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "New York City",
-            "state": "New York",
-            "venue": "New York arena"
-        }
-    },
-    {
-        "model": "teamstats.team",
-        "pk": 22,
-        "fields": {
-            "name": "Philadelphia Flyers",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/philadelphia_flyers.png",
-            "conference": "Western Conference",
-            "division": "Pacific",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "Philadelphia",
-            "state": "Pennsylvania",
-            "venue": "Philadelphia arena"
-        }
-    },
-    {
-        "model": "teamstats.team",
-        "pk": 23,
-        "fields": {
-            "name": "Pittsburgh Penguins",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/pittsburgh_penguins.png",
-            "conference": "Western Conference",
-            "division": "Pacific",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "Pittsburgh",
-            "state": "Pennsylvania",
-            "venue": "Pittsburgh arena"
-        }
-    },
-    {
-        "model": "teamstats.team",
-        "pk": 24,
-        "fields": {
-            "name": "Washington Capitals",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/washington_capitals.png",
-            "conference": "Western Conference",
-            "division": "Pacific",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "Washington",
-            "state": "D.C.",
-            "venue": "Washington arena"
-        }
-    },
-    {
-        "model": "teamstats.team",
-        "pk": 25,
-        "fields": {
-            "name": "Boston Bruins",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/boston_bruins.png",
-            "conference": "Eastern Conference",
-            "division": "Atlantic",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "Boston",
-            "state": "Massachusets",
-            "venue": "Boston arena"
-        }
-    },
-    {
-        "model": "teamstats.team",
-        "pk": 26,
-        "fields": {
-            "name": "Buffalo Sabres",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/buffalo_sabres.png",
-            "conference": "Eastern Conference",
-            "division": "Atlantic",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "Buffalo",
-            "state": "New York",
-            "venue": "Buffalo arena"
-        }
-    },
-    {
-        "model": "teamstats.team",
-        "pk": 27,
-        "fields": {
-            "name": "Detroit Red Wings",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/detroit_red_wings.png",
-            "conference": "Western Conference",
-            "division": "Pacific",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "Detroit",
-            "state": "Michigan",
-            "venue": "Detroit arena"
-        }
-    },
-    {
-        "model": "teamstats.team",
-        "pk": 28,
-        "fields": {
-            "name": "Florida Panthers",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/florida_panthers.png",
-            "conference": "Western Conference",
-            "division": "Pacific",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "Sunrise",
-            "state": "Florida",
-            "venue": "Florida arena"
-        }
-    },
-    {
-        "model": "teamstats.team",
-        "pk": 29,
-        "fields": {
+            "team_id": 8,
+            "franchise_id": 1,
             "name": "Montreal Canadiens",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/montreal_canadiens.png",
-            "conference": "Western Conference",
-            "division": "Pacific",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "Montréal",
-            "state": "Quebec",
-            "venue": "Montréal arena"
+            "logo": "http://cdn.nhle.com/logos/nhl/svg/MTL_light.svg",
+            "conference": "Eastern",
+            "division": "Atlantic",
+            "start_season": 19171918,
+            "final_season": null,
+            "city": "Montreal",
+            "state": "QC",
+            "venue": "Bell Centre"
         }
     },
     {
         "model": "teamstats.team",
-        "pk": 30,
         "fields": {
-            "name": "Ottawa Senators",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/ottawa_senators.png",
-            "conference": "Western Conference",
-            "division": "Pacific",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "Ottawa",
-            "state": "Ontario",
-            "venue": "Ottawa arena"
+            "team_id": 41,
+            "franchise_id": 2,
+            "name": "Montreal Wanderers",
+            "logo": "http://3.cdn.nhle.com/logos/nhl/svg/MWN_19171918_light.svg",
+            "conference": "",
+            "division": "",
+            "start_season": 19171918,
+            "final_season": 19171918,
+            "city": null,
+            "state": null,
+            "venue": null
         }
     },
     {
         "model": "teamstats.team",
-        "pk": 31,
         "fields": {
-            "name": "Tampa Bay Lightning",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/tampa_bay_lightning.png",
-            "conference": "Western Conference",
-            "division": "Pacific",
-            "start_season": 1990,
-            "final_season": 9999,
-            "city": "Tampa",
-            "state": "Florida",
-            "venue": "Tampa Bay arena"
+            "team_id": 36,
+            "franchise_id": 3,
+            "name": "Ottawa Senators (1917)",
+            "logo": "http://1.cdn.nhle.com/logos/nhl/svg/SEN_19171918-19331934_light.svg",
+            "conference": "",
+            "division": "",
+            "start_season": 19171918,
+            "final_season": 19341935,
+            "city": null,
+            "state": null,
+            "venue": null
         }
     },
     {
         "model": "teamstats.team",
-        "pk": 32,
         "fields": {
+            "team_id": 45,
+            "franchise_id": 3,
+            "name": "St. Louis Eagles",
+            "logo": "http://3.cdn.nhle.com/logos/nhl/svg/SLE_19341935_dark.svg",
+            "conference": "",
+            "division": "",
+            "start_season": 19171918,
+            "final_season": 19341935,
+            "city": null,
+            "state": null,
+            "venue": null
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 37,
+            "franchise_id": 4,
+            "name": "Hamilton Tigers",
+            "logo": "http://3.cdn.nhle.com/logos/nhl/svg/HAM_19231924-19241925_light.svg",
+            "conference": "",
+            "division": "",
+            "start_season": 19191920,
+            "final_season": 19241925,
+            "city": null,
+            "state": null,
+            "venue": null
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 42,
+            "franchise_id": 4,
+            "name": "Quebec Bulldogs",
+            "logo": "http://1.cdn.nhle.com/logos/nhl/svg/QBD_19191920_light.svg",
+            "conference": "",
+            "division": "",
+            "start_season": 19191920,
+            "final_season": 19241925,
+            "city": null,
+            "state": null,
+            "venue": null
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 10,
+            "franchise_id": 5,
             "name": "Toronto Maple Leafs",
-            "logo": "C:/Users/zakno/VScode Projects/hockey-stats-dashboard/backend/images/team-logos/toronto_maple_leafs.png",
-            "conference": "Western Conference",
-            "division": "Pacific",
-            "start_season": 1990,
-            "final_season": 9999,
+            "logo": "http://1.cdn.nhle.com/logos/nhl/svg/TOR_alt.svg",
+            "conference": "Eastern",
+            "division": "Atlantic",
+            "start_season": 19171918,
+            "final_season": null,
             "city": "Toronto",
-            "state": "Ontario",
-            "venue": "Toronto arena"
+            "state": "ON",
+            "venue": "Scotiabank Arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 57,
+            "franchise_id": 5,
+            "name": "Toronto Arenas",
+            "logo": "http://cdn.nhle.com/logos/nhl/svg/TAN_19171918-19181919_light.svg",
+            "conference": "",
+            "division": "",
+            "start_season": 19171918,
+            "final_season": null,
+            "city": null,
+            "state": null,
+            "venue": null
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 58,
+            "franchise_id": 5,
+            "name": "Toronto St. Patricks",
+            "logo": "http://2.cdn.nhle.com/logos/nhl/svg/TSP_19261927_dark.svg",
+            "conference": "",
+            "division": "",
+            "start_season": 19171918,
+            "final_season": null,
+            "city": null,
+            "state": null,
+            "venue": null
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 6,
+            "franchise_id": 6,
+            "name": "Boston Bruins",
+            "logo": "http://3.cdn.nhle.com/logos/nhl/svg/BOS_dark.svg",
+            "conference": "Eastern",
+            "division": "Atlantic",
+            "start_season": 19241925,
+            "final_season": null,
+            "city": "Boston",
+            "state": "MA",
+            "venue": "TD Garden"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 43,
+            "franchise_id": 7,
+            "name": "Montreal Maroons",
+            "logo": "http://1.cdn.nhle.com/logos/nhl/svg/MMR_19351936-19371938_dark.svg",
+            "conference": "",
+            "division": "",
+            "start_season": 19241925,
+            "final_season": 19371938,
+            "city": null,
+            "state": null,
+            "venue": null
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 44,
+            "franchise_id": 8,
+            "name": "New York Americans",
+            "logo": "http://1.cdn.nhle.com/logos/nhl/svg/NYA_19401941_light.svg",
+            "conference": "",
+            "division": "",
+            "start_season": 19251926,
+            "final_season": 19411942,
+            "city": null,
+            "state": null,
+            "venue": null
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 51,
+            "franchise_id": 8,
+            "name": "Brooklyn Americans",
+            "logo": "http://2.cdn.nhle.com/logos/nhl/svg/BRK_19411942_light.svg",
+            "conference": "",
+            "division": "",
+            "start_season": 19251926,
+            "final_season": 19411942,
+            "city": null,
+            "state": null,
+            "venue": null
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 38,
+            "franchise_id": 9,
+            "name": "Pittsburgh Pirates",
+            "logo": "http://1.cdn.nhle.com/logos/nhl/svg/PIR_19291930_light.svg",
+            "conference": "",
+            "division": "",
+            "start_season": 19251926,
+            "final_season": 19301931,
+            "city": null,
+            "state": null,
+            "venue": null
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 39,
+            "franchise_id": 9,
+            "name": "Philadelphia Quakers",
+            "logo": "http://cdn.nhle.com/logos/nhl/svg/QUA_19301931_dark.svg",
+            "conference": "",
+            "division": "",
+            "start_season": 19251926,
+            "final_season": 19301931,
+            "city": null,
+            "state": null,
+            "venue": null
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 3,
+            "franchise_id": 10,
+            "name": "New York Rangers",
+            "logo": "http://2.cdn.nhle.com/logos/nhl/svg/NYR_dark.svg",
+            "conference": "Eastern",
+            "division": "Metropolitan",
+            "start_season": 19261927,
+            "final_season": null,
+            "city": "New York",
+            "state": "NY",
+            "venue": "Madison Square Garden"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 16,
+            "franchise_id": 11,
+            "name": "Chicago Blackhawks",
+            "logo": "http://1.cdn.nhle.com/logos/nhl/svg/CHI_dark.svg",
+            "conference": "Western",
+            "division": "Central",
+            "start_season": 19261927,
+            "final_season": null,
+            "city": "Chicago",
+            "state": "IL",
+            "venue": "United Center"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 17,
+            "franchise_id": 12,
+            "name": "Detroit Red Wings",
+            "logo": "http://2.cdn.nhle.com/logos/nhl/svg/DET_dark.svg",
+            "conference": "Eastern",
+            "division": "Atlantic",
+            "start_season": 19261927,
+            "final_season": null,
+            "city": "Detroit",
+            "state": "MI",
+            "venue": "Little Caesars Arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 40,
+            "franchise_id": 12,
+            "name": "Detroit Cougars",
+            "logo": "http://cdn.nhle.com/logos/nhl/svg/DCG_19261927-19291930_light.svg",
+            "conference": "",
+            "division": "",
+            "start_season": 19261927,
+            "final_season": null,
+            "city": null,
+            "state": null,
+            "venue": null
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 50,
+            "franchise_id": 12,
+            "name": "Detroit Falcons",
+            "logo": "http://1.cdn.nhle.com/logos/nhl/svg/DFL_19301931-19311932_light.svg",
+            "conference": "",
+            "division": "",
+            "start_season": 19261927,
+            "final_season": null,
+            "city": null,
+            "state": null,
+            "venue": null
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 46,
+            "franchise_id": 13,
+            "name": "Oakland Seals",
+            "logo": "http://3.cdn.nhle.com/logos/nhl/svg/OAK_19671968-19691970_light.svg",
+            "conference": "",
+            "division": "",
+            "start_season": 19671968,
+            "final_season": 19771978,
+            "city": null,
+            "state": null,
+            "venue": null
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 49,
+            "franchise_id": 13,
+            "name": "Cleveland Barons",
+            "logo": "http://1.cdn.nhle.com/logos/nhl/svg/CLE_19761977-19771978_dark.svg",
+            "conference": "",
+            "division": "",
+            "start_season": 19671968,
+            "final_season": 19771978,
+            "city": null,
+            "state": null,
+            "venue": null
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 56,
+            "franchise_id": 13,
+            "name": "California Golden Seals",
+            "logo": "http://cdn.nhle.com/logos/nhl/svg/CGS_19741975-19761977_light.svg",
+            "conference": "",
+            "division": "",
+            "start_season": 19671968,
+            "final_season": 19771978,
+            "city": null,
+            "state": null,
+            "venue": null
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 26,
+            "franchise_id": 14,
+            "name": "Los Angeles Kings",
+            "logo": "http://1.cdn.nhle.com/logos/nhl/svg/LAK_light.svg",
+            "conference": "Western",
+            "division": "Pacific",
+            "start_season": 19671968,
+            "final_season": null,
+            "city": "Los Angeles",
+            "state": "CA",
+            "venue": "Crypto.com Arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 25,
+            "franchise_id": 15,
+            "name": "Dallas Stars",
+            "logo": "http://2.cdn.nhle.com/logos/nhl/svg/DAL_light.svg",
+            "conference": "Western",
+            "division": "Central",
+            "start_season": 19671968,
+            "final_season": null,
+            "city": "Dallas",
+            "state": "TX",
+            "venue": "American Airlines Center"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 31,
+            "franchise_id": 15,
+            "name": "Minnesota North Stars",
+            "logo": "http://1.cdn.nhle.com/logos/nhl/svg/MNS_19911992-19921993_light.svg",
+            "conference": "Prince of Wales",
+            "division": "Norris",
+            "start_season": 19671968,
+            "final_season": null,
+            "city": null,
+            "state": null,
+            "venue": null
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 4,
+            "franchise_id": 16,
+            "name": "Philadelphia Flyers",
+            "logo": "http://cdn.nhle.com/logos/nhl/svg/PHI_dark.svg",
+            "conference": "Eastern",
+            "division": "Metropolitan",
+            "start_season": 19671968,
+            "final_season": null,
+            "city": "Philadelphia",
+            "state": "PA",
+            "venue": "Wells Fargo Center"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 5,
+            "franchise_id": 17,
+            "name": "Pittsburgh Penguins",
+            "logo": "http://2.cdn.nhle.com/logos/nhl/svg/PIT_light.svg",
+            "conference": "Eastern",
+            "division": "Metropolitan",
+            "start_season": 19671968,
+            "final_season": null,
+            "city": "Pittsburgh",
+            "state": "PA",
+            "venue": "PPG Paints Arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 19,
+            "franchise_id": 18,
+            "name": "St. Louis Blues",
+            "logo": "http://3.cdn.nhle.com/logos/nhl/svg/STL_black.svg",
+            "conference": "Western",
+            "division": "Central",
+            "start_season": 19671968,
+            "final_season": null,
+            "city": "St. Louis",
+            "state": "MO",
+            "venue": "Enterprise Center"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 7,
+            "franchise_id": 19,
+            "name": "Buffalo Sabres",
+            "logo": "http://2.cdn.nhle.com/logos/nhl/svg/BUF_light.svg",
+            "conference": "Eastern",
+            "division": "Atlantic",
+            "start_season": 19701971,
+            "final_season": null,
+            "city": "Buffalo",
+            "state": "NY",
+            "venue": "KeyBank Center"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 23,
+            "franchise_id": 20,
+            "name": "Vancouver Canucks",
+            "logo": "http://2.cdn.nhle.com/logos/nhl/svg/VAN_light.svg",
+            "conference": "Western",
+            "division": "Pacific",
+            "start_season": 19701971,
+            "final_season": null,
+            "city": "Vancouver",
+            "state": "BC",
+            "venue": "Rogers Arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 20,
+            "franchise_id": 21,
+            "name": "Calgary Flames",
+            "logo": "http://3.cdn.nhle.com/logos/nhl/svg/CGY_alt.svg",
+            "conference": "Western",
+            "division": "Pacific",
+            "start_season": 19721973,
+            "final_season": null,
+            "city": "Calgary",
+            "state": "AB",
+            "venue": "Scotiabank Saddledome"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 47,
+            "franchise_id": 21,
+            "name": "Atlanta Flames",
+            "logo": "http://cdn.nhle.com/logos/nhl/svg/AFM_19721973-19791980_light.svg",
+            "conference": "",
+            "division": "",
+            "start_season": 19721973,
+            "final_season": null,
+            "city": null,
+            "state": null,
+            "venue": null
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 2,
+            "franchise_id": 22,
+            "name": "New York Islanders",
+            "logo": "http://1.cdn.nhle.com/logos/nhl/svg/NYI_light.svg",
+            "conference": "Eastern",
+            "division": "Metropolitan",
+            "start_season": 19721973,
+            "final_season": null,
+            "city": "Elmont",
+            "state": "NY",
+            "venue": "UBS Arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 1,
+            "franchise_id": 23,
+            "name": "New Jersey Devils",
+            "logo": "http://3.cdn.nhle.com/logos/nhl/svg/NJD_light.svg",
+            "conference": "Eastern",
+            "division": "Metropolitan",
+            "start_season": 19741975,
+            "final_season": null,
+            "city": "Newark",
+            "state": "NJ",
+            "venue": "Prudential Center"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 35,
+            "franchise_id": 23,
+            "name": "Colorado Rockies",
+            "logo": "http://2.cdn.nhle.com/logos/nhl/svg/CLR_19761977-19811982_light.svg",
+            "conference": "",
+            "division": "",
+            "start_season": 19741975,
+            "final_season": null,
+            "city": null,
+            "state": null,
+            "venue": null
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 48,
+            "franchise_id": 23,
+            "name": "Kansas City Scouts",
+            "logo": "http://cdn.nhle.com/logos/nhl/svg/KCS_19741975-19761977_dark.svg",
+            "conference": "",
+            "division": "",
+            "start_season": 19741975,
+            "final_season": null,
+            "city": null,
+            "state": null,
+            "venue": null
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 15,
+            "franchise_id": 24,
+            "name": "Washington Capitals",
+            "logo": "http://3.cdn.nhle.com/logos/nhl/svg/WSH_light.svg",
+            "conference": "Eastern",
+            "division": "Metropolitan",
+            "start_season": 19741975,
+            "final_season": null,
+            "city": "Washington",
+            "state": "DC",
+            "venue": "Capital One Arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 22,
+            "franchise_id": 25,
+            "name": "Edmonton Oilers",
+            "logo": "http://3.cdn.nhle.com/logos/nhl/svg/EDM_dark.svg",
+            "conference": "Western",
+            "division": "Pacific",
+            "start_season": 19791980,
+            "final_season": null,
+            "city": "Edmonton",
+            "state": "AB",
+            "venue": "Rogers Place"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 12,
+            "franchise_id": 26,
+            "name": "Carolina Hurricanes",
+            "logo": "http://3.cdn.nhle.com/logos/nhl/svg/CAR_light.svg",
+            "conference": "Eastern",
+            "division": "Metropolitan",
+            "start_season": 19791980,
+            "final_season": null,
+            "city": "Raleigh",
+            "state": "NC",
+            "venue": "PNC Arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 34,
+            "franchise_id": 26,
+            "name": "Hartford Whalers",
+            "logo": "http://1.cdn.nhle.com/logos/nhl/svg/HFD_19921993-19961997_dark.svg",
+            "conference": "Prince of Wales",
+            "division": "Adams",
+            "start_season": 19791980,
+            "final_season": null,
+            "city": null,
+            "state": null,
+            "venue": null
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 21,
+            "franchise_id": 27,
+            "name": "Colorado Avalanche",
+            "logo": "http://3.cdn.nhle.com/logos/nhl/svg/COL_light.svg",
+            "conference": "Western",
+            "division": "Central",
+            "start_season": 19791980,
+            "final_season": null,
+            "city": "Denver",
+            "state": "CO",
+            "venue": "Ball Arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 32,
+            "franchise_id": 27,
+            "name": "Quebec Nordiques",
+            "logo": "http://3.cdn.nhle.com/logos/nhl/svg/QUE_19791980-19941995_light.svg",
+            "conference": "Prince of Wales",
+            "division": "Adams",
+            "start_season": 19791980,
+            "final_season": null,
+            "city": null,
+            "state": null,
+            "venue": null
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 27,
+            "franchise_id": 28,
+            "name": "Phoenix Coyotes",
+            "logo": "http://3.cdn.nhle.com/logos/nhl/svg/PHX_20032004-20132014_light.svg",
+            "conference": "Western",
+            "division": "Pacific",
+            "start_season": 19791980,
+            "final_season": null,
+            "city": "Glendale",
+            "state": "AZ",
+            "venue": "Jobing.com Arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 33,
+            "franchise_id": 28,
+            "name": "Winnipeg Jets (1979)",
+            "logo": "http://3.cdn.nhle.com/logos/nhl/svg/WIN_19901991-19951996_light.svg",
+            "conference": "Clarence Campbell",
+            "division": "Smythe",
+            "start_season": 19791980,
+            "final_season": null,
+            "city": null,
+            "state": null,
+            "venue": null
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 53,
+            "franchise_id": 28,
+            "name": "Arizona Coyotes",
+            "logo": "http://3.cdn.nhle.com/logos/nhl/svg/ARI_light.svg",
+            "conference": "Western",
+            "division": "Central",
+            "start_season": 19791980,
+            "final_season": null,
+            "city": "Tempe",
+            "state": "AZ",
+            "venue": "Mullett Arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 28,
+            "franchise_id": 29,
+            "name": "San Jose Sharks",
+            "logo": "http://3.cdn.nhle.com/logos/nhl/svg/SJS_light.svg",
+            "conference": "Western",
+            "division": "Pacific",
+            "start_season": 19911992,
+            "final_season": null,
+            "city": "San Jose",
+            "state": "CA",
+            "venue": "SAP Center at San Jose"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 9,
+            "franchise_id": 30,
+            "name": "Ottawa Senators",
+            "logo": "http://2.cdn.nhle.com/logos/nhl/svg/OTT_light.svg",
+            "conference": "Eastern",
+            "division": "Atlantic",
+            "start_season": 19921993,
+            "final_season": null,
+            "city": "Ottawa",
+            "state": "ON",
+            "venue": "Canadian Tire Centre"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 14,
+            "franchise_id": 31,
+            "name": "Tampa Bay Lightning",
+            "logo": "http://1.cdn.nhle.com/logos/nhl/svg/TBL_light.svg",
+            "conference": "Eastern",
+            "division": "Atlantic",
+            "start_season": 19921993,
+            "final_season": null,
+            "city": "Tampa",
+            "state": "FL",
+            "venue": "AMALIE Arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 24,
+            "franchise_id": 32,
+            "name": "Anaheim Ducks",
+            "logo": "http://1.cdn.nhle.com/logos/nhl/svg/ANA_dark.svg",
+            "conference": "Western",
+            "division": "Pacific",
+            "start_season": 19931994,
+            "final_season": null,
+            "city": "Anaheim",
+            "state": "CA",
+            "venue": "Honda Center"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 13,
+            "franchise_id": 33,
+            "name": "Florida Panthers",
+            "logo": "http://2.cdn.nhle.com/logos/nhl/svg/FLA_light.svg",
+            "conference": "Eastern",
+            "division": "Atlantic",
+            "start_season": 19931994,
+            "final_season": null,
+            "city": "Sunrise",
+            "state": "FL",
+            "venue": "Amerant Bank Arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 18,
+            "franchise_id": 34,
+            "name": "Nashville Predators",
+            "logo": "http://1.cdn.nhle.com/logos/nhl/svg/NSH_alt.svg",
+            "conference": "Western",
+            "division": "Central",
+            "start_season": 19981999,
+            "final_season": null,
+            "city": "Nashville",
+            "state": "TN",
+            "venue": "Bridgestone Arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 11,
+            "franchise_id": 35,
+            "name": "Atlanta Thrashers",
+            "logo": "http://3.cdn.nhle.com/logos/nhl/svg/ATL_19992000-20102011_light.svg",
+            "conference": "",
+            "division": "",
+            "start_season": 19992000,
+            "final_season": null,
+            "city": "Atlanta",
+            "state": "GA",
+            "venue": "Philips Arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 52,
+            "franchise_id": 35,
+            "name": "Winnipeg Jets",
+            "logo": "http://1.cdn.nhle.com/logos/nhl/svg/WPG_light.svg",
+            "conference": "Western",
+            "division": "Central",
+            "start_season": 19992000,
+            "final_season": null,
+            "city": "Winnipeg",
+            "state": "MB",
+            "venue": "Canada Life Centre"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 29,
+            "franchise_id": 36,
+            "name": "Columbus Blue Jackets",
+            "logo": "http://2.cdn.nhle.com/logos/nhl/svg/CBJ_light.svg",
+            "conference": "Eastern",
+            "division": "Metropolitan",
+            "start_season": 20002001,
+            "final_season": null,
+            "city": "Columbus",
+            "state": "OH",
+            "venue": "Nationwide Arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 30,
+            "franchise_id": 37,
+            "name": "Minnesota Wild",
+            "logo": "http://3.cdn.nhle.com/logos/nhl/svg/MIN_dark.svg",
+            "conference": "Western",
+            "division": "Central",
+            "start_season": 20002001,
+            "final_season": null,
+            "city": "St. Paul",
+            "state": "MN",
+            "venue": "Xcel Energy Center"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 54,
+            "franchise_id": 38,
+            "name": "Vegas Golden Knights",
+            "logo": "http://1.cdn.nhle.com/logos/nhl/svg/VGK_light.svg",
+            "conference": "Western",
+            "division": "Pacific",
+            "start_season": 20172018,
+            "final_season": null,
+            "city": "Las Vegas",
+            "state": "NV",
+            "venue": "T-Mobile Arena"
+        }
+    },
+    {
+        "model": "teamstats.team",
+        "fields": {
+            "team_id": 55,
+            "franchise_id": 39,
+            "name": "Seattle Kraken",
+            "logo": "http://2.cdn.nhle.com/logos/nhl/svg/SEA_dark.svg",
+            "conference": "Western",
+            "division": "Pacific",
+            "start_season": 20212022,
+            "final_season": null,
+            "city": "Seattle",
+            "state": "WA",
+            "venue": "Climate Pledge Arena"
         }
     }
 ]

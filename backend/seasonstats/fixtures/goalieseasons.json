@@ -1,10 +1,10 @@
 [
     {
-        "model": "seasonstats.goalieseason",
+        "model": "seasonstats.goalieregularseason",
         "pk": 9,
         "fields": {
-            "player": 5,
-            "season": 1,
+            "player": 8477435,
+            "season": 20232024,
             "goals": 0,
             "assists": 0,
             "points": 0,
@@ -20,11 +20,11 @@
         }
     },
     {
-        "model": "seasonstats.goalieseason",
+        "model": "seasonstats.goalieregularseason",
         "pk": 10,
         "fields": {
-            "player": 5,
-            "season": 3,
+            "player": 8477435,
+            "season": 20222023,
             "goals": 0,
             "assists": 0,
             "points": 0,
