@@ -453,7 +453,7 @@ def get_playerstats_data():
     print("Gathering playerstats data...")
     out_data = []
     # team_ids = ["ari"]
-    team_ids = sorted(get_team_ids(by="abbrv"))
+    team_ids = get_team_ids(by="abbrv")
     
     season_url = "https://api.nhle.com/stats/rest/en/season?&sort=id"
     seasons = asyncio.run(query_api(season_url))["data"]

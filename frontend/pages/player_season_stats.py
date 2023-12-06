@@ -1,6 +1,7 @@
 import dash
 from dash import html, dcc, callback, Input, Output, State, ctx, no_update
 import dash_bootstrap_components as dbc
+import dash_loading_spinners as dls
 import dash_ag_grid as dag
 
 import aiohttp
@@ -143,7 +144,16 @@ def query_to_formatted_df(query:str):
         rename_data_df_cols["save_percent"]: 3,
         rename_data_df_cols["goals_against_average"]: 2,
     }
-    df = df.round(rounding)
+    # df = df.round(rounding)
+    
+    # display issues with rounded floating imprecision
+    # convert to string to truncate
+    # if used in agGrid - grid can convert back to number with proper precision
+    for i in rounding:
+        try:
+            df[i] = df[i].apply(lambda x: f"{x:.{rounding[i]}f}")
+        except KeyError:
+            pass
 
     return df
     
@@ -381,7 +391,7 @@ def get_leaders_layout(df:object, stat:str, dropdown_id:int | str):
             ),
             html.Div(
                 [
-                    dbc.Container(rows, id=f"rows-leader-stat-{dropdown_id}"),
+                    dls.DualRing(dbc.Container(rows, id=f"rows-leader-stat-{dropdown_id}"), debounce=20),
                 ],
             ),
         ],
@@ -463,7 +473,7 @@ def layout():
                 ]
             ),
             get_league_leaders_layout(players_df, [rename_data_df_cols["goals"], rename_data_df_cols["assists"], rename_data_df_cols["points"]]),
-            get_agGrid_layout(players_df, "Forwards", "player-stats-grid", style={"paddingLeft": 50, "paddingRight": 50, "paddingBottom": 50}),
+            dls.DualRing(get_agGrid_layout(players_df, "Forwards", "player-stats-grid", style={"paddingLeft": 50, "paddingRight": 50, "paddingBottom": 50}), width=120),
         ],
     )
 
@@ -524,7 +534,7 @@ def update_player_position_options(player_group:str):
     Input("player-position-options", "value"),
     prevent_initial_call=True,
 )
-def update_filtered_stats(position):
+def update_leader_dropdown_options(position):
     if position == "G":
         values = [rename_data_df_cols["wins"], rename_data_df_cols["save_percent"], rename_data_df_cols["goals_against_average"]]
     else:

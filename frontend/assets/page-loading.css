@@ -1,0 +1,18 @@
+/* 
+issue with wrapping dash.page_container in a dcc.Loading component
+causes EVERY child element within page to trigger page Loading component
+
+use css to target JUST the _pages_content div element to run svg only on first page load
+*/
+*#_pages_content[data-dash-is-loading="true"] {
+    visibility: hidden;
+}
+
+*#_pages_content[data-dash-is-loading="true"]::before {
+    content: url(loading-bars.svg);
+    background-size: contain;
+    display: flex;
+    justify-content: center;
+    margin-top: 40vh;
+    visibility: visible;
+}
