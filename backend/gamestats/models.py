@@ -2,7 +2,7 @@ from django.db import models
 
 from playerstats.models import Player
 from teamstats.models import Team
-from seasonstats.models import Season
+from seasonstats.models import RegularSeason, PlayoffSeason
 
 
 class Event(models.Model):
@@ -15,91 +15,128 @@ class Event(models.Model):
     coordinates_x = models.IntegerField()
     coordinates_y = models.IntegerField()    
 
-class Game(models.Model):
+
+class BaseGame(models.Model):
     players = models.ManyToManyField(to=Player)
-    home_team = models.ForeignKey(to=Team, on_delete=models.CASCADE, related_name="home_team")
-    away_team = models.ForeignKey(to=Team, on_delete=models.CASCADE, related_name="away_team")
-    season = models.ForeignKey(to=Season, on_delete=models.CASCADE)
+    home_team = models.ForeignKey(to=Team, on_delete=models.CASCADE, related_name="%(class)s_home_team")
+    away_team = models.ForeignKey(to=Team, on_delete=models.CASCADE, related_name="%(class)s_away_team")
     game_date = models.DateField()
     game_start_time = models.DateTimeField()
-    events = models.ManyToManyField(to=Event)
+    # events = models.ManyToManyField(to=Event)
+    
+    class Meta:
+        abstract = True
     
     
-class PlayerGame(models.Model):
+class RegularGame(BaseGame):
+    season = models.ForeignKey(to=RegularSeason, on_delete=models.CASCADE)
+    
+    
+class PlayoffGame(BaseGame):
+    season = models.ForeignKey(to=PlayoffSeason, on_delete=models.CASCADE)
+    
+    
+class BasePlayerGame(models.Model):
     player = models.ForeignKey(to=Player, on_delete=models.CASCADE)  
-    game = models.ForeignKey(to=Game, on_delete=models.CASCADE)
-    game_number = models.IntegerField()
-    goals = models.IntegerField()
-    goals_pp = models.IntegerField()
-    goals_sh = models.IntegerField()
-    assists = models.IntegerField()
-    assists_pp = models.IntegerField()
-    assists_sh = models.IntegerField()
-    time_on_ice_minutes = models.IntegerField()
-    time_on_ice_minutes_pp = models.IntegerField()
-    time_on_ice_minutes_sh = models.IntegerField()
-    time_on_ice_seconds = models.IntegerField()
-    time_on_ice_seconds_pp = models.IntegerField()
-    time_on_ice_seconds_sh = models.IntegerField()
-    shots = models.IntegerField()
-    hits = models.IntegerField()
-    penalty_minutes = models.IntegerField()
-    penalties_taken = models.IntegerField()
-    penalty_minutes_served = models.IntegerField()
-    faceoffs_taken = models.IntegerField()
-    faceoffs_won = models.IntegerField()
-    faceoffs_lost = models.IntegerField()
-    faceoff_percent = models.IntegerField()
-    giveaways = models.IntegerField()
-    takeaways = models.IntegerField()
-    blocked_shots = models.IntegerField()
-    plus_minus = models.IntegerField()
+    game_number = models.IntegerField(null=True)
+    goals = models.IntegerField(null=True)
+    goals_pp = models.IntegerField(null=True)
+    goals_sh = models.IntegerField(null=True)
+    assists = models.IntegerField(null=True)
+    assists_pp = models.IntegerField(null=True)
+    assists_sh = models.IntegerField(null=True)
+    time_on_ice_minutes = models.IntegerField(null=True)
+    time_on_ice_minutes_pp = models.IntegerField(null=True)
+    time_on_ice_minutes_sh = models.IntegerField(null=True)
+    time_on_ice_seconds = models.IntegerField(null=True)
+    time_on_ice_seconds_pp = models.IntegerField(null=True)
+    time_on_ice_seconds_sh = models.IntegerField(null=True)
+    shots = models.IntegerField(null=True)
+    hits = models.IntegerField(null=True)
+    penalty_minutes = models.IntegerField(null=True)
+    penalties_taken = models.IntegerField(null=True)
+    penalty_minutes_served = models.IntegerField(null=True)
+    faceoffs_taken = models.IntegerField(null=True)
+    faceoffs_won = models.IntegerField(null=True)
+    faceoffs_lost = models.IntegerField(null=True)
+    faceoff_percent = models.IntegerField(null=True)
+    giveaways = models.IntegerField(null=True)
+    takeaways = models.IntegerField(null=True)
+    blocked_shots = models.IntegerField(null=True)
+    plus_minus = models.IntegerField(null=True)
     
     def __str__(self):
         return f'{self.player__full_name} {self.game__game_date}'
+    
+    class Meta:
+        abstract = True
 
-class GoalieGame(models.Model):
+
+class PlayerRegularGame(BasePlayerGame):
+    game = models.ForeignKey(to=RegularGame, on_delete=models.CASCADE)
+    
+    
+class PlayerPlayoffGame(BasePlayerGame):
+    game = models.ForeignKey(to=PlayoffGame, on_delete=models.CASCADE)
+
+
+class BaseGoalieGame(models.Model):
     player = models.ForeignKey(to=Player, on_delete=models.CASCADE)
-    game = models.ForeignKey(to=Game, on_delete=models.CASCADE)
-    goals = models.IntegerField()
-    game_number = models.IntegerField()
-    assists = models.IntegerField()
-    time_on_ice_minutes = models.IntegerField()
-    time_on_ice_seconds = models.IntegerField()
-    shots_against = models.IntegerField()
-    shots_against_pp = models.IntegerField()
-    shots_against_sh = models.IntegerField()
-    saves = models.IntegerField()
-    saves_pp = models.IntegerField()
-    saves_sh = models.IntegerField()
-    did_win = models.BooleanField()
+    goals = models.IntegerField(null=True)
+    game_number = models.IntegerField(null=True)
+    assists = models.IntegerField(null=True)
+    time_on_ice_minutes = models.IntegerField(null=True)
+    time_on_ice_seconds = models.IntegerField(null=True)
+    shots_against = models.IntegerField(null=True)
+    shots_against_pp = models.IntegerField(null=True)
+    shots_against_sh = models.IntegerField(null=True)
+    saves = models.IntegerField(null=True)
+    saves_pp = models.IntegerField(null=True)
+    saves_sh = models.IntegerField(null=True)
+    did_win = models.BooleanField(null=True)
 
     def __str__(self):
         return f'{self.player__full_name} {self.game__game_date}'
     
-class TeamGame(models.Model):
+
+class GoalieRegularGame(BaseGoalieGame):
+    game = models.ForeignKey(to=RegularGame, on_delete=models.CASCADE)
+    
+    
+class GoaliePlayoffGame(BaseGoalieGame):
+    game = models.ForeignKey(to=PlayoffGame, on_delete=models.CASCADE)
+
+
+class BaseTeamGame(models.Model):
     team = models.ForeignKey(to=Team, on_delete=models.CASCADE)
-    game = models.ForeignKey(to=Game, on_delete=models.CASCADE)
-    game_number = models.IntegerField()
-    goals = models.IntegerField()
-    goals_pp = models.IntegerField()
-    goals_sh = models.IntegerField()
-    goals_against = models.IntegerField()
-    goals_against_pp = models.IntegerField()
-    goals_against_sh = models.IntegerField()
-    shots = models.IntegerField()
-    shots_against = models.IntegerField()
-    hits = models.IntegerField()
-    penalty_minutes = models.IntegerField()
-    penalties_taken = models.IntegerField()
-    penalty_seconds_served = models.FloatField()
-    faceoffs_taken = models.IntegerField()
-    faceoffs_won = models.IntegerField()
-    faceoffs_lost = models.IntegerField()
-    faceoff_percent = models.FloatField()
-    giveaways = models.IntegerField()
-    takeaways = models.IntegerField()
-    blocked_shots = models.IntegerField()
+    game_number = models.IntegerField(null=True)
+    goals = models.IntegerField(null=True)
+    goals_pp = models.IntegerField(null=True)
+    goals_sh = models.IntegerField(null=True)
+    goals_against = models.IntegerField(null=True)
+    goals_against_pp = models.IntegerField(null=True)
+    goals_against_sh = models.IntegerField(null=True)
+    shots = models.IntegerField(null=True)
+    shots_against = models.IntegerField(null=True)
+    hits = models.IntegerField(null=True)
+    penalty_minutes = models.IntegerField(null=True)
+    penalties_taken = models.IntegerField(null=True)
+    penalty_seconds_served = models.FloatField(null=True)
+    faceoffs_taken = models.IntegerField(null=True)
+    faceoffs_won = models.IntegerField(null=True)
+    faceoffs_lost = models.IntegerField(null=True)
+    faceoff_percent = models.FloatField(null=True)
+    giveaways = models.IntegerField(null=True)
+    takeaways = models.IntegerField(null=True)
+    blocked_shots = models.IntegerField(null=True)
     
     def __str__(self):
         return f'{self.team.name} {self.game.game_date}'
+    
+
+class TeamRegularGame(BaseTeamGame):
+    game = models.ForeignKey(to=RegularGame, on_delete=models.CASCADE)
+    
+
+class TeamPlayoffGame(BaseTeamGame):
+    game = models.ForeignKey(to=PlayoffGame, on_delete=models.CASCADE)
