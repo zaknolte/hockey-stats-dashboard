@@ -2,10 +2,11 @@ from ninja import ModelSchema, Router, Field, Schema
 from typing import List
 from datetime import date, datetime
 
-from .models import Event, Game, PlayerGame, GoalieGame, TeamGame
+# from .models import Event, Game, PlayerGame, GoalieGame, TeamRegularGame
+from .models import Event, RegularGame, PlayoffGame, PlayerRegularGame, PlayerPlayoffGame, GoalieRegularGame, GoaliePlayoffGame, TeamRegularGame, TeamPlayoffGame
 from playerstats.api import PlayerSchema
 from teamstats.api import TeamSchema
-from seasonstats.api import SeasonSchema
+from seasonstats.api import RegularSeasonSchema
 
 
 game_router = Router()
@@ -50,45 +51,22 @@ class SimpleGameSchema(Schema):
     game_start_time: datetime
 
 
-class TeamGameSchema(ModelSchema):
+class TeamRegularGameSchema(ModelSchema):
     team: TeamSchema
     game: SimpleGameSchema
     class Config:
-        model = TeamGame
-        model_fields = [
-            "team",
-            "game",
-            "game_number",
-            "goals",
-            "goals_pp",
-            "goals_sh",
-            "goals_against",
-            "goals_against_pp",
-            "goals_against_sh",
-            "shots",
-            "shots_against",
-            "hits",
-            "penalty_minutes",
-            "penalties_taken",
-            "penalty_seconds_served",
-            "faceoffs_taken",
-            "faceoffs_won",
-            "faceoffs_lost",
-            "faceoff_percent",
-            "giveaways",
-            "takeaways",
-            "blocked_shots",
-        ]
+        model = TeamRegularGame
+        model_fields = "__all__"
 
 
 class GameSchema(ModelSchema):
     players: List[PlayerGameSchema]
     home_team: TeamSchema
     away_team: TeamSchema
-    season: SeasonSchema
-    events: List[EventSchema]
+    season: RegularSeasonSchema
+    # events: List[EventSchema]
     class Config:
-        model = Game
+        model = RegularGame
         model_fields = [
             "id",
             "players",
@@ -97,13 +75,13 @@ class GameSchema(ModelSchema):
             "season",
             "game_date",
             "game_start_time",
-            "events"
+            # "events"
         ]
 
 
 @game_router.get("/", response=List[GameSchema])
-def get_games(request, season="All Seasons", season_type="Regular Season", team_name="All Teams"):
-    kwargs = {"season__season_type": season_type}
+def get_games(request, season="All Seasons", team_name="All Teams"):
+    kwargs = {}
     
     if season != "All Seasons":
         kwargs["season__year"] = season
@@ -111,41 +89,39 @@ def get_games(request, season="All Seasons", season_type="Regular Season", team_
         kwargs["home_team__name"] = team_name
         kwargs["away_team__name"] = team_name
         
-    return Game.objects.filter(**kwargs)
+    return RegularGame.objects.filter(**kwargs)
 
 
 @game_router.get("/all", response=List[GameSchema])
 def get_all_games(request):
-    return Game.objects.all()
+    return RegularGame.objects.all()
 
 
 @game_router.get("/game", response=GameSchema)
 def get_game(request, id):
-    return Game.objects.get(pk=id)
+    return RegularGame.objects.get(pk=id)
 
 
-@game_router.get("/results", response=List[TeamGameSchema])
+@game_router.get("/results", response=List[TeamRegularGameSchema])
 def get_game_results(request, id):
-    return TeamGame.objects.filter(game__id=id)
+    return TeamRegularGame.objects.filter(game__id=id)
 
 
-@game_router.get("/results/all", response=List[TeamGameSchema])
+@game_router.get("/results/all", response=List[TeamRegularGameSchema])
 def get_all_game_results(request):
-    return TeamGame.objects.all()
+    return TeamRegularGame.objects.all()
 
 
-@game_router.get("/results/season", response=List[TeamGameSchema])
+@game_router.get("/results/season", response=List[TeamRegularGameSchema])
 def get_game_results_by_season(request, season):
-    return TeamGame.objects.filter(game__season__year=season)
+    return TeamRegularGame.objects.filter(game__season__year=season)
 
 
-@game_router.get("results/team", response=List[TeamGameSchema])
-def get_game_results_by_team(request, team_name, season="All Seasons", season_type="Regular Season"):
+@game_router.get("results/team", response=List[TeamRegularGameSchema])
+def get_game_results_by_team(request, team_name, season="All Seasons"):
     kwargs = {"team__name": team_name}
     
     if season != "All Seasons":
         kwargs["game__season__year"] = season
-    if season_type != "All Seasons":
-        kwargs["game__season__season_type"] = season_type
                 
-    return TeamGame.objects.filter(**kwargs)
+    return TeamRegularGame.objects.filter(**kwargs)

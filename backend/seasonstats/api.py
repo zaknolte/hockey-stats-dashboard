@@ -2,7 +2,7 @@ from ninja import ModelSchema, Router, Field, Schema
 from typing import List
 
 from .models import RegularSeason, PlayoffSeason, PlayerRegularSeason, PlayerPlayoffSeason, GoalieRegularSeason, GoaliePlayoffSeason, TeamRegularSeason, TeamPlayoffSeason
-from playerstats.api import PlayerNameSchema, PlayerSchema
+from playerstats.api import PlayerNameSchema, PlayerSchema, PlayerPositionSchema
 
 season_router = Router()
 
@@ -53,21 +53,27 @@ def get_post_season(request, year: int):
 
 
 class PlayerSeasonSchema(ModelSchema):
-    player: PlayerSchema
-    season:int  # needed to use resolver
-    full_season:int
+    # player: PlayerSchema
+    name: str = Field(..., alias="player.full_name")
+    position: list[str]
+    team: str = Field(..., alias="team.name")
+    year: int  # needed to use resolver
+    season: int = Field(..., alias="season.year")
     class Config:
         model = PlayerRegularSeason
         model_fields = "__all__"
 
     @staticmethod
-    def resolve_season(obj):
+    def resolve_year(obj):
         # return just the first year of season 
          return int(str(obj.season.year)[:4])
      
+    # Player.position is list of dicts
+    # Schema will return - position: [position: {...}, position: {...}]
+    # Flatten response to just a list of values with resolver - position: [...]
     @staticmethod
-    def resolve_full_season(obj):
-         return obj.season.year
+    def resolve_position(obj):
+        return [i.position for i in obj.player.position.all()]
      
 
 @season_router.get("/skater/all", response=List[PlayerSeasonSchema])
@@ -98,21 +104,26 @@ def get_single_skater_seasons(request, player_name:str, season="All Seasons", se
 
         
 class GoalieSeasonSchema(ModelSchema):
-    player: PlayerSchema
-    season:int  # needed to use resolver
-    full_season:int
+    name: str = Field(..., alias="player.full_name")
+    position: list[str]
+    team: str = Field(..., alias="team.name")
+    year: int  # needed to use resolver
+    season: int = Field(..., alias="season.year")
     class Config:
         model = GoalieRegularSeason
         model_fields = "__all__"
 
     @staticmethod
-    def resolve_season(obj):
+    def resolve_year(obj):
         # return just the first year of season 
          return int(str(obj.season.year)[:4])
      
+    # Player.position is list of dicts
+    # Schema will return - position: [position: {...}, position: {...}]
+    # Flatten response to just a list of values with resolver - position: [...]
     @staticmethod
-    def resolve_full_season(obj):
-         return obj.season.year
+    def resolve_position(obj):
+        return [i.position for i in obj.player.position.all()]
 
         
 @season_router.get("/goalie/all", response=List[GoalieSeasonSchema])
