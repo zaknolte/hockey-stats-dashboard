@@ -120,7 +120,7 @@ def filter_data_by_position(df:object, position:str):
     """
     filter_list = get_player_options(position)
     # find the set union where player position in contained in filter list
-    return df[df[rename_data_df_cols["player.position"]].apply(lambda x: bool(set(x) & set(filter_list)))]
+    return df[df["Position"].apply(lambda x: bool(set(x) & set(filter_list)))]
 
 
 def query_to_formatted_df(query:str):
@@ -135,14 +135,14 @@ def query_to_formatted_df(query:str):
     """
     df = pd.json_normalize(asyncio.run(query_player_stats(query))).set_index("id")
     df = df.rename(columns=rename_data_df_cols)
-    df[rename_data_df_cols["player.team.name"]] = df[rename_data_df_cols["player.team.name"]].fillna("N/A")
+    df["Team"] = df["Team"].fillna("N/A")
     
-    df = cols_to_percent(df, [rename_data_df_cols["faceoff_percent"]])
+    df = cols_to_percent(df, "FO %")
     
     rounding = {
-        rename_data_df_cols["faceoff_percent"]: 2,
-        rename_data_df_cols["save_percent"]: 3,
-        rename_data_df_cols["goals_against_average"]: 2,
+        "FO %": 2,
+        "Save %": 3,
+        "GAA": 2,
     }
     # df = df.round(rounding)
     
@@ -169,7 +169,7 @@ def get_all_teams(df:object, add_all=True):
     Returns:
         list[str]: List of all present team names.
     """
-    teams_list = pd.unique(df[rename_data_df_cols["player.team.name"]])
+    teams_list = pd.unique(df["Team"])
     teams_list.sort()
     if add_all:
         teams_list = np.insert(teams_list, 0, "All Teams")
@@ -189,11 +189,12 @@ def get_leaders_dropdown_options(position="All Skaters"):
     """
     options = []
     ignore = [
-        rename_data_df_cols["player.full_name"],
-        rename_data_df_cols["season.year"],
-        rename_data_df_cols["season.season_type"],
-        rename_data_df_cols["player.team.name"],
-        rename_data_df_cols["player.position"]
+        "id",
+        "Player",
+        "Season",
+        "Full Season",
+        "Team",
+        "Position"
     ]
     for col in get_agGrid_columnDefs(position):
         if col["field"] not in ignore:
@@ -435,8 +436,8 @@ def get_leaders_layout_rows(df:object, stat:str, position:str):
             [
                 dbc.Col(
                     dcc.Link(
-                        value[rename_data_df_cols["player.full_name"]],
-                        href=f'player/{slugify(value[rename_data_df_cols["player.full_name"]])}',
+                        value["Name"],
+                        href=f'player/{slugify(value["Name"])}',
                     ),
                     width=8,
                 ),
@@ -445,13 +446,13 @@ def get_leaders_layout_rows(df:object, stat:str, position:str):
                 ),
             ]
         )
-        for row, value in leaders[[rename_data_df_cols["player.full_name"], stat]].iterrows()
+        for row, value in leaders[["Name", stat]].iterrows()
     ]
 
 
 def layout():
     # get database data with defaults for current regular season for all teams
-    players_df = query_to_formatted_df(build_player_query_url(season=CURRENT_SEASON)).sort_values(rename_data_df_cols["points"], ascending=False)
+    players_df = query_to_formatted_df(build_player_query_url(season=CURRENT_SEASON)).sort_values("P", ascending=False)
     
     return html.Div(
         [
@@ -472,7 +473,7 @@ def layout():
                     ),
                 ]
             ),
-            get_league_leaders_layout(players_df, [rename_data_df_cols["goals"], rename_data_df_cols["assists"], rename_data_df_cols["points"]]),
+            get_league_leaders_layout(players_df, ["G", "A", "P"]),
             dls.DualRing(get_agGrid_layout(players_df, "Forwards", "player-stats-grid", style={"paddingLeft": 50, "paddingRight": 50, "paddingBottom": 50}), width=120),
         ],
     )
@@ -492,16 +493,16 @@ def update_displayed_data(season:str, season_type:str, team:str, position:str, p
     
     if position != "G":
         df = query_to_formatted_df(build_player_query_url(skater_type="skater", season=season, season_type=season_type, team=team))
-        df = df.sort_values(rename_data_df_cols["points"], ascending=False)
+        df = df.sort_values("P", ascending=False)
     else:
         df = query_to_formatted_df(build_player_query_url(skater_type="goalie", season=season, season_type=season_type, team=team))
-        df = df.sort_values(rename_data_df_cols["wins"], ascending=False)
+        df = df.sort_values("W", ascending=False)
     df = filter_data_by_position(df, position_group)
     
     if position != "All Positions":
         # players may be assigned more than one position
         # create bool mask to determine if selected position matches any of the player positions
-        mask = df[rename_data_df_cols["player.position"]].apply(lambda x: position in x)
+        mask = df["Position"].apply(lambda x: position in x)
         
         df = df[mask]
     
@@ -536,9 +537,9 @@ def update_player_position_options(player_group:str):
 )
 def update_leader_dropdown_options(position):
     if position == "G":
-        values = [rename_data_df_cols["wins"], rename_data_df_cols["save_percent"], rename_data_df_cols["goals_against_average"]]
+        values = ["W", "Save %", "GAA"]
     else:
-        values = [rename_data_df_cols["goals"], rename_data_df_cols["assists"], rename_data_df_cols["points"]]
+        values = ["G", "A", "P"]
     player_options = [get_leaders_dropdown_options(position)] * 3
     return player_options + values
 
