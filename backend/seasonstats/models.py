@@ -25,6 +25,7 @@ class PlayoffSeason(models.Model):
     
 class BaseSkater(models.Model):
     player = models.ForeignKey(to=Player, on_delete=models.CASCADE)
+    team = models.ForeignKey(to=Team, on_delete=models.SET_NULL, null=True)
     goals = models.IntegerField(null=True)
     assists = models.IntegerField(null=True)
     points = models.IntegerField(null=True)
@@ -68,6 +69,7 @@ class PlayerPlayoffSeason(BaseSkater):
 
 class BaseGoalie(models.Model):
     player = models.ForeignKey(to=Player, on_delete=models.CASCADE)
+    team = models.ForeignKey(to=Team, on_delete=models.SET_NULL, null=True)
     goals = models.IntegerField(null=True)
     assists = models.IntegerField(null=True)
     points = models.IntegerField(null=True)

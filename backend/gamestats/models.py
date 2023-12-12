@@ -6,7 +6,7 @@ from seasonstats.models import RegularSeason, PlayoffSeason
 
 
 class Event(models.Model):
-    player = models.ForeignKey(to=Player, on_delete=models.CASCADE)
+    player = models.ForeignKey(to=Player, null=True, on_delete=models.SET_NULL)
     period = models.IntegerField()
     period_time_left_seconds = models.IntegerField()
     event_type = models.CharField(max_length=20)
@@ -18,11 +18,15 @@ class Event(models.Model):
 
 class BaseGame(models.Model):
     players = models.ManyToManyField(to=Player)
-    home_team = models.ForeignKey(to=Team, on_delete=models.CASCADE, related_name="%(class)s_home_team")
-    away_team = models.ForeignKey(to=Team, on_delete=models.CASCADE, related_name="%(class)s_away_team")
-    game_date = models.DateField()
-    game_start_time = models.DateTimeField()
-    # events = models.ManyToManyField(to=Event)
+    home_team = models.ForeignKey(to=Team, null=True, on_delete=models.SET_NULL, related_name="%(class)s_home_team")
+    away_team = models.ForeignKey(to=Team, null=True, on_delete=models.SET_NULL, related_name="%(class)s_away_team")
+    game_date = models.DateField(null=True)
+    game_start_time = models.DateTimeField(null=True)
+    # events = models.ManyToManyField(to=Event, null=True)
+    
+    
+    def __str__(self):
+        return f'{self.game_date} {self.away_team} at {self.home_team}'
     
     class Meta:
         abstract = True
@@ -98,6 +102,9 @@ class BaseGoalieGame(models.Model):
     def __str__(self):
         return f'{self.player__full_name} {self.game__game_date}'
     
+    class Meta:
+        abstract = True
+    
 
 class GoalieRegularGame(BaseGoalieGame):
     game = models.ForeignKey(to=RegularGame, on_delete=models.CASCADE)
@@ -133,6 +140,8 @@ class BaseTeamGame(models.Model):
     def __str__(self):
         return f'{self.team.name} {self.game.game_date}'
     
+    class Meta:
+        abstract = True
 
 class TeamRegularGame(BaseTeamGame):
     game = models.ForeignKey(to=RegularGame, on_delete=models.CASCADE)
