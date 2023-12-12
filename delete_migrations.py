@@ -1,6 +1,7 @@
 
 def del_migrations():
     import os
+    import re
 
     print("Deleting migrations...")
     for root_dir, dirs, files in os.walk("./backend"):
@@ -14,7 +15,7 @@ def del_migrations():
                     if s == "migrations":
                         for i, j, f in os.walk(f"{root_dir}/{dir}/{s}", topdown=False):
                             for m in f:
-                                if "_initial" in m and m.endswith(".py"):
+                                if re.search(r'^\d{4}', m) and m.endswith(".py"):
                                     print(f"Removing: {dir} - {m}")
                                     os.remove(f"{root_dir}/{dir}/{s}/{m}")
     print("All migrations deleted!")
