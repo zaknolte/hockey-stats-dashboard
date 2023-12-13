@@ -2,7 +2,7 @@ from ninja import ModelSchema, Router, Field, Schema
 from typing import List
 
 from .models import RegularSeason, PlayoffSeason, PlayerRegularSeason, PlayerPlayoffSeason, GoalieRegularSeason, GoaliePlayoffSeason, TeamRegularSeason, TeamPlayoffSeason
-from playerstats.api import PlayerNameSchema, PlayerSchema, PlayerPositionSchema
+from playerstats.api import PlayerNameSchema, PlayerSchema
 
 season_router = Router()
 
@@ -82,7 +82,7 @@ def get_all_skater_seasons(request, season="All Seasons", season_type="Regular S
     if season != "All Seasons":
         kwargs["season__year"] = season
     if team != "All Teams":
-        kwargs["player__team__name"] = team
+        kwargs["team__name"] = team
     if season_type == "Regular Season":
         return PlayerRegularSeason.objects.filter(**kwargs)
     else:
@@ -96,7 +96,7 @@ def get_single_skater_seasons(request, player_name:str, season="All Seasons", se
     if season != "All Seasons":
         kwargs["season__year"] = season
     if team != "All Teams":
-        kwargs["player__team__name"] = team
+        kwargs["team__name"] = team
     if season_type == "Regular Season":
         return PlayerRegularSeason.objects.filter(**kwargs)
     else:
@@ -133,7 +133,7 @@ def get_all_goalie_seasons(request, season="All Seasons", season_type="Regular S
         kwargs["season__year"] = season
     if team != "All Teams":
         team = team.replace("-", " ").replace("%20", " ").title()
-        kwargs["player__team__name"] = team
+        kwargs["team__name"] = team
     if season_type == "Regular Season":
         return GoalieRegularSeason.objects.filter(**kwargs)
     else:
@@ -148,7 +148,7 @@ def get_single_goalie_seasons(request, player_name:str, season="All Seasons", se
         kwargs["season__year"] = season
     if team != "All Teams":
         team = team.replace("-", " ").replace("%20", " ").title()
-        kwargs["player__team__name"] = team
+        kwargs["team__name"] = team
     if season_type == "Regular Season":
         return GoalieRegularSeason.objects.filter(**kwargs)
     else:
