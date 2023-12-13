@@ -849,10 +849,10 @@ def write_fixture(app_dir, fixture_name, data):
 
 
 if __name__ == "__main__":
-    # write_fixture("teamstats", "teams.json", get_team_data())
-    # write_fixture("seasonstats", "seasons.json", get_season_data())
-    # write_fixture("seasonstats", "teamseasons.json", get_team_season_data())
-    # write_fixture("playerstats", "players.json", get_player_data())
+    write_fixture("teamstats", "teams.json", get_team_data())
+    write_fixture("seasonstats", "seasons.json", get_season_data())
+    write_fixture("seasonstats", "teamseasons.json", get_team_season_data())
+    write_fixture("playerstats", "players.json", get_player_data())
     write_fixture("seasonstats", "playerseasons.json", get_playerstats_data())
-    # write_fixture("gamestats", "games.json", get_game_data())
-    # write_fixture("gamestats", "teamgames.json", get_team_game_data())
+    write_fixture("gamestats", "games.json", get_game_data())
+    write_fixture("gamestats", "teamgames.json", get_team_game_data())
