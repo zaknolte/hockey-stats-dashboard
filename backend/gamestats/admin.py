@@ -1,8 +1,8 @@
 from django.contrib import admin
 from django.db.models.functions import Lower
-from .models import Game, PlayerGame, TeamGame, GoalieGame, Event
-
-class GameAdmin(admin.ModelAdmin):
+# from .models import Game, PlayerGame, TeamGame, GoalieGame, Event
+from .models import RegularGame, PlayoffGame, PlayerRegularGame, PlayerPlayoffGame, TeamRegularGame, TeamPlayoffGame, GoalieRegularGame, GoaliePlayoffGame, Event
+class RegularGameAdmin(admin.ModelAdmin):
     list_display = ("game_date", "home_team", "away_team")
     search_fields = ["home_team", "away_team"]
 
@@ -10,7 +10,7 @@ class GameAdmin(admin.ModelAdmin):
         return ["game_date"]
 
 
-admin.site.register(Game, GameAdmin)
+admin.site.register(RegularGame, RegularGameAdmin)
 
 
 class EventAdmin(admin.ModelAdmin):
@@ -24,7 +24,7 @@ class EventAdmin(admin.ModelAdmin):
 admin.site.register(Event, EventAdmin)
 
 
-class PlayerGameAdmin(admin.ModelAdmin):
+class PlayerRegularGameAdmin(admin.ModelAdmin):
     list_display = ("player", "game")
     search_fields = ["player", "game"]
 
@@ -32,10 +32,10 @@ class PlayerGameAdmin(admin.ModelAdmin):
         return ["game", "player"]
 
 
-admin.site.register(PlayerGame, PlayerGameAdmin)
+admin.site.register(PlayerRegularGame, PlayerRegularGameAdmin)
 
 
-class GoalieGameAdmin(admin.ModelAdmin):
+class GoalieRegularGameAdmin(admin.ModelAdmin):
     list_display = ("player", "game")
     search_fields = ["player", "game"]
 
@@ -43,10 +43,10 @@ class GoalieGameAdmin(admin.ModelAdmin):
         return ["game", "player"]
 
 
-admin.site.register(GoalieGame, GoalieGameAdmin)
+admin.site.register(GoalieRegularGame, GoalieRegularGameAdmin)
 
 
-class TeamGameAdmin(admin.ModelAdmin):
+class TeamRegularGameAdmin(admin.ModelAdmin):
     list_display = ("get_team_name", "get_game_date")
     search_fields = ["team__name", "game__game_date"]
 
@@ -62,4 +62,4 @@ class TeamGameAdmin(admin.ModelAdmin):
         return ["game__game_date", Lower("team__name")]  # sort case insensitive
 
 
-admin.site.register(TeamGame, TeamGameAdmin)
+admin.site.register(TeamRegularGame, TeamRegularGameAdmin)
