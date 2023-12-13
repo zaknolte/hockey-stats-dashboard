@@ -152,7 +152,7 @@ def query_to_formatted_df(query:str):
     for i in rounding:
         try:
             df[i] = df[i].apply(lambda x: f"{x:.{rounding[i]}f}")
-        except KeyError:
+        except (KeyError, TypeError):
             pass
 
     return df
