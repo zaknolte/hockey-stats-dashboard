@@ -33,6 +33,7 @@ rename_data_df_cols = {
     "blocked_shots": "Blocks",
     "plus_minus": "+/-",
     "season": "Season",
+    "year": "Year",
     "full_season": "Full Season",
     "goals_against": "GA",
     "goals_against_average": "GAA",
@@ -217,7 +218,7 @@ def get_agGrid_columnDefs(grid_type:str):
     """
     base_defs = [
         add_default_text_columnDef("Name", pinned="left", lockPinned=True, cellRenderer="NameLink"),
-        add_default_number_columnDef("Season", center=False, width=None),
+        add_default_number_columnDef("Year", center=False, width=None),
         {"field": "Team"},
         {"field": "Position", "cellStyle": {"textAlign": "center"}},
         add_default_number_columnDef("GP", headerTooltip="Games Played"),

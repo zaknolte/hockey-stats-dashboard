@@ -22,12 +22,12 @@ class AllSeasonsSchema(Schema):
     #resolver to flatten response to a single list
     @staticmethod
     def resolve_season(obj):
-         return [i["year"] for i in obj]
+         return [i["season__year"] for i in obj]
 
 
 @season_router.get("/all_seasons", response=AllSeasonsSchema)
 def get_all_seasons(request):
-    return RegularSeason.objects.values("year").distinct().order_by("-year")
+    return PlayerRegularSeason.objects.values("season__year").distinct().order_by("-season__year")
 
 
 class RegularSeasonSchema(ModelSchema):
@@ -163,12 +163,12 @@ class TeamSeasonSchema(ModelSchema):
         
 
 @season_router.get("/team/all", response=List[TeamSeasonSchema])
-def get_team_seasons(request):
+def get_all_team_all_seasons(request):
     return TeamRegularSeason.objects.all()
-    
+
           
 @season_router.get("/team/{team_name}", response=List[TeamSeasonSchema])
-def get_team_seasons(request, team_name:str, season="All Seasons", season_type="Regular Season"):
+def get_team_all_seasons(request, team_name:str, season="All Seasons", season_type="Regular Season"):
     kwargs = {"team__name": team_name}
     if season != "All Seasons":
         kwargs["season__year"] = season
@@ -176,4 +176,35 @@ def get_team_seasons(request, team_name:str, season="All Seasons", season_type="
         return TeamRegularSeason.objects.filter(**kwargs)
     else:
         return TeamPlayoffSeason.objects.filter(**kwargs)
+
+
+class TeamListSchema(Schema):
+    season: int
+    season_type: str
+    teams: list[str]
     
+    @staticmethod
+    def resolve_teams(obj):
+         return [i.team.name for i in obj]
+     
+    @staticmethod
+    def resolve_season(obj):
+         return obj[0].season.year
+     
+    @staticmethod
+    def resolve_season_type(obj):
+        if obj[0]._meta.model.__name__ == "TeamRegularSeason":
+             return "Regular Season"
+        elif obj[0]._meta.model.__name__ == "TeamPlayoffSeason":
+            return "Playoffs"
+        
+        return ""
+
+
+@season_router.get("/team/list/{season}", response=TeamListSchema)
+def get_season_team_list(request, season:str, season_type="Regular Season"):
+    if season_type == "Regular Season":
+        return TeamRegularSeason.objects.filter(season__year=season).order_by("team__name")
+    elif season_type == "Playoffs":
+        return TeamPlayoffSeason.objects.filter(season__year=season).order_by("team__name")
+         

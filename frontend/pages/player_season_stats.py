@@ -38,13 +38,6 @@ async def query_player_stats(endpoint:str):
     return data
 
 
-# default values
-CURRENT_SEASON = asyncio.run(query_player_stats("current_season"))["season"]
-STRING_CURRENT_SEASON = stringify_season(CURRENT_SEASON)
-ALL_SEASONS = ["All Seasons"] + [stringify_season(season) for season in asyncio.run(query_player_stats("all_seasons"))["season"]]
-ALL_SEASON_TYPES = ["Regular Season", "Playoffs"]
-
-
 # can't host static images in dash normally outside assets folder
 # encode and decode from image url to render image
 def format_image(image_url:str):
@@ -191,7 +184,9 @@ def get_leaders_dropdown_options(position="All Skaters"):
     ignore = [
         "id",
         "Player",
+        "Name",
         "Season",
+        "Year",
         "Full Season",
         "Team",
         "Position"
@@ -218,7 +213,7 @@ def get_filter_dropdowns_layout(seasons:list[str], season_types:list[str], teams
         [
             dcc.Dropdown(
                 options=seasons,
-                value=STRING_CURRENT_SEASON,
+                value=seasons[1],
                 clearable=False,
                 searchable=False,
                 id="dropdown-season",
@@ -450,12 +445,16 @@ def get_leaders_layout_rows(df:object, stat:str):
 
 def layout():
     # get database data with defaults for current regular season for all teams
-    players_df = query_to_formatted_df(build_player_query_url(season=CURRENT_SEASON)).sort_values("P", ascending=False)
+    current_season = asyncio.run(query_player_stats("current_season"))["season"]
+    all_seasons = ["All Seasons"] + [stringify_season(season) for season in asyncio.run(query_player_stats("all_seasons"))["season"]]
+    season_types = ["Regular Season"]
+    
+    players_df = query_to_formatted_df(build_player_query_url(season=current_season)).sort_values("P", ascending=False)
     
     return html.Div(
         [
             dcc.Store(data=players_df.to_json(), id="season-stats-df"),
-            get_filter_dropdowns_layout(ALL_SEASONS, ALL_SEASON_TYPES, get_all_teams(players_df)),
+            get_filter_dropdowns_layout(all_seasons, season_types, get_all_teams(players_df)),
             html.Div(
                 [
                     get_player_position_groups_layout(),
@@ -476,6 +475,25 @@ def layout():
         ],
     )
 
+@callback(
+    Output("dropdown-team", "options"),
+    Output("dropdown-team", "value"),
+    Input("dropdown-season", "value"),
+    Input("dropdown-season-type", "value"),
+    State("dropdown-team", "value"),
+    prevent_initial_call=True
+)
+def update_dropdown_teams(season:str, season_type:str, current_team:str):
+    season = season.replace("-", "") if season != "All Seasons" else season
+    teams_list = ["All Teams"] + asyncio.run(query_player_stats(f"team/list/{season}?season_type={season_type}"))["teams"]
+
+    if current_team in teams_list:
+        value = no_update
+    else:
+        value = "All Teams"
+        
+    return teams_list, value
+
 
 @callback(
     Output("season-stats-df", "data"),
@@ -487,7 +505,7 @@ def layout():
     prevent_initial_call=True
 )
 def update_displayed_data(season:str, season_type:str, team:str, position:str, position_group:str):
-    season = season.replace("-", "") if season != "All Seasons" else season.replace("-", "")
+    season = season.replace("-", "") if season != "All Seasons" else season
     
     if position != "G":
         df = query_to_formatted_df(build_player_query_url(skater_type="skater", season=season, season_type=season_type, team=team))
