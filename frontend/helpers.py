@@ -50,52 +50,16 @@ rename_data_df_cols = {
 }
 
 
-df_stat_sorting = {
-    "G": "descending",
-    "A": "descending",
-    "P": "descending",
-    "TOI": "descending",
-    "GP": "descending",
-    "PP G": "descending",
-    "SH G": "descending",
-    "PP A": "descending",
-    "SH A": "descending",
-    "TOI PP": "descending",
-    "TOI SH": "descending",
-    "Shots": "descending",
-    "Hits": "descending",
-    "PIM": "descending",
-    "Penalties": "descending",
-    "PSS": "descending",
-    "FO": "descending",
-    "FO W": "descending",
-    "FO L": "descending",
-    "FO %": "descending",
-    "Giveaways": "descending",
-    "Takeaways": "descending",
-    "Blocks": "descending",
-    "+/-": "descending",
-    "GA": "ascending",
-    "GAA": "ascending",
-    "SO": "descending",
-    "SA": "descending",
-    "PP SA": "descending",
-    "SH SA": "descending",
-    "Saves": "descending",
-    "PP S": "descending",
-    "SH S": "descending",
-    "Save %": "descending",
-    "W": "descending",
-    "L": "descending",
-    "OTL": "descending",
-}
-
-def get_stat_sorting(stat):
-    sort_key = {
-        "ascending": True,
-        "descending": False
+def get_stat_sorting(stat):    
+    ascending_stats = {
+        "GA": True,
+        "GAA": True,
     }
-    return sort_key[df_stat_sorting[stat]]
+    
+    try:
+        return ascending_stats[stat]
+    except KeyError:
+        return False
     
 def get_colors(team_name:str, color="primary"):
     """
