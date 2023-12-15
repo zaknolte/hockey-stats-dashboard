@@ -1,4 +1,5 @@
 from ninja import ModelSchema, Router, Field, Schema
+from ninja.pagination import paginate
 from typing import List
 
 from .models import RegularSeason, PlayoffSeason, PlayerRegularSeason, PlayerPlayoffSeason, GoalieRegularSeason, GoaliePlayoffSeason, TeamRegularSeason, TeamPlayoffSeason
@@ -185,7 +186,10 @@ class TeamListSchema(Schema):
     
     @staticmethod
     def resolve_teams(obj):
-         return [i.team.name for i in obj]
+         names = [i.team.name for i in obj]
+         # duplicates if season is 'All Seasons'
+         # remove duplicates and re-sort
+         return sorted(list(set(names)))
      
     @staticmethod
     def resolve_season(obj):
@@ -203,8 +207,11 @@ class TeamListSchema(Schema):
 
 @season_router.get("/team/list/{season}", response=TeamListSchema)
 def get_season_team_list(request, season:str, season_type="Regular Season"):
+    kwargs = {}
+    if season != "All Seasons":
+        kwargs["season__year"] = season
     if season_type == "Regular Season":
-        return TeamRegularSeason.objects.filter(season__year=season).order_by("team__name")
+        return TeamRegularSeason.objects.filter(**kwargs).order_by("team__name")
     elif season_type == "Playoffs":
-        return TeamPlayoffSeason.objects.filter(season__year=season).order_by("team__name")
+        return TeamPlayoffSeason.objects.filter(**kwargs).order_by("team__name")
          
