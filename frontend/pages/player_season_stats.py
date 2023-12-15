@@ -15,7 +15,7 @@ from pathlib import Path
 from io import StringIO
 
 # from app import DJANGO_ROOT
-from helpers import stringify_season, rename_data_df_cols, get_agGrid_layout, get_agGrid_columnDefs, cols_to_percent
+from helpers import stringify_season, rename_data_df_cols, get_stat_sorting, get_agGrid_layout, get_agGrid_columnDefs, cols_to_percent
 
 dash.register_page(__name__, path="/players", title="Hockey Stats | Player Stats")
 
@@ -377,8 +377,7 @@ def get_leaders_layout(df:object, stat:str, dropdown_id:int | str):
     Returns:
         obj: html.Div containing stat dcc.Dropdown with dbc.Rows of player data.
     """
-    # filter for forwards only on initial load
-    rows = get_leaders_layout_rows(df, stat, "Forward")
+    rows = get_leaders_layout_rows(df, stat)
     player_options = get_leaders_dropdown_options("All Skaters")
 
     return html.Div(
@@ -400,7 +399,7 @@ def get_leaders_layout(df:object, stat:str, dropdown_id:int | str):
     )
 
 
-def get_leaders_layout_rows(df:object, stat:str, position:str):
+def get_leaders_layout_rows(df:object, stat:str):
     """
     Return nested Div of dropdown and row data of top 10 players for chosen filtered df.
     DOM tree of: 
@@ -427,8 +426,7 @@ def get_leaders_layout_rows(df:object, stat:str, position:str):
     Returns:
         obj: lsit of dbc.Rows of player data.
     """
-    leaders = filter_data_by_position(df, position)
-    leaders = leaders.sort_values(stat, ascending=False).head(10)
+    leaders = df.sort_values(stat, ascending=get_stat_sorting(stat)).head(10)
     
     # loop through players stats and generate rows and columns of results
     return [
@@ -545,31 +543,59 @@ def update_leader_dropdown_options(position):
 
 
 @callback(
-    Output("rows-leader-stat-1", "children"),
-    Output("rows-leader-stat-2", "children"),
-    Output("rows-leader-stat-3", "children"),
     Output("player-stats-grid", "rowData"),
     Output("player-stats-grid", "columnDefs"),
-    Input("dropdown-leader-stat-1", "value"),
-    Input("dropdown-leader-stat-2", "value"),
-    Input("dropdown-leader-stat-3", "value"),
     Input("player-position-options", "value"),
     Input("season-stats-df", "data"),
-    # prevent_initial_call=True,
+    prevent_initial_call=True,
 )
-def update_filtered_stats(stat_left:str, stat_center:str, stat_right:str, player_position:str, data:object):
+def update_agGrid(player_position:str, data:object):
+    df = pd.read_json(StringIO(data))
+        
+    df = df.rename(columns=rename_data_df_cols)
+    rowData = df.to_dict("records")
+    columnDefs = get_agGrid_columnDefs(player_position)
+
+    return rowData, columnDefs
+
+
+@callback(
+    Output("rows-leader-stat-1", "children"),
+    Input("dropdown-leader-stat-1", "value"),
+    Input("season-stats-df", "data"),
+    prevent_initial_call=True,
+)
+def update_left_leader_stats(stat_left:str, data:object):
     df = pd.read_json(StringIO(data))
     
-    left = get_leaders_layout_rows(df, stat_left, player_position)
-    center = get_leaders_layout_rows(df, stat_center, player_position)
-    right = get_leaders_layout_rows(df, stat_right, player_position)
-        
-    if ctx.triggered_id == "player-position-options" or ctx.triggered_id == "season-stats-df":
-        df = df.rename(columns=rename_data_df_cols)
-        rowData = df.to_dict("records")
-        columnDefs = get_agGrid_columnDefs(player_position)
-    else:
-        rowData = no_update
-        columnDefs = no_update
+    left = get_leaders_layout_rows(df, stat_left)
 
-    return left, center, right, rowData, columnDefs
+    return left
+
+
+@callback(
+    Output("rows-leader-stat-2", "children"),
+    Input("dropdown-leader-stat-2", "value"),
+    Input("season-stats-df", "data"),
+    prevent_initial_call=True,
+)
+def update_center_leader_stats(stat_center:str, data:object):
+    df = pd.read_json(StringIO(data))
+    
+    center = get_leaders_layout_rows(df, stat_center)
+
+    return center
+
+
+@callback(
+    Output("rows-leader-stat-3", "children"),
+    Input("dropdown-leader-stat-3", "value"),
+    Input("season-stats-df", "data"),
+    prevent_initial_call=True,
+)
+def update_right_leader_stats(stat_right:str, data:object):
+    df = pd.read_json(StringIO(data))
+    
+    right = get_leaders_layout_rows(df, stat_right)
+
+    return right
