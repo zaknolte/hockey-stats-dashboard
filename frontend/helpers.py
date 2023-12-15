@@ -3,6 +3,100 @@ import numpy as np
 
 from data_values import TEAM_COLORS
 
+# helper dict to rename data from database to a more readable column header
+rename_data_df_cols = {
+    "name": "Name",
+    "position": "Position",
+    "team": "Team",
+    "goals": "G",
+    "assists": "A",
+    "points": "P",
+    "time_on_ice_seconds": "TOI",
+    "games_played": "GP",
+    "goals_pp": "PP G",
+    "goals_sh": "SH G",
+    "assists_pp": "PP A",
+    "assists_sh": "SH A",
+    "time_on_ice_seconds_pp": "TOI PP",
+    "time_on_ice_seconds_sh": "TOI SH",
+    "shots": "Shots",
+    "hits": "Hits",
+    "penalty_minutes": "PIM",
+    "penalties_taken": "Penalties",
+    "penalty_seconds_served": "PSS",
+    "faceoffs_taken": "FO",
+    "faceoffs_won": "FO W",
+    "faceoffs_lost": "FO L",
+    "faceoff_percent": "FO %",
+    "giveaways": "Giveaways",
+    "takeaways": "Takeaways",
+    "blocked_shots": "Blocks",
+    "plus_minus": "+/-",
+    "season": "Season",
+    "full_season": "Full Season",
+    "goals_against": "GA",
+    "goals_against_average": "GAA",
+    "shutouts": "SO",
+    "shots_against": "SA",
+    "shots_against_pp": "PP SA",
+    "shots_against_sh": "SH SA",
+    "saves": "Saves",
+    "saves_pp": "PP S",
+    "saves_sh": "SH S",
+    "save_percent": "Save %",
+    "wins": "W",
+    "losses": "L",
+    "overtime_loss": "OTL",
+}
+
+
+df_stat_sorting = {
+    "G": "descending",
+    "A": "descending",
+    "P": "descending",
+    "TOI": "descending",
+    "GP": "descending",
+    "PP G": "descending",
+    "SH G": "descending",
+    "PP A": "descending",
+    "SH A": "descending",
+    "TOI PP": "descending",
+    "TOI SH": "descending",
+    "Shots": "descending",
+    "Hits": "descending",
+    "PIM": "descending",
+    "Penalties": "descending",
+    "PSS": "descending",
+    "FO": "descending",
+    "FO W": "descending",
+    "FO L": "descending",
+    "FO %": "descending",
+    "Giveaways": "descending",
+    "Takeaways": "descending",
+    "Blocks": "descending",
+    "+/-": "descending",
+    "GA": "ascending",
+    "GAA": "ascending",
+    "SO": "descending",
+    "SA": "descending",
+    "PP SA": "descending",
+    "SH SA": "descending",
+    "Saves": "descending",
+    "PP S": "descending",
+    "SH S": "descending",
+    "Save %": "descending",
+    "W": "descending",
+    "L": "descending",
+    "OTL": "descending",
+}
+
+def get_stat_sorting(stat):
+    sort_key = {
+        "ascending": True,
+        "descending": False
+    }
+    return sort_key[df_stat_sorting[stat]]
+    
 def get_colors(team_name:str, color="primary"):
     """
     Return a formatted css rgba string for a specific team of type 'color'
@@ -90,51 +184,6 @@ def reverse_slugify(slug:str):
     """
     return slug.replace("-", " ").title()
 
-# helper dict to rename data from database to a more readable column header
-rename_data_df_cols = {
-    "name": "Name",
-    "position": "Position",
-    "team": "Team",
-    "goals": "G",
-    "assists": "A",
-    "points": "P",
-    "time_on_ice_seconds": "TOI",
-    "games_played": "GP",
-    "goals_pp": "PP G",
-    "goals_sh": "SH G",
-    "assists_pp": "PP A",
-    "assists_sh": "SH A",
-    "time_on_ice_seconds_pp": "TOI PP",
-    "time_on_ice_seconds_sh": "TOI SH",
-    "shots": "Shots",
-    "hits": "Hits",
-    "penalty_minutes": "PIM",
-    "penalties_taken": "Penalties",
-    "penalty_seconds_served": "PSS",
-    "faceoffs_taken": "FO",
-    "faceoffs_won": "FO W",
-    "faceoffs_lost": "FO L",
-    "faceoff_percent": "FO %",
-    "giveaways": "Giveaways",
-    "takeaways": "Takeaways",
-    "blocked_shots": "Blocks",
-    "plus_minus": "+/-",
-    "season": "Season",
-    "full_season": "Full Season",
-    "goals_against": "GA",
-    "goals_against_average": "GAA",
-    "shutouts": "SO",
-    "shots_against": "SA",
-    "shots_against_pp": "PP SA",
-    "shots_against_sh": "SH SA",
-    "saves": "Saves",
-    "saves_pp": "PP S",
-    "saves_sh": "SH S",
-    "save_percent": "Save %",
-    "wins": "W",
-    "losses": "L",
-    "overtime_loss": "OTL",
-}
 
 
 def cols_to_percent(df, cols):
