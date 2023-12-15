@@ -471,7 +471,15 @@ def layout():
                 ]
             ),
             get_league_leaders_layout(players_df, ["G", "A", "P"]),
-            dls.DualRing(get_agGrid_layout(players_df, "Forwards", "player-stats-grid", style={"paddingLeft": 50, "paddingRight": 50, "paddingBottom": 50}), width=120),
+            dls.DualRing(
+                get_agGrid_layout(
+                    players_df,
+                    "Forwards",
+                    "player-stats-grid",
+                    style={"paddingLeft": 50, "paddingRight": 50, "paddingBottom": 50, "height": 800},
+                    dashGridOptions={"pagination": True, "paginationPageSize": 50}
+                ), 
+            width=120),
         ],
     )
 
