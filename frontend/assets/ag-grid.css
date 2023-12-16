@@ -31,3 +31,7 @@
     --ag-data-color: var(--team-text-color-secondary);
     --ag-odd-row-background-color: var(--team-color-secondary-softer);
 }
+
+.ag-theme-alpine.team-grid .ag-paging-panel {
+    color: var(--team-text-color-secondary);
+}
