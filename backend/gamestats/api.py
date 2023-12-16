@@ -52,7 +52,8 @@ class SimpleGameSchema(Schema):
 
 
 class TeamRegularGameSchema(ModelSchema):
-    team: TeamSchema
+    team: str = Field(..., alias="team.name")
+    # team: TeamSchema
     game: SimpleGameSchema
     class Config:
         model = TeamRegularGame
@@ -109,12 +110,12 @@ def get_game_results(request, id):
 
 @game_router.get("/results/all", response=List[TeamRegularGameSchema])
 def get_all_game_results(request):
-    return TeamRegularGame.objects.all()
+    return TeamRegularGame.objects.select_related("team").select_related("game").select_related("game__season").all()
 
 
 @game_router.get("/results/season", response=List[TeamRegularGameSchema])
 def get_game_results_by_season(request, season):
-    return TeamRegularGame.objects.filter(game__season__year=season)
+    return TeamRegularGame.objects.select_related("team").select_related("game").select_related("game__season").filter(game__season__year=season)
 
 
 @game_router.get("results/team", response=List[TeamRegularGameSchema])
@@ -124,4 +125,4 @@ def get_game_results_by_team(request, team_name, season="All Seasons"):
     if season != "All Seasons":
         kwargs["game__season__year"] = season
                 
-    return TeamRegularGame.objects.filter(**kwargs)
+    return TeamRegularGame.objects.select_related("team").select_related("game").select_related("game__season").filter(**kwargs)
