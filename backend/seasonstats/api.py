@@ -185,9 +185,9 @@ def get_team_seasons(request, team_name="All Teams", season="All Seasons", seaso
     if season != "All Seasons":
         kwargs["season__year"] = season
     if season_type == "Regular Season":
-        return TeamRegularSeason.objects.select_related("team").filter(**kwargs)
+        return TeamRegularSeason.objects.select_related("team").select_related("season").filter(**kwargs)
     else:
-        return TeamPlayoffSeason.objects.select_related("team").filter(**kwargs)
+        return TeamPlayoffSeason.objects.select_related("team").select_related("season").filter(**kwargs)
 
 
 class TeamListSchema(Schema):
@@ -222,7 +222,7 @@ def get_season_team_list(request, season:str, season_type="Regular Season"):
     if season != "All Seasons":
         kwargs["season__year"] = season
     if season_type == "Regular Season":
-        return TeamRegularSeason.objects.select_related("team").filter(**kwargs).order_by("team__name")
+        return TeamRegularSeason.objects.select_related("team").select_related("season").filter(**kwargs).order_by("team__name")
     elif season_type == "Playoffs":
-        return TeamPlayoffSeason.objects.select_related("team").filter(**kwargs).order_by("team__name")
+        return TeamPlayoffSeason.objects.select_related("team").select_related("season").filter(**kwargs).order_by("team__name")
          
