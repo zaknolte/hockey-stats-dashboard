@@ -355,6 +355,7 @@ def get_single_season_rankings_plot(df:object, team_name:str, stat:str):
             "yanchor": "bottom",
             "y": 1.1
         },
+        yaxis_title=stat,
     ) 
     
     return dls.DualRing(
@@ -443,6 +444,8 @@ def get_single_season_games_plot(df:object, team_name:str, stat:str):
             "yanchor": "bottom",
             "y": 1.1
         },
+        xaxis_title="Game #",
+        yaxis_title=stat,
     )
     
     return dls.DualRing(
@@ -566,12 +569,19 @@ def update_game_fig(game_stat, year, team_name):
     season = int(f"{year}{year + 1}")
     game_df = query_to_formatted_df(build_team_query_url(endpoint="games/results/season", season=season), index="id", sort_by="Game", ascending=True)
     
+    # patch to only update specific parts of figure instead of re-drawing the entire figure
     game_fig_patch = Patch()
-    game_team_data, lowest_game_data, avg_game_data, highest_game_data = get_single_season_games_y_values(game_df, team_name, game_stat)
+    game_team_data, lowest_game_data, avg_game_data, highest_game_data = get_single_season_games_y_values(game_df, reverse_slugify(team_name), game_stat)
+    game_fig_patch["data"][0]["x"] = pd.unique(game_df["Game"])
     game_fig_patch["data"][0]["y"] = lowest_game_data
+    game_fig_patch["data"][1]["x"] = pd.unique(game_df["Game"])
     game_fig_patch["data"][1]["y"] = avg_game_data
+    game_fig_patch["data"][2]["x"] = pd.unique(game_df["Game"])
     game_fig_patch["data"][2]["y"] = highest_game_data
+    game_fig_patch["data"][3]["x"] = pd.unique(game_df["Game"])
     game_fig_patch["data"][3]["y"] = game_team_data
+    
+    game_fig_patch["layout"]["yaxis"]["title"]["text"] = game_stat
     
     return game_fig_patch
 
@@ -583,9 +593,9 @@ def update_game_fig(game_stat, year, team_name):
     State("team-name", "data"),
     prevent_initial_call=True
 )
-def update_game_fig(season_stat, year, team_name):
-    season = int(f"{year}{year + 1}")
-    team_df = query_to_formatted_df(build_team_query_url(endpoint="season/team/", team_name=reverse_slugify(team_name)), index="id", sort_by="Season", ascending=False)
+def update_season_fig(season_stat, year, team_name):
+    season = f"{year}{year + 1}"
+    team_df = query_to_formatted_df(build_team_query_url(endpoint="season/team/", season=season), index="id")
     
     season_fig_patch = Patch()
     season_team_data, lowest_season_data, avg_season_data, highest_season_data = get_single_season_ranks_y_values(team_df, reverse_slugify(team_name), season_stat)
