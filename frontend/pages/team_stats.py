@@ -120,9 +120,6 @@ def format_image(image_url:str):
     Returns:
         base64 decoded image.
     """
-    # path that stores player images
-    # /backend/images/
-
     img = requests.get(image_url)
     uri = ("data:" + img.headers['Content-Type'] + ";base64," + str(base64.b64encode(img.content).decode("utf-8")))
     return uri

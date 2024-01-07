@@ -14,7 +14,6 @@ from django.utils.text import slugify
 from pathlib import Path
 from io import StringIO
 
-# from app import DJANGO_ROOT
 from helpers import stringify_season, rename_data_df_cols, get_stat_sorting, get_agGrid_layout, get_agGrid_columnDefs, cols_to_percent
 
 dash.register_page(__name__, path="/players", title="Hockey Stats | Player Stats")
@@ -36,27 +35,6 @@ async def query_player_stats(endpoint:str):
             data = await resp.json()
 
     return data
-
-
-# can't host static images in dash normally outside assets folder
-# encode and decode from image url to render image
-def format_image(image_url:str):
-    """
-    Encodes then returns the base64 decoded image supplied from image_url
- 
-    Args:
-        image_url (str): Path to image file.
- 
-    Returns:
-        base64 decoded image.
-    """
-    # path that stores player images
-    # /backend/images/
-    DJANGO_ROOT = Path(__file__).resolve().parent.parent.parent / "backend"
-    img_path = "/".join([i for i in DJANGO_ROOT.parts]) + "/images/player-pictures/"
-    
-    encoded = base64.b64encode(open(img_path + image_url, "rb").read())
-    return encoded.decode()
 
 
 def build_player_query_url(skater_type="skater", player_type="all", season="All Seasons", season_type="Regular Season", team="All Teams"):
