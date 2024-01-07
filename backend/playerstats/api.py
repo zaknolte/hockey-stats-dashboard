@@ -54,14 +54,13 @@ def get_player(request, player: Union[int, str]):
     if type(player) is int:
         kwargs["pk"] = player
     elif type(player) is str:
-        player = player.replace("-", " ").replace("%20", " ").title()
-        kwargs["full_name"] = player
+        kwargs["slug"] = player
     return Player.objects.get(**kwargs)
 
 
 @player_router.get("/all", response=List[PlayerSchema])
 def get_all_players(request):
-    return Player.objects.all()
+    return Player.objects.select_related("team").prefetch_related("position").all()
 
 @player_router.get("/all_names", response=List[PlayerNameSchema])
 def get_player_names(request):

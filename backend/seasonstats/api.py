@@ -92,8 +92,8 @@ def get_all_skater_seasons(request, season="All Seasons", season_type="Regular S
 
 @season_router.get("/skater/{player_name}", response=List[PlayerSeasonSchema])
 def get_single_skater_seasons(request, player_name:str, season="All Seasons", season_type="Regular Season", team="All Teams"):
-    player_name = player_name.replace("-", " ").replace("%20", " ").title()
-    kwargs = {"player__full_name__iexact": player_name}
+    # player_name = player_name.replace("-", " ").replace("%20", " ").title()
+    kwargs = {"player__slug": player_name}
     if season != "All Seasons":
         kwargs["season__year"] = season
     if team != "All Teams":
@@ -143,8 +143,8 @@ def get_all_goalie_seasons(request, season="All Seasons", season_type="Regular S
 
 @season_router.get("/goalie/{player_name}", response=List[GoalieSeasonSchema])
 def get_single_goalie_seasons(request, player_name:str, season="All Seasons", season_type="Regular Season", team="All Teams"):
-    player_name = player_name.replace("-", " ").replace("%20", " ").title()
-    kwargs = {"player__full_name__iexact": player_name}
+    # player_name = player_name.replace("-", " ").replace("%20", " ").title()
+    kwargs = {"player__slug": player_name}
     if season != "All Seasons":
         kwargs["season__year"] = season
     if team != "All Teams":
