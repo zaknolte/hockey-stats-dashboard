@@ -237,8 +237,8 @@ def get_team_season_data():
                         shots_per_game = parse_data(shot, ["shotsForPerGame"], None)
                         shots_against = percent_to_total(parse_data(shot, ["shotsAgainstPerGame"], None), parse_data(shot, ["gamesPlayed"], None))
                         shots_against_per_game = parse_data(shot, ["shotsAgainstPerGame"], None)
-                        shot_percent = get_percentage(shots, parse_data(data, ["goals"], None))
-                        save_percent = get_percentage(shots_against, parse_data(data, ["goalsAgainst"], None))
+                        shot_percent = get_percentage(parse_data(data, ["goals"], None), shots)
+                        save_percent = get_percentage(parse_data(data, ["goalsAgainst"], None), shots_against)
                         break
                     
                 for faceoff in faceoff_data:
@@ -383,12 +383,13 @@ def get_player_data():
                 "first_name": bios_data["firstName"]["default"],
                 "last_name": bios_data["lastName"]["default"],
                 "full_name": bios_data["firstName"]["default"] + " " + bios_data["lastName"]["default"],
+                "team": parse_data(bios_data, ["currentTeamId"], None),
                 "picture": parse_data(bios_data, ["headshot"], None),
                 "position": resolve_position(parse_data(bios_data, ["position"], None), parse_data(bios_data, ["shootsCatches"], None)),
                 "jersey_number": parse_data(bios_data, ["sweaterNumber"], None),
                 "birthday": parse_data(bios_data, ["birthDate"], None),
                 "birth_city": parse_data(bios_data, ["birthCity", "default"], None),
-                "birth_state": parse_data(bios_data, ["birthStateProvinceCode", "default"], None),
+                "birth_state": parse_data(bios_data, ["birthStateProvince", "default"], None),
                 "birth_country": parse_data(bios_data, ["birthCountry"], None),
                 "height_inches": parse_data(bios_data, ["heightInInches"], None),
                 "weight": parse_data(bios_data, ["weightInPounds"], None),
