@@ -86,7 +86,7 @@ nav = dbc.NavbarSimple(
             label="Teams",
             align_end=True,
         ),
-        dbc.NavItem(dbc.NavLink("League", href="/league")),
+        # dbc.NavItem(dbc.NavLink("League", href="/league")),
         dcc.Dropdown(
             placeholder="Search Players...",
             options=get_options_from_names(),
