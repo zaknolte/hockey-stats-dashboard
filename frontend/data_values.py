@@ -52,7 +52,7 @@ TEAM_BY_ABBR = {
     "CBJ": "Columbus Blue Jackets",
     "CGS": "California Golden Seals",
     "CGY": "Calgary Flames",
-    "CHI": "Chicago Black Hawks",
+    "CHI": "Chicago Blackhawks",
     "CLE": "Cleveland Barons",
     "CLR": "Colorado Rockies",
     "COL": "Colorado Avalanche",
