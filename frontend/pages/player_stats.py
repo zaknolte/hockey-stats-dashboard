@@ -226,11 +226,19 @@ def layout(player=None):
     if player is None:
         return html.Div()
     
-    player_stats = query_to_formatted_df(build_player_query_url(endpoint=f"season/skater/{player}"))
+    player_stats = query_to_formatted_df(build_player_query_url(endpoint=f"season/skater/{player}"), sort_by="Year")
     player_info = asyncio.run(query_player_stats(build_player_query_url(endpoint="players/", player=player)))
     
     return html.Div(
         [
-            get_player_card(player_info)
+            get_player_card(player_info),
+            get_agGrid_layout(
+                    player_stats,
+                    player_info["position"][0],
+                    "player-info-grid",
+                    add_link=False,
+                    style={"paddingLeft": 50, "paddingRight": 50, "paddingBottom": 50},
+                    dashGridOptions = {"domLayout": "autoHeight"}
+                ), 
         ]
     )
