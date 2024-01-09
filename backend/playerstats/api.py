@@ -44,6 +44,7 @@ class PlayerSchema(ModelSchema):
      
 class PlayerNameSchema(Schema):
     name: str = Field(..., alias="full_name")
+    id: int
      
      
 @player_router.get("/", response=PlayerSchema)
@@ -64,4 +65,4 @@ def get_all_players(request):
 
 @player_router.get("/all_names", response=List[PlayerNameSchema])
 def get_player_names(request):
-    return Player.objects.values("full_name").order_by("full_name")
+    return Player.objects.values("id", "full_name").order_by("full_name")
