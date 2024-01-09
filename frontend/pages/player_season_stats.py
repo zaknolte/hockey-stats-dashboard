@@ -107,6 +107,7 @@ def query_to_formatted_df(query:str):
     df = pd.json_normalize(asyncio.run(query_player_stats(query))).set_index("id")
     df = df.rename(columns=rename_data_df_cols)
     df["Team"] = df["Team"].fillna("N/A")
+    df["PlayerLink"] = df.apply(lambda x: f"[{x['Name']}](/player/{x['Player']})", axis=1)
     
     df = cols_to_percent(df, "FO %")
     
@@ -163,6 +164,7 @@ def get_leaders_dropdown_options(position="All Skaters"):
         "id",
         "Player",
         "Name",
+        "PlayerLink",
         "Season",
         "Year",
         "Full Season",
@@ -406,10 +408,7 @@ def get_leaders_layout_rows(df:object, stat:str):
         dbc.Row(
             [
                 dbc.Col(
-                    dcc.Link(
-                        value["Name"],
-                        href=f'player/{slugify(value["Name"])}',
-                    ),
+                    dcc.Markdown(value["PlayerLink"], style={"height": "1.4rem"}),
                     width=8,
                 ),
                 dbc.Col(
@@ -417,7 +416,7 @@ def get_leaders_layout_rows(df:object, stat:str):
                 ),
             ]
         )
-        for row, value in leaders[["Name", stat]].iterrows()
+        for row, value in leaders.iterrows()
     ]
 
 
