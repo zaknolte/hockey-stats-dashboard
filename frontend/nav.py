@@ -37,9 +37,9 @@ def get_player_names():
 def get_options_from_names():
     return [
         {
-            "label": dcc.Link(name["name"], href=f"http://127.0.0.1:8050/player/{slugify(name['name'])}", className="player-results"),
-            "value": name["name"],
-        } for name in get_player_names()
+            "label": player["name"],
+            "value": player["id"],
+        } for player in get_player_names()
     ]
 
 
@@ -125,5 +125,5 @@ def show_dropdown(value):
 )
 def route_player_page(name):
     if name:
-        return f"http://127.0.0.1:8050/player/{slugify(name)}"
+        return f"http://127.0.0.1:8050/player/{name}"
     return no_update
