@@ -6,6 +6,7 @@ from data_values import TEAM_COLORS
 # helper dict to rename data from database to a more readable column header
 rename_data_df_cols = {
     "name": "Name",
+    "player": "Player",
     "position": "Position",
     "team": "Team",
     "team.name": "Team",
@@ -229,7 +230,7 @@ def add_default_number_columnDef(field:str, center=True, **kwargs):
     return columnDef
     
 
-def get_agGrid_columnDefs(grid_type:str):
+def get_agGrid_columnDefs(grid_type:str, add_link=True):
     """
     Return a list of all columnDef fields to add to existing dag.AgGrid.
  
@@ -240,12 +241,13 @@ def get_agGrid_columnDefs(grid_type:str):
         List of dicts of all columnDef field parameters.
     """
     base_defs = [
-        add_default_text_columnDef("Name", pinned="left", lockPinned=True, cellRenderer="NameLink"),
-        add_default_number_columnDef("Year", center=False, width=None),
+        add_default_number_columnDef("Year", width=None),
         {"field": "Team"},
         {"field": "Position", "cellStyle": {"textAlign": "center"}},
         add_default_number_columnDef("GP", headerTooltip="Games Played"),
     ]
+    if add_link:
+        base_defs .insert(0, add_default_text_columnDef("PlayerLink", pinned="left", lockPinned=True, cellRenderer="markdown", headerName="Name"))
     if grid_type == "Team":
         column_defs = [
             add_default_number_columnDef("Year", pinned="left", lockPinned=True),
@@ -315,7 +317,7 @@ def get_agGrid_columnDefs(grid_type:str):
     return column_defs
 
 
-def get_agGrid_layout(df:object, grid_type:str, grid_id:str, **kwargs):
+def get_agGrid_layout(df:object, grid_type:str, grid_id:str, add_link=True, **kwargs):
     """
     Return stylized ag Grid of filtered data.
     Will default to use ag-theme-alpine theme. Can optionally provide a className kwarg that corresponds to a custom css class.
@@ -335,7 +337,7 @@ def get_agGrid_layout(df:object, grid_type:str, grid_id:str, **kwargs):
         
     return dag.AgGrid(
             rowData=df.to_dict("records"),
-            columnDefs=get_agGrid_columnDefs(grid_type),
+            columnDefs=get_agGrid_columnDefs(grid_type, add_link),
             id=grid_id,
             className=className,
             columnSize="autoSize",
