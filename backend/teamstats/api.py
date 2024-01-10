@@ -35,6 +35,6 @@ def get_all_teams(request):
     return Team.objects.order_by("name")
 
 
-@team_router.get("/franchise/{pk}", response=TeamSchema)
+@team_router.get("/franchise/{pk}", response=List[TeamSchema])
 def get_franchise(request, pk):
-    return Team.objects.get(franchise_id=pk)
+    return Team.objects.filter(franchise_id=pk)
