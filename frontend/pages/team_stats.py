@@ -460,8 +460,8 @@ def layout(team=None):
 
     CURRENT_SEASON = asyncio.run(query_team_stats("season/current_season"))["season"]
 
-    current_season_df = query_to_formatted_df(build_team_query_url(endpoint="season/team/", season=CURRENT_SEASON), index="id")
     team_df = query_to_formatted_df(build_team_query_url(endpoint="season/team/", team_name=reverse_slugify(team)), index="id", sort_by="Season", ascending=False)
+    current_season_df = team_df[team_df["Year"] == int(str(CURRENT_SEASON)[:4])]
     games_df = query_to_formatted_df(build_team_query_url(endpoint="games/results/season", season=CURRENT_SEASON), index="id", sort_by="Game", ascending=True)
 
     primary_color = get_colors(reverse_slugify(team), "primary")
@@ -505,7 +505,7 @@ def layout(team=None):
             html.Div(
                 [
                     html.Div("Season:", style={"color": "white", "paddingRight": "2%"}),
-                    get_single_season_dropdown(reverse_slugify(team), options=pd.unique(team_df["Year"]), id="single-season-season-dropdown"),
+                    get_single_season_dropdown(reverse_slugify(team), options=pd.unique(team_df[team_df["Team"] == reverse_slugify(team)]["Year"]), id="single-season-season-dropdown"),
                 ],
                 style={"display": "flex", "justifyContent": "center"}
             ),

@@ -180,7 +180,9 @@ def get_team_seasons(request, team_name="All Teams", season="All Seasons", seaso
     kwargs = {}
     
     if team_name != "All Teams":
-        kwargs["team__name"] = team_name
+        # kwargs["team__name"] = team_name
+        team = TeamRegularSeason.objects.filter(team__name=team_name)[0]
+        kwargs["team__franchise_id"] = team.team.franchise_id
         
     if season != "All Seasons":
         kwargs["season__year"] = season

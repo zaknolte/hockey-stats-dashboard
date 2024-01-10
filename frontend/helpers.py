@@ -251,6 +251,7 @@ def get_agGrid_columnDefs(grid_type:str, add_link=True):
     if grid_type == "Team":
         column_defs = [
             add_default_number_columnDef("Year", pinned="left", lockPinned=True),
+            add_default_text_columnDef("Team"),
             add_default_number_columnDef("GP", headerTooltip="Games Played"),
             add_default_number_columnDef("W", headerTooltip="Wins"),
             add_default_number_columnDef("L", headerTooltip="Losses"),
