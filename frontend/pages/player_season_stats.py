@@ -409,7 +409,7 @@ def get_leaders_layout_rows(df:object, stat:str):
             [
                 dbc.Col(
                     dcc.Markdown(value["PlayerLink"], style={"height": "1.4rem"}),
-                    width=8,
+                    width=9,
                 ),
                 dbc.Col(
                     value[stat], style={"display": "flex", "justifyContent": "end"}
