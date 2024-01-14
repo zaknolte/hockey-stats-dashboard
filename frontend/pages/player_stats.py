@@ -18,7 +18,7 @@ from io import StringIO
 
 from data_values import TEAM_COLORS
 from helpers import reverse_slugify, rename_data_df_cols, cols_to_percent, get_colors, get_triadics_from_rgba, get_rgba_complement, get_agGrid_layout, stringify_season
-
+from .player_404 import player_404_layout
 
 def title(player):
     return f"Hockey Stats | {player.replace('-', ' ').title()}"
@@ -44,7 +44,20 @@ async def query_player_stats(endpoint):
     return data
 
 
-def query_to_formatted_df(query: str, index=None, sort_by=None, ascending=False):
+def get_response(query):
+    try:
+        response = asyncio.run(query_player_stats(query))
+    except aiohttp.client_exceptions.ContentTypeError:
+        return (422, None)
+    
+    try:
+        if "Not Found" in response["detail"]:
+            return (404, None)
+    except (KeyError, TypeError):
+        return (200, response)
+
+
+def create_formatted_df(response, index=None, sort_by=None, ascending=False):
     """
     Queries backend database for data then formats the returned data into a dataFrame.
 
@@ -54,7 +67,7 @@ def query_to_formatted_df(query: str, index=None, sort_by=None, ascending=False)
     Returns:
         obj: Formatted dataFrame of database data.
     """
-    df = pd.json_normalize(asyncio.run(query_player_stats(query)))
+    df = pd.json_normalize(response)
     
     if index is not None:
         df= df.set_index(index)
@@ -226,7 +239,11 @@ def layout(player=None):
     if player is None:
         return html.Div()
     
-    player_stats = query_to_formatted_df(build_player_query_url(endpoint=f"season/skater/{player}"), sort_by="Year")
+    stats_response = get_response(build_player_query_url(endpoint=f"season/skater/{player}"))
+    if stats_response[0] != 200:
+        return player_404_layout(stats_response[0], player)
+    
+    player_stats = create_formatted_df(stats_response[1], sort_by="Year")
     player_info = asyncio.run(query_player_stats(build_player_query_url(endpoint="players/", player=player)))
     
     return html.Div(

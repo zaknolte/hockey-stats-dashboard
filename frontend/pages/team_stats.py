@@ -18,6 +18,7 @@ from io import StringIO
 
 from data_values import TEAM_COLORS
 from helpers import reverse_slugify, rename_data_df_cols, cols_to_percent, get_colors, get_triadics_from_rgba, get_rgba_complement, get_agGrid_layout, stringify_season
+from .team_404 import team_404_layout
 
 
 def title(team):
@@ -45,7 +46,20 @@ async def query_team_stats(endpoint):
     return data
 
 
-def query_to_formatted_df(query: str, index=None, sort_by=None, ascending=False):
+def get_response(query):
+    try:
+        response = asyncio.run(query_team_stats(query))
+    except aiohttp.client_exceptions.ContentTypeError:
+        return (422, None)
+    
+    try:
+        if "Not Found" in response["detail"]:
+            return (404, None)
+    except (KeyError, TypeError):
+        return (200, response)
+
+
+def create_formatted_df(response, index=None, sort_by=None, ascending=False):
     """
     Queries backend database for data then formats the returned data into a dataFrame.
 
@@ -55,7 +69,7 @@ def query_to_formatted_df(query: str, index=None, sort_by=None, ascending=False)
     Returns:
         obj: Formatted dataFrame of database data.
     """
-    df = pd.json_normalize(asyncio.run(query_team_stats(query)))
+    df = pd.json_normalize(response)
     
     if index is not None:
         df= df.set_index(index)
@@ -460,9 +474,17 @@ def layout(team=None):
 
     CURRENT_SEASON = asyncio.run(query_team_stats("season/current_season"))["season"]
 
-    team_df = query_to_formatted_df(build_team_query_url(endpoint="season/team/", team_name=reverse_slugify(team)), index="id", sort_by="Season", ascending=False)
+    team_response = get_response(build_team_query_url(endpoint="season/team/", team_name=reverse_slugify(team)))
+    if team_response[0] != 200:
+        return team_404_layout(team_response[0], team)
+    team_df = create_formatted_df(team_response[1], index="id", sort_by="Season", ascending=False)
+    
     current_season_df = team_df[team_df["Year"] == int(str(CURRENT_SEASON)[:4])]
-    games_df = query_to_formatted_df(build_team_query_url(endpoint="games/results/season", season=CURRENT_SEASON), index="id", sort_by="Game", ascending=True)
+    
+    games_response = get_response(build_team_query_url(endpoint="games/results/season", season=CURRENT_SEASON))
+    if games_response[0] != 200:
+        return team_404_layout(games_response[0], team)
+    games_df = create_formatted_df(games_response[1], index="id", sort_by="Game", ascending=True)
 
     primary_color = get_colors(reverse_slugify(team), "primary")
     primary_color_soft = TEAM_COLORS[reverse_slugify(team)]["primary"][:-1] + (0.5, )
@@ -551,7 +573,8 @@ def layout(team=None):
 )
 def update_selected_season_summary(year, team_name):
     season = int(f"{year}{year + 1}")
-    team_df = query_to_formatted_df(build_team_query_url(endpoint="season/team/", season=season, team_name=reverse_slugify(team_name)), index="id")
+    team_response = get_response(build_team_query_url(endpoint="season/team/", season=season, team_name=reverse_slugify(team_name)))
+    team_df = create_formatted_df(team_response[1], index="id")
     return get_season_summary(team_df.iloc[0], layout_id=2)
 
 
@@ -564,7 +587,8 @@ def update_selected_season_summary(year, team_name):
 )
 def update_game_fig(game_stat, year, team_name):
     season = int(f"{year}{year + 1}")
-    game_df = query_to_formatted_df(build_team_query_url(endpoint="games/results/season", season=season), index="id", sort_by="Game", ascending=True)
+    games_response = get_response(build_team_query_url(endpoint="games/results/season", season=season))
+    game_df = create_formatted_df(games_response[1], index="id", sort_by="Game", ascending=True)
     
     # patch to only update specific parts of figure instead of re-drawing the entire figure
     game_fig_patch = Patch()
@@ -592,7 +616,8 @@ def update_game_fig(game_stat, year, team_name):
 )
 def update_season_fig(season_stat, year, team_name):
     season = f"{year}{year + 1}"
-    team_df = query_to_formatted_df(build_team_query_url(endpoint="season/team/", season=season), index="id")
+    team_response = get_response(build_team_query_url(endpoint="season/team/", season=season))
+    team_df = create_formatted_df(team_response[1], index="id")
     
     season_fig_patch = Patch()
     season_team_data, lowest_season_data, avg_season_data, highest_season_data = get_single_season_ranks_y_values(team_df, reverse_slugify(team_name), season_stat)
