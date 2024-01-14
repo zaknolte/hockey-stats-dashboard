@@ -1,6 +1,7 @@
 from ninja import ModelSchema, Router, Field, Schema
 from typing import List
 from datetime import date, datetime
+from django.shortcuts import get_object_or_404, get_list_or_404
 
 # from .models import Event, Game, PlayerGame, GoalieGame, TeamRegularGame
 from .models import Event, RegularGame, PlayoffGame, PlayerRegularGame, PlayerPlayoffGame, GoalieRegularGame, GoaliePlayoffGame, TeamRegularGame, TeamPlayoffGame
@@ -100,12 +101,12 @@ def get_all_games(request):
 
 @game_router.get("/game", response=GameSchema)
 def get_game(request, id):
-    return RegularGame.objects.get(pk=id)
+    return get_object_or_404(RegularGame.objects.get(pk=id))
 
 
 @game_router.get("/results", response=List[TeamRegularGameSchema])
 def get_game_results(request, id):
-    return TeamRegularGame.objects.filter(game__id=id)
+    return get_list_or_404(TeamRegularGame.objects.filter(game__id=id))
 
 
 @game_router.get("/results/all", response=List[TeamRegularGameSchema])
@@ -115,7 +116,7 @@ def get_all_game_results(request):
 
 @game_router.get("/results/season", response=List[TeamRegularGameSchema])
 def get_game_results_by_season(request, season):
-    return TeamRegularGame.objects.select_related("team").select_related("game").select_related("game__season").filter(game__season__year=season)
+    return get_list_or_404(TeamRegularGame.objects.select_related("team").select_related("game").select_related("game__season").filter(game__season__year=season))
 
 
 @game_router.get("results/team", response=List[TeamRegularGameSchema])
@@ -125,4 +126,4 @@ def get_game_results_by_team(request, team_name, season="All Seasons"):
     if season != "All Seasons":
         kwargs["game__season__year"] = season
                 
-    return TeamRegularGame.objects.select_related("team").select_related("game").select_related("game__season").filter(**kwargs)
+    return get_list_or_404(TeamRegularGame.objects.select_related("team").select_related("game").select_related("game__season").filter(**kwargs))

@@ -1,5 +1,6 @@
 from ninja import ModelSchema, Router, Schema
 from typing import List, Union
+from django.shortcuts import get_object_or_404, get_list_or_404
 
 from .models import Team
 
@@ -27,14 +28,14 @@ def get_team(request, team: Union[int, str]):
     elif type(team) is str:
         team = team.replace("-", " ").replace("%20", " ").title()
         kwargs["name"] = team
-    return Team.objects.get(**kwargs)
+    return get_object_or_404(Team.objects.get(**kwargs))
 
 
 @team_router.get("/all_teams", response=List[TeamSchema])
 def get_all_teams(request):
-    return Team.objects.order_by("name")
+    return get_object_or_404(Team.objects.order_by("name"))
 
 
 @team_router.get("/franchise/{pk}", response=List[TeamSchema])
 def get_franchise(request, pk):
-    return Team.objects.filter(franchise_id=pk)
+    return get_list_or_404(Team.objects.filter(franchise_id=pk))

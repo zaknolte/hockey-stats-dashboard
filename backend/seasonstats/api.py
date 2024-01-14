@@ -1,6 +1,7 @@
 from ninja import ModelSchema, Router, Field, Schema
 from ninja.pagination import paginate
 from typing import List
+from django.shortcuts import get_object_or_404, get_list_or_404
 
 from .models import RegularSeason, PlayoffSeason, PlayerRegularSeason, PlayerPlayoffSeason, GoalieRegularSeason, GoaliePlayoffSeason, TeamRegularSeason, TeamPlayoffSeason
 from teamstats.api import TeamSchema
@@ -39,7 +40,7 @@ class RegularSeasonSchema(ModelSchema):
         
 @season_router.get("/regular/{year}", response=RegularSeasonSchema)
 def get_regular_season(request, year: int):
-    return RegularSeason.objects.get(year=year)
+    return get_object_or_404(RegularSeason.objects.get(year=year))
 
 
 class PlayoffSeasonSchema(ModelSchema):
@@ -50,7 +51,7 @@ class PlayoffSeasonSchema(ModelSchema):
         
 @season_router.get("/playoffs/{year}", response=PlayoffSeasonSchema)
 def get_post_season(request, year: int):
-    return PlayoffSeason.objects.get(year=year)
+    return get_object_or_404(PlayoffSeason.objects.get(year=year))
 
 
 class PlayerSeasonSchema(ModelSchema):
@@ -85,9 +86,9 @@ def get_all_skater_seasons(request, season="All Seasons", season_type="Regular S
     if team != "All Teams":
         kwargs["team__name"] = team
     if season_type == "Regular Season":
-        return PlayerRegularSeason.objects.select_related("team").select_related("season").select_related("player").prefetch_related("player__position").filter(**kwargs)
+        return get_list_or_404(PlayerRegularSeason.objects.select_related("team").select_related("season").select_related("player").prefetch_related("player__position").filter(**kwargs))
     else:
-        return PlayerPlayoffSeason.objects.select_related("team").select_related("season").select_related("player").prefetch_related("player__position").filter(**kwargs)
+        return get_list_or_404(PlayerPlayoffSeason.objects.select_related("team").select_related("season").select_related("player").prefetch_related("player__position").filter(**kwargs))
     
 
 @season_router.get("/skater/{player_id}", response=List[PlayerSeasonSchema])
@@ -99,9 +100,9 @@ def get_single_skater_seasons(request, player_id:str, season="All Seasons", seas
     if team != "All Teams":
         kwargs["team__name"] = team
     if season_type == "Regular Season":
-        return PlayerRegularSeason.objects.select_related("team").select_related("season").select_related("player").prefetch_related("player__position").filter(**kwargs)
+        return get_list_or_404(PlayerRegularSeason.objects.select_related("team").select_related("season").select_related("player").prefetch_related("player__position").filter(**kwargs))
     else:
-        return PlayerPlayoffSeason.objects.select_related("team").select_related("season").select_related("player").prefetch_related("player__position").filter(**kwargs)
+        return get_list_or_404(PlayerPlayoffSeason.objects.select_related("team").select_related("season").select_related("player").prefetch_related("player__position").filter(**kwargs))
 
         
 class GoalieSeasonSchema(ModelSchema):
@@ -136,9 +137,9 @@ def get_all_goalie_seasons(request, season="All Seasons", season_type="Regular S
         team = team.replace("-", " ").replace("%20", " ").title()
         kwargs["team__name"] = team
     if season_type == "Regular Season":
-        return GoalieRegularSeason.objects.select_related("team").select_related("season").select_related("player").prefetch_related("player__position").filter(**kwargs)
+        return get_list_or_404(GoalieRegularSeason.objects.select_related("team").select_related("season").select_related("player").prefetch_related("player__position").filter(**kwargs))
     else:
-        return GoaliePlayoffSeason.objects.select_related("team").select_related("season").select_related("player").prefetch_related("player__position").filter(**kwargs)
+        return get_list_or_404(GoaliePlayoffSeason.objects.select_related("team").select_related("season").select_related("player").prefetch_related("player__position").filter(**kwargs))
     
 
 @season_router.get("/goalie/{player_id}", response=List[GoalieSeasonSchema])
@@ -151,9 +152,9 @@ def get_single_goalie_seasons(request, player_id:str, season="All Seasons", seas
         team = team.replace("-", " ").replace("%20", " ").title()
         kwargs["team__name"] = team
     if season_type == "Regular Season":
-        return GoalieRegularSeason.objects.select_related("team").select_related("season").select_related("player").prefetch_related("player__position").filter(**kwargs)
+        return get_list_or_404(GoalieRegularSeason.objects.select_related("team").select_related("season").select_related("player").prefetch_related("player__position").filter(**kwargs))
     else:
-        return GoaliePlayoffSeason.objects.select_related("team").select_related("season").select_related("player").prefetch_related("player__position").filter(**kwargs)
+        return get_list_or_404(GoaliePlayoffSeason.objects.select_related("team").select_related("season").select_related("player").prefetch_related("player__position").filter(**kwargs))
     
     
 class TeamSeasonSchema(ModelSchema):
@@ -187,9 +188,9 @@ def get_team_seasons(request, team_name="All Teams", season="All Seasons", seaso
     if season != "All Seasons":
         kwargs["season__year"] = season
     if season_type == "Regular Season":
-        return TeamRegularSeason.objects.select_related("team").select_related("season").filter(**kwargs)
+        return get_list_or_404(TeamRegularSeason.objects.select_related("team").select_related("season").filter(**kwargs))
     else:
-        return TeamPlayoffSeason.objects.select_related("team").select_related("season").filter(**kwargs)
+        return get_list_or_404(TeamPlayoffSeason.objects.select_related("team").select_related("season").filter(**kwargs))
 
 
 class TeamListSchema(Schema):
@@ -224,7 +225,7 @@ def get_season_team_list(request, season:str, season_type="Regular Season"):
     if season != "All Seasons":
         kwargs["season__year"] = season
     if season_type == "Regular Season":
-        return TeamRegularSeason.objects.select_related("team").select_related("season").filter(**kwargs).order_by("team__name")
+        return get_list_or_404(TeamRegularSeason.objects.select_related("team").select_related("season").filter(**kwargs).order_by("team__name"))
     elif season_type == "Playoffs":
-        return TeamPlayoffSeason.objects.select_related("team").select_related("season").filter(**kwargs).order_by("team__name")
+        return get_list_or_404(TeamPlayoffSeason.objects.select_related("team").select_related("season").filter(**kwargs).order_by("team__name"))
          
