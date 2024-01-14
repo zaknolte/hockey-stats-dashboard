@@ -19,6 +19,7 @@ admin.site.register(RegularSeason, RegularSeasonAdmin)
 class PlayerRegularSeasonAdmin(admin.ModelAdmin):
     list_display = ("get_season_year", "get_player_name")
     search_fields = ["season__year"]
+    list_select_related = ('player', 'season')
     
     @admin.display(ordering='season__year', description='Season Year')
     def get_season_year(self, obj):
@@ -26,10 +27,10 @@ class PlayerRegularSeasonAdmin(admin.ModelAdmin):
 
     @admin.display(ordering='player__full_name', description='Player Name')
     def get_player_name(self, obj):
-        return obj.player.full_name
-
+        return f"{obj.player.last_name}, {obj.player.first_name}"
+    
     def get_ordering(self, request):
-        return ["season__year", Lower("player__last_name")]  # sort case insensitive
+        return ["-season__year", Lower("player__last_name")]  # sort case insensitive
 
 
 admin.site.register(PlayerRegularSeason, PlayerRegularSeasonAdmin)
@@ -37,6 +38,7 @@ admin.site.register(PlayerRegularSeason, PlayerRegularSeasonAdmin)
 class GoalieRegularSeasonAdmin(admin.ModelAdmin):
     list_display = ("get_season_year", "get_player_name")
     search_fields = ["season__year"]
+    list_select_related = ('player', 'season')
     
     @admin.display(ordering='season__year', description='Season Year')
     def get_season_year(self, obj):
@@ -44,10 +46,10 @@ class GoalieRegularSeasonAdmin(admin.ModelAdmin):
 
     @admin.display(ordering='player__full_name', description='Player Name')
     def get_player_name(self, obj):
-        return obj.player.full_name
+        return f"{obj.player.last_name}, {obj.player.first_name}"
 
     def get_ordering(self, request):
-        return ["season__year", Lower("player__last_name")]  # sort case insensitive
+        return ["-season__year", Lower("player__last_name")]  # sort case insensitive
 
 
 admin.site.register(GoalieRegularSeason, GoalieRegularSeasonAdmin)
@@ -56,6 +58,7 @@ admin.site.register(GoalieRegularSeason, GoalieRegularSeasonAdmin)
 class TeamRegularSeasonAdmin(admin.ModelAdmin):
     list_display = ("get_season_year", "get_team_name")
     search_fields = ["season__year"]
+    list_select_related = ('team', 'season')
     
     @admin.display(ordering='season__year', description='Season Year')
     def get_season_year(self, obj):
@@ -66,7 +69,7 @@ class TeamRegularSeasonAdmin(admin.ModelAdmin):
         return obj.team.name
 
     def get_ordering(self, request):
-        return ["season__year", Lower("team__name")]  # sort case insensitive
+        return ["-season__year", Lower("team__name")]  # sort case insensitive
 
 
 admin.site.register(TeamRegularSeason, TeamRegularSeasonAdmin)

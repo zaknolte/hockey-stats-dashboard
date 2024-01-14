@@ -5,9 +5,10 @@ from .models import RegularGame, PlayoffGame, PlayerRegularGame, PlayerPlayoffGa
 class RegularGameAdmin(admin.ModelAdmin):
     list_display = ("game_date", "home_team", "away_team")
     search_fields = ["home_team", "away_team"]
+    list_select_related = ('home_team', 'away_team')
 
     def get_ordering(self, request):
-        return ["game_date"]
+        return ["-game_date"]
 
 
 admin.site.register(RegularGame, RegularGameAdmin)
@@ -49,6 +50,8 @@ admin.site.register(GoalieRegularGame, GoalieRegularGameAdmin)
 class TeamRegularGameAdmin(admin.ModelAdmin):
     list_display = ("get_team_name", "get_game_date")
     search_fields = ["team__name", "game__game_date"]
+    list_select_related = ('team', 'game')
+    raw_id_fields = ("team", "game")
 
     @admin.display(ordering='team__name', description='Team')
     def get_team_name(self, obj):
@@ -59,7 +62,7 @@ class TeamRegularGameAdmin(admin.ModelAdmin):
         return obj.game.game_date
 
     def get_ordering(self, request):
-        return ["game__game_date", Lower("team__name")]  # sort case insensitive
+        return ["-game__game_date", Lower("team__name")]  # sort case insensitive
 
 
 admin.site.register(TeamRegularGame, TeamRegularGameAdmin)
