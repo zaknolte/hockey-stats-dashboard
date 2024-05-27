@@ -62,7 +62,7 @@ INSTALLED_APPS = [
     "gamestats"
 ]
 
-if DEBUG:
+if not IS_HEROKU_APP:
     INSTALLED_APPS.append("debug_toolbar")
 
 MIDDLEWARE = [
@@ -79,7 +79,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-if DEBUG:
+if not IS_HEROKU_APP:
     MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
 
 ROOT_URLCONF = "backend.urls"
