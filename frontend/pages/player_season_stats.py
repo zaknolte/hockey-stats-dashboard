@@ -14,7 +14,7 @@ from django.utils.text import slugify
 from pathlib import Path
 from io import StringIO
 
-from helpers import stringify_season, rename_data_df_cols, get_stat_sorting, get_agGrid_layout, get_agGrid_columnDefs, cols_to_percent
+from ..helpers import stringify_season, rename_data_df_cols, get_stat_sorting, get_agGrid_layout, get_agGrid_columnDefs, cols_to_percent
 
 dash.register_page(__name__, path="/players", title="Hockey Stats | Player Stats")
 

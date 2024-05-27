@@ -6,7 +6,7 @@ from django.utils.text import slugify
 import requests
 import datetime
 
-from data_values import TEAM_BY_ABBR
+from ..data_values import TEAM_BY_ABBR
 
 dash.register_page(__name__, path="/", title="Hockey Stats")
 
