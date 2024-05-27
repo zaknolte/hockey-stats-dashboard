@@ -16,8 +16,8 @@ from django.utils.text import slugify
 from pathlib import Path
 from io import StringIO
 
-from data_values import TEAM_COLORS
-from helpers import reverse_slugify, rename_data_df_cols, cols_to_percent, get_colors, get_triadics_from_rgba, get_rgba_complement, get_agGrid_layout, stringify_season
+from ..data_values import TEAM_COLORS
+from ..helpers import reverse_slugify, rename_data_df_cols, cols_to_percent, get_colors, get_triadics_from_rgba, get_rgba_complement, get_agGrid_layout, stringify_season
 from .player_404 import player_404_layout
 
 def title(player):
