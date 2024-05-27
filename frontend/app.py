@@ -1,7 +1,7 @@
 import dash
 from dash import Dash, html, dcc
 import dash_bootstrap_components as dbc
-from nav import nav
+# from nav import nav
 
 
 app = Dash(
