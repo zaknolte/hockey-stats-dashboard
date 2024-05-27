@@ -16,12 +16,14 @@ app = Dash(
     suppress_callback_exceptions=True
 )
 
-app.layout = html.Div(
-    [
-        nav,
-        dash.page_container,
-    ]
-)
+# app.layout = html.Div(
+#     [
+#         nav,
+#         dash.page_container,
+#     ]
+# )
+
+app.layout = html.Div("Hello World")
 
 if __name__ == "__main__":
     # app.run(debug=True)
