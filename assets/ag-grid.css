@@ -1,0 +1,37 @@
+.center-aligned-header .ag-header-cell-label {
+    justify-content: center;
+}
+
+.ag-header-cell-filtered {
+    background-color: #8fc2d1 !important;
+    color: #fff !important;
+}
+
+/* HAVE to add custom class for base theme due to order of how dash loads styling */
+/* custom class prevents dash from re-loading default theme stylings when loading grid */
+.ag-theme-alpine.base-grid {
+    --ag-header-column-separator-display: block;
+    --ag-header-column-separator-width: 1px;
+    --ag-header-column-separator-color: rgb(160, 160, 160);
+    --ag-header-cell-hover-background-color: #b7d0d8;
+    --ag-header-background-color: rgb(240, 240, 240);
+    --ag-odd-row-background-color: rgb(240, 240, 240);
+}
+
+/* custom colored grid using team colors */
+.ag-theme-alpine.team-grid {
+    --ag-header-column-separator-display: block;
+    --ag-header-column-separator-width: 1px;
+    --ag-header-column-separator-color: rgb(160, 160, 160);
+    --ag-header-foreground-color: var(--team-text-color-secondary);
+    --ag-header-cell-hover-background-color: var(--team-color-primary);
+    --ag-row-hover-color: var(--team-color-primary);
+    --ag-background-color: var(--team-color-secondary-soft);
+    --ag-header-background-color: var(--team-color-secondary-softer);
+    --ag-data-color: var(--team-text-color-secondary);
+    --ag-odd-row-background-color: var(--team-color-secondary-softer);
+}
+
+.ag-theme-alpine.team-grid .ag-paging-panel {
+    color: var(--team-text-color-secondary);
+}
