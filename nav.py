@@ -6,7 +6,7 @@ from helpers import slugify
 import aiohttp
 import asyncio
 
-from data_values import DIVISION_TEAMS
+from data_values import DIVISION_TEAMS, BACKEND_URL
 
 
 async def query_all_player_names():
@@ -17,7 +17,7 @@ async def query_all_player_names():
         json response of data.
     """
     async with aiohttp.ClientSession() as session:
-        api_url = f"http://127.0.0.1:8000/api/players/all_names"
+        api_url = f"{BACKEND_URL}/api/players/all_names"
         async with session.get(api_url) as resp:
             data = await resp.json()
 
@@ -51,7 +51,7 @@ def build_team_col(division, division_teams):
     for team in division_teams[division]:
         ref = slugify(team)
         col.append(
-            dbc.DropdownMenuItem(team, href=f"http://127.0.0.1:8050/teams/{ref}", className="text-center px-3"),
+            dbc.DropdownMenuItem(team, href=f"{BACKEND_URL}/teams/{ref}", className="text-center px-3"),
         )
     
     return col
@@ -124,5 +124,5 @@ def show_dropdown(value):
 )
 def route_player_page(name):
     if name:
-        return f"http://127.0.0.1:8050/player/{name}"
+        return f"{BACKEND_URL}/player/{name}"
     return no_update
