@@ -16,7 +16,7 @@ from helpers import slugify
 from pathlib import Path
 from io import StringIO
 
-from data_values import TEAM_COLORS
+from data_values import TEAM_COLORS, BACKEND_URL
 from helpers import reverse_slugify, rename_data_df_cols, cols_to_percent, get_colors, get_triadics_from_rgba, get_rgba_complement, get_agGrid_layout, stringify_season
 from .player_404 import player_404_layout
 
@@ -37,7 +37,7 @@ async def query_player_stats(endpoint):
         json response of data.
     """
     async with aiohttp.ClientSession() as session:
-        api_url = f"http://127.0.0.1:8000/api/{endpoint}"
+        api_url = f"{BACKEND_URL}/api/{endpoint}"
         async with session.get(api_url) as resp:
             data = await resp.json()
 

@@ -1,7 +1,7 @@
 import dash
 from dash import Dash, html, dcc
 import dash_bootstrap_components as dbc
-# from nav import nav
+from nav import nav
 
 
 app = Dash(
@@ -18,14 +18,14 @@ app = Dash(
 
 server = app.server
 
-# app.layout = html.Div(
-#     [
-#         nav,
-#         dash.page_container,
-#     ]
-# )
+app.layout = html.Div(
+    [
+        nav,
+        dash.page_container,
+    ]
+)
 
-app.layout = html.Div("Hello World")
+# app.layout = html.Div("Hello World")
 
 if __name__ == "__main__":
     # app.run(debug=True)

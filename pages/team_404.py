@@ -1,4 +1,5 @@
 from dash import html
+from data_values import ROOT_URL
 
 def team_404_layout(status, team_id):
     h1_text = status
@@ -14,7 +15,7 @@ def team_404_layout(status, team_id):
             html.H3(
                 [
                     "Return to the",
-                    html.A("Home Page", href="http://127.0.0.1:8050/", style={"marginLeft": "1rem"})
+                    html.A("Home Page", href=f"{ROOT_URL}/", style={"marginLeft": "1rem"})
                 ],
                 style={"marginTop": "5%", "display": "flex", "justifyContent": "center"}
             )

@@ -1,3 +1,8 @@
+import os
+
+BACKEND_URL = os.environ.get("BACKEND_URL")
+ROOT_URL = os.environ.get("ROOT_URL")
+
 DIVISION_TEAMS = {
     "Pacific": [
         "Anaheim Ducks",

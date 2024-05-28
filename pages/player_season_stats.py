@@ -14,6 +14,7 @@ from helpers import slugify
 from pathlib import Path
 from io import StringIO
 
+from data_values import BACKEND_URL
 from helpers import stringify_season, rename_data_df_cols, get_stat_sorting, get_agGrid_layout, get_agGrid_columnDefs, cols_to_percent
 
 dash.register_page(__name__, path="/players", title="Hockey Stats | Player Stats")
@@ -30,7 +31,7 @@ async def query_player_stats(endpoint:str):
         json response of data.
     """
     async with aiohttp.ClientSession() as session:
-        api_url = f"http://127.0.0.1:8000/api/season/{endpoint}"
+        api_url = f"{BACKEND_URL}/api/season/{endpoint}"
         async with session.get(api_url) as resp:
             data = await resp.json()
 

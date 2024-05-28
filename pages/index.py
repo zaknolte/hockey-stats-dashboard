@@ -6,7 +6,7 @@ from helpers import slugify
 import requests
 import datetime
 
-from data_values import TEAM_BY_ABBR
+from data_values import TEAM_BY_ABBR, ROOT_URL
 
 dash.register_page(__name__, path="/", title="Hockey Stats")
 
@@ -117,11 +117,11 @@ def get_vs_card(game:dict):
                 [
                     html.A(
                         html.Img(src=game.get("homeTeam").get("logo"), style={"width": 100, "maxWidth": 100, "filter": home_shadow}),
-                        href=f"http://127.0.0.1:8050/teams/{slugify(TEAM_BY_ABBR[home_team.get('abbrev')])}"
+                        href=f"{ROOT_URL}/teams/{slugify(TEAM_BY_ABBR[home_team.get('abbrev')])}"
                     ),
                     html.A(
                         html.Img(src=game.get("awayTeam").get("logo"), style={"width": 100, "maxWidth": 100, "filter": away_shadow}),
-                        href=f"http://127.0.0.1:8050/teams/{slugify(TEAM_BY_ABBR[away_team.get('abbrev')])}"
+                        href=f"{ROOT_URL}/teams/{slugify(TEAM_BY_ABBR[away_team.get('abbrev')])}"
                     )
                 ],
                 style={"display": "flex", "justifyContent": "space-evenly"}
