@@ -1,6 +1,7 @@
 import dash_ag_grid as dag
 import numpy as np
 import re
+import unicodedata
 
 from data_values import TEAM_COLORS
 
@@ -161,10 +162,10 @@ def stringify_season(season:int):
 
 
 def slugify(text):
-    value = str(value)
-    value = (unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode("ascii"))
-    value = re.sub(r"[^\w\s-]", "", value.lower())
-    return re.sub(r"[-\s]+", "-", value).strip("-_")
+    text = str(text)
+    text = (unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode("ascii"))
+    text = re.sub(r"[^\w\s-]", "", text.lower())
+    return re.sub(r"[-\s]+", "-", text).strip("-_")
 
 def reverse_slugify(slug:str):
     """
