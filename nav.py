@@ -6,7 +6,7 @@ from helpers import slugify
 import aiohttp
 import asyncio
 
-from data_values import DIVISION_TEAMS, BACKEND_URL
+from data_values import DIVISION_TEAMS, BACKEND_URL, ROOT_URL
 
 
 async def query_all_player_names():
@@ -51,7 +51,7 @@ def build_team_col(division, division_teams):
     for team in division_teams[division]:
         ref = slugify(team)
         col.append(
-            dbc.DropdownMenuItem(team, href=f"{BACKEND_URL}/teams/{ref}", className="text-center px-3"),
+            dbc.DropdownMenuItem(team, href=f"{ROOT_URL}/teams/{ref}", className="text-center px-3"),
         )
     
     return col
@@ -124,5 +124,5 @@ def show_dropdown(value):
 )
 def route_player_page(name):
     if name:
-        return f"{BACKEND_URL}/player/{name}"
+        return f"{ROOT_URL}/player/{name}"
     return no_update
