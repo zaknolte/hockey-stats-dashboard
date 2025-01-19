@@ -11,7 +11,7 @@ def team_404_layout(status, team_id):
     return html.Div(
         [
             html.H1(h1_text, style={"marginTop": "5%", "display": "flex", "justifyContent": "center"}),
-            html.H3("Please enter a valid player ID or", style={"marginTop": "5%", "display": "flex", "justifyContent": "center"}),
+            html.H3("Please enter a valid team name or", style={"marginTop": "5%", "display": "flex", "justifyContent": "center"}),
             html.H3(
                 [
                     "Return to the",
