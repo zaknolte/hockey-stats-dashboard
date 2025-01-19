@@ -246,7 +246,7 @@ def get_season_summary(team_data:object, layout_id:[int, str]):
                     dbc.Col(team_data["W"], width=1, style=col_style),
                     dbc.Col(team_data["L"], width=1, style=col_style),
                     # TODO add ROW data to model
-                    dbc.Col("??", width=1, style=col_style),
+                    dbc.Col("0", width=1, style=col_style),
                     dbc.Col(team_data["OTL"], width=1, style=col_style),
                     dbc.Col(team_data["P"], width=1, style=col_style),
                     # dbc.Col(team_data["Rank"], width=1, style=col_style),
