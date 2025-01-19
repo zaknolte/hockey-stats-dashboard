@@ -149,7 +149,7 @@ def get_team_card(team_data:object):
     Returns:
         html.Div: Card component of team information.
     """
-    logo = team_data["team.logo"][1:].replace("%3A", ":/").replace("%20", " ")
+    logo = team_data["team.logo"]
     return html.Div(
         dbc.Card(
             [
