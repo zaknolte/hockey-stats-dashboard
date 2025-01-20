@@ -15,13 +15,13 @@ DIVISION_TEAMS = {
         "Vegas Golden Knights",
     ],
     "Central": [
-        "Arizona Coyotes",
         "Chicago Blackhawks",
         "Colorado Avalanche",
         "Dallas Stars",
         "Minnesota Wild",
         "Nashville Predators",
         "St Louis Blues",
+        "Utah Hockey Club",
         "Winnipeg Jets"
     ],
     "Metropolitan": [
@@ -99,6 +99,7 @@ TEAM_BY_ABBR = {
     "TBL": "Tampa Bay Lightning",
     "TOR": "Toronto Maple Leafs",
     "TSP": "Toronto St. Patricks",
+    "UTA": "Utah Hockey Club",
     "VAN": "Vancouver Canucks",
     "VGK": "Vegas Golden Knights",
     "WIN": "Winnipeg Jets",
@@ -281,6 +282,12 @@ TEAM_COLORS = {
         "primary_text": (255, 255, 255, 1),
         "secondary": (255, 255, 255, 1),
         "secondary_text": (0, 0, 0, 1),
+    },
+    'Utah Hockey Club': {
+        "primary": (105, 179, 231, 1),
+        "primary_text": (255, 255, 255, 1),
+        "secondary": (1, 1, 1, 1),
+        "secondary_text": (255, 255, 255, 1),
     },
     'Vancouver Canucks': {
         "primary": (0, 32, 91, 1),
