@@ -5,13 +5,20 @@ import dash_bootstrap_components as dbc
 from helpers import slugify
 import requests
 import datetime
+import aiohttp
+import asyncio
 
 from data_values import TEAM_BY_ABBR, ROOT_URL
 
 dash.register_page(__name__, path="/", title="Hockey Stats")
 
-api_root = "https://api-web.nhle.com/"
+async def get_games():
+    async with aiohttp.ClientSession() as session:
+        api_url = f"https://api-web.nhle.com/v1/score/{datetime.date.today()}"
+        async with session.get(api_url) as resp:
+            data = await resp.json()
 
+    return data.get("games")
 
 def get_vs_card(game:dict):
     """
@@ -164,7 +171,7 @@ def add_game_rows(games:list):
         
 
 def layout():
-    games = requests.get(api_root + f"v1/score/{datetime.date.today()}").json().get("games")
+    games = asyncio.run(get_games())
     
     return html.Div(
         [
@@ -189,7 +196,7 @@ def layout():
     Input("score-interval", "n_intervals")
 )
 def refresh_scores(n_intervals):
-    games = requests.get(api_root + f"v1/score/{datetime.date.today()}").json().get("games")
+    games = asyncio.run(get_games())
     
     interval = 60 * 1000
     try:
