@@ -5,6 +5,7 @@ import dash_bootstrap_components as dbc
 from helpers import slugify
 import requests
 import datetime
+from zoneinfo import ZoneInfo
 import aiohttp
 import asyncio
 
@@ -14,7 +15,8 @@ dash.register_page(__name__, path="/", title="Hockey Stats")
 
 async def get_games():
     async with aiohttp.ClientSession() as session:
-        api_url = f"https://api-web.nhle.com/v1/score/{datetime.date.today()}"
+        pst_day = datetime.datetime.now(ZoneInfo("America/Los_Angeles"))
+        api_url = f"https://api-web.nhle.com/v1/score/{pst_day.date()}"
         async with session.get(api_url) as resp:
             data = await resp.json()
 
